@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphaBeta.cs" />
+    <Compile Include="Board.cs" />
     <Compile Include="Coord.cs" />
     <Compile Include="CoordStatus.cs" />
     <Compile Include="Program.cs" />

@@ -1,42 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-
-namespace Checkers
+﻿namespace Checkers
 {
     public class Coord
     {
-        private int x;
-        private int y;
-        private bool king = false;
-        private CoordStatus coordstatus=CoordStatus.Empty;
+        private CoordStatus coordStatus = CoordStatus.Empty;
 
-        public CoordStatus status
+        /// <summary>
+        /// CoordStatus property 
+        /// </summary>
+        public CoordStatus Status
         {
-            get { return coordstatus; }
-            set { coordstatus = value; }
+            get { return coordStatus; }
+            set { coordStatus = value; }
         }
 
-        public bool King
-        {
-            get { return king; }
-            set { king = value; }
-        }
+        /// <summary>
+        /// King property
+        /// </summary>
+        public bool King { get; set; }
 
-        public int X
-        {
-            get { return x; }
-            set { x = value; }
-        }
+        /// <summary>
+        /// X coordinate property
+        /// </summary>
+        public int X { get; set; }
 
-        public int Y
-        {
-            get { return y; }
-            set { y = value; }
-        }
+        /// <summary>
+        /// Y coordinate property
+        /// </summary>
+        public int Y { get; set; }
+
+        //public int Value { get; set; } - heuristic value
+        //public bool KingRow(){} - did i reach to a row
+        //public bool findValidMoves(){} 
+        //public bool findValidJumps(){}
+
 
     }
-
 }
