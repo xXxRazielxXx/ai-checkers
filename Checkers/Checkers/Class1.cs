@@ -7,5 +7,6 @@ namespace Checkers
 {
     public class Class1
     {
+        int sheira;
     }
 }
