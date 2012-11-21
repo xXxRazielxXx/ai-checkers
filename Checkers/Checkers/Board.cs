@@ -7,7 +7,7 @@ namespace Checkers
 {
     public class Board
     {
-        private Coord[] board = new Coord[32];
+        private Coordinate[] board = new Coordinate[32];
 
         /// <summary>
         /// Defualt constructor
@@ -16,9 +16,14 @@ namespace Checkers
         {
             for (int i = 0; i < 32; i++)
             {
-                board[i] = new Coord();
+                board[i] = new Coordinate();
             }
         }
+
+        /// <summary>
+        /// Huerisitic board grade
+        /// </summary>
+        public int Grade { get; set; } 
 
         /// <summary>
         /// Initialize Board
@@ -36,18 +41,18 @@ namespace Checkers
                     {
                         board[k].X = i;
                         board[k].Y = j;
-                        board[k].King = false;
+                        board[k].Checker.Queen = false;
                         if (k >= 0 && k <= 11)
                         {
-                            board[k].Status = CoordStatus.White;
+                            board[k].Checker.Status = PlayerColor.White;
                         }
                         else if (k >= 12 && k <= 19)
                         {
-                            board[k].Status = CoordStatus.Empty;
+                            board[k].Checker.Status = PlayerColor.Empty;
                         }
                         else
                         {
-                            board[k].Status = CoordStatus.Black;
+                            board[k].Checker.Status = PlayerColor.Black;
                         }
                         k++;
                     }

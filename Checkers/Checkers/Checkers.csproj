@@ -44,8 +44,9 @@
   <ItemGroup>
     <Compile Include="AlphaBeta.cs" />
     <Compile Include="Board.cs" />
-    <Compile Include="Coord.cs" />
-    <Compile Include="CoordStatus.cs" />
+    <Compile Include="Checker.cs" />
+    <Compile Include="Coordinate.cs" />
+    <Compile Include="PlayerColor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

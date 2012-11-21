@@ -1,6 +1,6 @@
 ﻿namespace Checkers
 {
-    public enum CoordStatus
+    public enum PlayerColor
     {   
         /// <summary>
         /// Black player on Coord

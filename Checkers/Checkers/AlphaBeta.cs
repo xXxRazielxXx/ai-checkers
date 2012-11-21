@@ -16,7 +16,7 @@
 //            {
 //                foreach (var item in node.list(player)) //implement node
 //                {
-//                    alpha = Math.Max(alpha, Alphabeta(node, depth - 1, alpha, beta, !player));
+//                    alpha = Math.Max(alpha, Alphabeta(item, depth - 1, alpha, beta, !player));
 //                    if (beta < alpha)
 //                    {
 //                        break;
@@ -28,7 +28,7 @@
 //            {
 //                foreach (var item in node.list(player)) //implement node
 //                {
-//                    beta = Math.Min(beta, Alphabeta(node, depth - 1, alpha, beta, !player));
+//                    beta = Math.Min(beta, Alphabeta(item, depth - 1, alpha, beta, !player));
 //                    if (beta < alpha)
 //                    {
 //                        break;
@@ -40,3 +40,5 @@
 //        }
 //    }
 //}
+
+//Alphabeta(root, depth,int.MinValue,int.MaxValue)
