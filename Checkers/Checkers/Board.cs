@@ -10,6 +10,23 @@ namespace Checkers
         private Coordinate[] board = new Coordinate[32];
 
         /// <summary>
+        /// return a value in index i
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public Coordinate this[int i]
+        {
+            get
+            {
+                if (i >= 0 && i <= 31)
+                {
+                    return board[i];
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Defualt constructor
         /// </summary>
         public Board()
@@ -23,7 +40,9 @@ namespace Checkers
         /// <summary>
         /// Huerisitic board grade
         /// </summary>
-        public int Grade { get; set; } 
+        public int Grade { get; set; }
+
+        public int Size { get; set; }
 
         /// <summary>
         /// Initialize Board
@@ -32,6 +51,7 @@ namespace Checkers
         public void InitializeBoard(int size)
         {
             int k = 0;
+            Size = size;
             for (; k <= 31; k++)
             {
                 for (int i = 1; i <= size; i++)
