@@ -4,6 +4,9 @@ namespace CheckersModel
 {
     public class Coordinate
     {
+        /// <summary>
+        ///     Coordinate status property
+        /// </summary>
         public Piece Status { get; set; }
 
         /// <summary>
