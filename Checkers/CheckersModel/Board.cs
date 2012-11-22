@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace CheckersModel
 {
@@ -47,8 +48,8 @@ namespace CheckersModel
 
         /// <summary>
         /// return a value in position index
+        /// starts at one instead of zero and end at 32 instead of 31
         /// </summary>
-        /// <param name="i"></param>
         /// <param name="position"></param>
         /// <returns></returns>
         public Coordinate this[int position]
@@ -73,10 +74,122 @@ namespace CheckersModel
             }
         }
 
+
+        public bool IsPiece(Coordinate cor)
+        {
+
+            return ((cor.Status == Piece.BlackPiece) || (cor.Status == Piece.WhitePiece));
+        }
+        /// <summary>
+        /// Is on given coordinate a black piece is located
+        /// </summary>
+        /// <param name="cor"></param>
+        /// <returns></returns>
+        public bool IsBlack(Coordinate cor)
+        {
+            return ((cor.Status == Piece.BlackPiece) || (cor.Status == Piece.BlackKing));
+        }
+
+        /// <summary>
+        /// Is on given coordinate a white piece is located
+        /// </summary>
+        /// <param name="cor"></param>
+        /// <returns></returns>
+        public bool IsWhite(Coordinate cor)
+        {
+            return ((cor.Status == Piece.WhitePiece) || (cor.Status == Piece.WhiteKing));
+        }
+
+        /// <summary>
+        /// Is a King loacted on Coordinate
+        /// </summary>
+        /// <param name="cor"></param>
+        /// <returns></returns>
+        public bool IsKing(Coordinate cor)
+        {
+            return ((cor.Status == Piece.BlackKing) || (cor.Status == Piece.WhiteKing));
+        }
+
+        /// <summary>
+        /// Is a piece located on coordinate
+        /// </summary>
+        /// <param name="cor"></param>
+        /// <returns></returns>
+        public bool IsAloacted(Coordinate cor)
+        {
+            return (cor.Status != Piece.None);
+        }
         /// <summary>
         /// Huerisitic board grade
         /// </summary>
         public int Grade { get; set; }
+
+        /// <summary>
+        /// Is the given player the owner of the specified piece
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="cor"></param>
+        /// <returns></returns>
+        public bool IsOwner(Player player, Coordinate cor)
+        {
+            if (cor.Status == Piece.None)
+            {
+                return false;
+            }
+            Player pieceowner = GetPlayer(cor);
+            return (player == pieceowner);
+        }
+
+        /// <summary>
+        /// Get the player that owns the given piece
+        /// </summary>
+        /// <param name="cor"></param>
+        /// <returns></returns>
+        public Player GetPlayer(Coordinate cor)
+        {
+            if (IsBlack(cor))
+            {
+                return Player.Black;
+            }
+            else if (IsWhite(cor))
+            {
+                return Player.White;
+            }
+            else
+            {
+                return Player.None;
+            }
+        }
+
+        /// <summary>
+        /// Is the given player the opponent of the specified piece
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="coordinate"></param>
+        /// <returns></returns>
+        public bool IsOpponentPiece(Player player, Coordinate coordinate)
+        {
+            if (coordinate.Status == Piece.None)
+            {
+                return false;
+            }
+            return !IsOwner(player, coordinate);
+        }
+
+        /// <summary>
+        /// Are the specified pieces opponents
+        /// </summary>
+        /// <param name="piece1"></param>
+        /// <param name="piece2"></param>
+        /// <returns></returns>
+        public bool AreOpponents(Coordinate piece1, Coordinate piece2)
+        {
+            if ((piece1.Status == Piece.None) || (piece2.Status == Piece.None))
+            {
+                return false;
+            }
+            return (GetPlayer(piece1) != GetPlayer(piece2));
+        }
 
         /// <summary>
         /// Clear the board
