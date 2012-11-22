@@ -7,8 +7,8 @@
     <ProjectGuid>{C4F8E3CB-364B-4C0B-BEF9-EBE674BE231B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Checkers</RootNamespace>
-    <AssemblyName>Checkers</AssemblyName>
+    <RootNamespace>CheckersEngine</RootNamespace>
+    <AssemblyName>CheckersEngine</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,13 +43,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphaBeta.cs" />
-    <Compile Include="Board.cs" />
-    <Compile Include="Checker.cs" />
-    <Compile Include="Coordinate.cs" />
-    <Compile Include="PlayerColor.cs" />
+    <Compile Include="MiniMax.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CheckersModel\CheckersModel.csproj">
+      <Project>{98a85059-00d4-4274-a021-7413e3f0e06e}</Project>
+      <Name>CheckersModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,6 @@
 ﻿//using System;
 
-//namespace Checkers
+//namespace CheckersEngine
 //{
 //    public class AlphaBeta
 //    {

@@ -1,14 +1,16 @@
-﻿namespace Checkers
+﻿
+using CheckersModel;
+
+namespace CheckersEngine
 {
     internal class Program
     {
         private static void Main()
         {
-            Rules rules = new Rules();
-            
             var board = new Board();
             board.InitializeBoard(8);
-            rules.ValidMoves(board,board[31]);
+            var print = new PrintBoardState();
+            print.DrawBoard(board);
         }
     }
 }

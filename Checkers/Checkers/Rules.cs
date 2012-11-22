@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CheckersModel;
 
-namespace Checkers
+namespace CheckersEngine
 {
-    public class Rules
+    static class Rules
     {
-        public IList<Coordinate> ValidMoves(Board board, Coordinate coordinate)
+        private static IList<Coordinate> ValidMoves(Board board, Coordinate coordinate,Piece player)
         {
             IList<Coordinate> coordinateList = new List<Coordinate>();
             if (coordinate.X + 1 < board.Size && coordinate.Y + 1 < board.Size)
