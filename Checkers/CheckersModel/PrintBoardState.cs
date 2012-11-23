@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace CheckersModel
@@ -45,7 +43,7 @@ namespace CheckersModel
                buf1.Append("|");
                buf2.Append("|");
 
-               writer.WriteLine("{0}   {1}", buf1.ToString(), buf2.ToString());
+               writer.WriteLine("{0}   {1}", buf1, buf2);
                buf1.Length = 0;
                buf2.Length = 0;
                writer.WriteLine("+-----------------------+   +-----------------------+");
@@ -81,7 +79,7 @@ namespace CheckersModel
 
          buf1.Append("|");
          buf2.Append("|");
-         writer.WriteLine("{0}  |   {1}  |", buf1.ToString(), buf2.ToString());
+         writer.WriteLine("{0}  |   {1}  |", buf1, buf2);
          writer.WriteLine("+-----------------------+   +-----------------------+");
       }
    }
