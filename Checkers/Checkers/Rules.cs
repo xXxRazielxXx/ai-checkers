@@ -13,22 +13,22 @@ namespace CheckersEngine
             IList<Coordinate> coordinateList = new List<Coordinate>();
             if (board.IsOwner(player, coordinate))
             {
-                if (coordinate.X + 1 < board.Size && coordinate.Y + 1 < board.Size)
+                if ((board.IsWhite(coordinate)) && (coordinate.X + 1 < board.Rows && coordinate.Y + 1 < board.Columns))
                 {
                     var temp1 = new Coordinate {X = coordinate.X + 1, Y = coordinate.Y + 1};
                     coordinateList.Add(temp1);
                 }
-                if (coordinate.X + 1 < board.Size && coordinate.Y - 1 > 0)
+                if (board.IsWhite(coordinate) && (coordinate.X + 1 < board.Rows && coordinate.Y - 1 > 0))
                 {
                     var temp2 = new Coordinate {X = coordinate.X + 1, Y = coordinate.Y - 1};
                     coordinateList.Add(temp2);
                 }
-                if (coordinate.X - 1 > 0 && coordinate.Y + 1 < board.Size)
+                if ((board.IsBlack(coordinate) && (coordinate.X - 1 > 0 && coordinate.Y + 1 < board.Columns)))
                 {
                     var temp3 = new Coordinate {X = coordinate.X - 1, Y = coordinate.Y + 1};
                     coordinateList.Add(temp3);
                 }
-                if (coordinate.X - 1 > 0 && coordinate.Y - 1 > 0)
+                if ((board.IsBlack(coordinate)&&(coordinate.X - 1 > 0 && coordinate.Y - 1 > 0)))
                 {
                     var temp4 = new Coordinate {X = coordinate.X - 1, Y = coordinate.Y - 1};
                     coordinateList.Add(temp4);
