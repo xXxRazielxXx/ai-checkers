@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace CheckersModel
 {
@@ -33,7 +32,7 @@ namespace CheckersModel
         /// <summary>
         /// Get the size of the board.  This is the number of valid positions on the board.
         /// </summary>
-        public int Size { get { return this.board.Length; } }
+        public int Size { get { return board.Length; } }
 
         /// <summary>
         /// Defualt constructor
@@ -151,14 +150,11 @@ namespace CheckersModel
             {
                 return Player.Black;
             }
-            else if (IsWhite(cor))
+            if (IsWhite(cor))
             {
                 return Player.White;
             }
-            else
-            {
-                return Player.None;
-            }
+            return Player.None;
         }
 
         /// <summary>
