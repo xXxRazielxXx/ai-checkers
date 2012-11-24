@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace CheckersModel
 {
-    public class Board
+    public class Board : IEnumerable
     {
         /// <summary>
         /// The number of rows on a checker board
@@ -19,6 +19,11 @@ namespace CheckersModel
         public static readonly int validCheckers=32;
 
         private readonly Coordinate[] board = new Coordinate[validCheckers];
+
+        public int NumberOfWhitePieces { set; get; }
+        public int NumberOfBlackPieces { set; get; }
+        public int NumberOfWhiteKings { set; get; }
+        public int NumberOfBlcakKings { set; get; }
 
         /// <summary>
         /// Get the number of rows on the board
@@ -162,6 +167,17 @@ namespace CheckersModel
             Player pieceowner = GetPlayer(cor);
             return (player == pieceowner);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coord"></param>
+        /// <returns></returns>
+        public Piece PieceColor(Coordinate coord)
+        {
+            return coord.Status;
+        }
+
 
         /// <summary>
         /// Get the player that owns the given piece
