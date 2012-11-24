@@ -10,7 +10,7 @@ namespace CheckersEngine
     {
         // calculates the pieces 'safeness' 
         // assumption: the computer is the black player
-        public int HeuristicFunction(Board board)
+        public int Evaluate(Board board)
         {
             int king_constant=10;
             int soldier_constant=1;
