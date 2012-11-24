@@ -169,7 +169,7 @@ namespace CheckersModel
         }
 
         /// <summary>
-        /// 
+        /// Return piece  type
         /// </summary>
         /// <param name="coord"></param>
         /// <returns></returns>

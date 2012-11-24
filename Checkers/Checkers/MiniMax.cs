@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CheckersModel;
-using CheckersEngine;
 
 
 namespace CheckersEngine
@@ -18,7 +17,7 @@ namespace CheckersEngine
             if (depth >= treeDepth)
             {
                 var obj = new HeuristicFunction();
-                return obj.HeuristicFunction(board);
+                return obj.Evaluate(board);
             }
             else
             {
@@ -26,13 +25,13 @@ namespace CheckersEngine
                 int max = int.MinValue;
                 var Robj = new Rules();
                // IList<Board> boardList = Robj.NextGamePositions(board);
-                foreach (Board b in boardList)
-                {
-                    int res =MinMax( b, (depth+1), !player);
-                    if( res > max) max=res;
-                    if (res < min) min= res;
+                //foreach (Board b in boardList)
+                //{
+                //    int res =MinMax( b, (depth+1), !player);
+                //    if( res > max) max=res;
+                //    if (res < min) min= res;
                        
-                }
+                //}
                              
                 if(player) return max;
                 else return min;               
