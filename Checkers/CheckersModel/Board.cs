@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace CheckersModel
 {
-    public class Board : IEnumerable
+    public class Board
     {
         /// <summary>
         /// The number of rows on a checker board
@@ -67,7 +67,7 @@ namespace CheckersModel
             {
                 if (position <= 0 || position > validCheckers)
                 {
-                    throw new ArgumentOutOfRangeException("position", "Position must be between 0 and 31");
+                    throw new ArgumentOutOfRangeException("position", "Position must be between 0 and 32");
                 }
                 position--;
                 board[position] = value;
@@ -77,9 +77,9 @@ namespace CheckersModel
 
         public bool Search(Coordinate cor)
         {
-            foreach (int coordinate in this)
+            for (int coordinate=1;coordinate<=this.Size ;coordinate++)
             {
-                if ((this[coordinate].X == cor.X)||(this[coordinate].Y == cor.Y))
+                if ((this[coordinate].X == cor.X)&&(this[coordinate].Y == cor.Y))
                 {
                     if (this[coordinate].Status == Piece.None)
                     {
@@ -141,6 +141,7 @@ namespace CheckersModel
         {
             return (cor.Status != Piece.None);
         }
+
         /// <summary>
         /// Huerisitic board grade
         /// </summary>
@@ -227,7 +228,7 @@ namespace CheckersModel
         /// <param name="size"></param>
         public void InitializeBoard(int size)
         {
-            int k = 0;
+            int k = 1;
             for (; k <= 31; k++)
             {
                 for (int i = 1; i <= size; i++)
@@ -253,11 +254,6 @@ namespace CheckersModel
                     }
                 }
             }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
         }
     }
 }

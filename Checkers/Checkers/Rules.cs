@@ -14,9 +14,8 @@ namespace CheckersEngine
             //Check that player own the piece on that coordinate
             if (board.IsOwner(player, coordinate))
             {
-
                 //Check that the selected piece on board is white and in bounds
-                if ((board.IsWhite(coordinate)) && (coordinate.X + 1 < board.Rows && coordinate.Y + 1 < board.Columns))
+                if ((board.IsWhite(coordinate)) && (coordinate.X + 1 <= board.Rows && coordinate.Y + 1 <= board.Columns))
                 {
                     var temp1 = new Coordinate {X = coordinate.X + 1, Y = coordinate.Y + 1};
                     //Looks if the move is for an empty place
@@ -27,7 +26,7 @@ namespace CheckersEngine
                 }
 
                 //Check that the selected piece on board is white and in bounds
-                if ((board.IsWhite(coordinate) && (coordinate.X + 1 < board.Rows && coordinate.Y - 1 > 0)))
+                if ((board.IsWhite(coordinate) && (coordinate.X + 1 <= board.Rows && coordinate.Y - 1 > 0)))
                 {
                     var temp2 = new Coordinate {X = coordinate.X + 1, Y = coordinate.Y - 1};
                     //Looks if the move is for an empty place
