@@ -10,22 +10,22 @@ namespace CheckersEngine
 {
     class MiniMax
     {
-        int treeDepth = 100;
+        private const int treeDepth = 100;
         //player=1 means max player=0 means min
         public int MinMax(Board board, int depth, bool player)
         {
 
             if (depth >= treeDepth)
             {
-                HeuristicFunction obj = new HeuristicFunction();
+                var obj = new HeuristicFunction();
                 return obj.HeuristicFunction(board);
             }
             else
             {
                 int min = int.MaxValue;
                 int max = int.MinValue;
-                Rules Robj = new Rules();
-                IList<Board> boardList = Robj.NextGamePositions(board);
+                var Robj = new Rules();
+               // IList<Board> boardList = Robj.NextGamePositions(board);
                 foreach (Board b in boardList)
                 {
                     int res =MinMax( b, (depth+1), !player);
