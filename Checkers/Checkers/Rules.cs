@@ -12,7 +12,7 @@ namespace CheckersEngine
         /// <param name="coordinate"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public IList<Coordinate> ValidMoves(Board board, Coordinate coordinate, Player player)
+        public IList<Coordinate> OptionalMoves(Board board, Coordinate coordinate, Player player)
         {
             IList<Coordinate> coordinateList = new List<Coordinate>();
             //Check that player own the piece on that coordinate
@@ -50,7 +50,7 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        ///     Check if in bound
+        ///  Check if in bound
         /// </summary>
         /// <param name="board"></param>
         /// <param name="row"></param>
@@ -62,15 +62,15 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        ///     Get walks
+        ///  Get Moves In Direction
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public IList<Coordinate> GetWalks(Board board, Coordinate coordinate, Player player)
+        public IList<Coordinate> GetMovesInDirection(Board board, Coordinate coordinate, Player player)
         {
-            IList<Coordinate> coordinateList = ValidMoves(board, coordinate, player);
+            IList<Coordinate> coordinateList = OptionalMoves(board, coordinate, player);
             if (coordinateList != null)
             {
                 if (board.IsOwner(player, coordinate))
@@ -97,25 +97,89 @@ namespace CheckersEngine
             return coordinateList;
         }
 
-        public void CanJump(Board board, Coordinate coordinate, Player player)
+        public IList<Board> CalculateNewBoardsFromCoordinates(Board board, Player player)
         {
-            IList<Coordinate> coordinateList = GetWalks(board, coordinate, player);
-            foreach (Coordinate item in coordinateList)
+            IList<Board> boards = new List<Board>();
+            for(var i=1;i<=board.Size;i++)
             {
-                if (board.IsBlack(coordinate) && board.IsPiece(coordinate))
+                if (board.IsOwner(player, board[i]))
                 {
-                    if (InBounds(board, item.X - 1, item.Y - 1))
+                    IList<Coordinate> coordinateList = GetMovesInDirection(board, board[i], player);
+                    foreach (var coordinate in coordinateList)
                     {
-                        var temp1 = new Coordinate {X = item.X - 1, Y = item.Y - 1};
-                        if (board.Search(temp1))
+                        if (board.IsOwner(player, coordinate))
                         {
+                            coordinateList.Remove(coordinate);
                         }
-                    }
-                    if (InBounds(board, item.X - 1, item.Y + 1))
-                    {
+                        if (board.IsOpponentPiece(player, coordinate))
+                        {
+                            
+                        }
+                        if (!board.IsAloacted(coordinate))
+                        {
+                            
+                        }
                     }
                 }
             }
+
+            return boards;
+        }
+
+        /// <summary>
+        /// Update coordinate on board
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="coordinate"></param>
+        public void UpdateBoard(Board board, Coordinate coordinate)
+        {
+            
+
+
+        }
+        /// <summary>
+        /// Checks if Piece on coordinate became a King
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="coordinate"></param>
+        public void IsBecameAKing(Board board, Coordinate coordinate)
+        {
+            int index;
+            if ((board[index=board.Search(coordinate)].Status == Piece.BlackPiece) && (coordinate.X == 1))
+            {
+                board[index].Status = Piece.BlackKing;
+            }
+            else if ((board[index = board.Search(coordinate)].Status == Piece.WhitePiece) && (coordinate.X == board.Rows))
+            {
+                board[index].Status = Piece.WhiteKing;
+            }
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="coordinate"></param>
+        /// <param name="player"></param>
+        public void CanJump(Board board, Coordinate coordinate, Player player)
+        {
+            
+            //foreach (Coordinate item in coordinateList)
+            //{
+            //    if (board.IsBlack(coordinate) && board.IsPiece(coordinate))
+            //    {
+            //        if (InBounds(board, item.X - 1, item.Y - 1))
+            //        {
+            //            var temp1 = new Coordinate {X = item.X - 1, Y = item.Y - 1};
+            //            if ()
+            //            {
+            //            }
+            //        }
+            //        if (InBounds(board, item.X - 1, item.Y + 1))
+            //        {
+            //        }
+            //    }
+            //}
         }
 
         //  בהינתן שחקן ורשימה מעודכנת של קורדינטות מסתכלת קורדינטה קורדינטה אם היא תפוסה יש מצב חדש של הלוח

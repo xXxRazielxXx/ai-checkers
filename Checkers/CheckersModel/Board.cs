@@ -95,7 +95,7 @@ namespace CheckersModel
         public int Grade { get; set; }
 
 
-        public bool Search(Coordinate cor)
+        public int Search(Coordinate cor)
         {
             for (int coordinate = 1; coordinate <= Size; coordinate++)
             {
@@ -103,11 +103,11 @@ namespace CheckersModel
                 {
                     if (this[coordinate].Status == Piece.None)
                     {
-                        return true;
+                        return coordinate;
                     }
                 }
             }
-            return false;
+            return -1;
         }
 
         /// <summary>
