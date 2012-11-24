@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 
 namespace CheckersModel
 {
-    public class Board
+    public class Board : IEnumerable
     {
         /// <summary>
         /// The number of rows on a checker board
@@ -74,11 +75,33 @@ namespace CheckersModel
         }
 
 
+        public bool Search(Coordinate cor)
+        {
+            foreach (int coordinate in this)
+            {
+                if ((this[coordinate].X == cor.X)||(this[coordinate].Y == cor.Y))
+                {
+                    if (this[coordinate].Status == Piece.None)
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if on coordinate there a piece with any color
+        /// </summary>
+        /// <param name="cor"></param>
+        /// <returns></returns>
         public bool IsPiece(Coordinate cor)
         {
 
             return ((cor.Status == Piece.BlackPiece) || (cor.Status == Piece.WhitePiece));
         }
+
         /// <summary>
         /// Is on given coordinate a black piece is located
         /// </summary>
@@ -230,6 +253,11 @@ namespace CheckersModel
                     }
                 }
             }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }
