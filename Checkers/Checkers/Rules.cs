@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using CheckersModel;
 
 namespace CheckersEngine
@@ -9,7 +6,7 @@ namespace CheckersEngine
     public class Rules
     {
         /// <summary>
-        /// Get all valid moves for a coordinate
+        ///     Get all valid moves for a coordinate
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
@@ -29,33 +26,31 @@ namespace CheckersEngine
                 }
 
                 //Check in bounds
-                if (InBounds(board,coordinate.X + 1,coordinate.Y - 1))
+                if (InBounds(board, coordinate.X + 1, coordinate.Y - 1))
                 {
                     var temp2 = new Coordinate {X = coordinate.X + 1, Y = coordinate.Y - 1};
                     coordinateList.Add(temp2);
-
                 }
 
                 //Check in bounds
-                if (InBounds(board,coordinate.X - 1,coordinate.Y + 1))
+                if (InBounds(board, coordinate.X - 1, coordinate.Y + 1))
                 {
                     var temp3 = new Coordinate {X = coordinate.X - 1, Y = coordinate.Y + 1};
                     coordinateList.Add(temp3);
-
                 }
 
                 //Check in bounds
-                if (InBounds(board,coordinate.X - 1,coordinate.Y - 1))
+                if (InBounds(board, coordinate.X - 1, coordinate.Y - 1))
                 {
                     var temp4 = new Coordinate {X = coordinate.X - 1, Y = coordinate.Y - 1};
-                   coordinateList.Add(temp4);
+                    coordinateList.Add(temp4);
                 }
             }
             return coordinateList;
         }
 
         /// <summary>
-        /// Check if in bound
+        ///     Check if in bound
         /// </summary>
         /// <param name="board"></param>
         /// <param name="row"></param>
@@ -67,7 +62,7 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// Get walks
+        ///     Get walks
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
@@ -75,14 +70,14 @@ namespace CheckersEngine
         /// <returns></returns>
         public IList<Coordinate> GetWalks(Board board, Coordinate coordinate, Player player)
         {
-            var coordinateList = ValidMoves(board, coordinate, player);
+            IList<Coordinate> coordinateList = ValidMoves(board, coordinate, player);
             if (coordinateList != null)
             {
                 if (board.IsOwner(player, coordinate))
                 {
-                    foreach (var item in coordinateList)
+                    foreach (Coordinate item in coordinateList)
                     {
-                        if (board.IsBlack(coordinate)&&(board.IsPiece(coordinate)))
+                        if (board.IsBlack(coordinate) && (board.IsPiece(coordinate)))
                         {
                             if (item.X > coordinate.X)
                             {
@@ -98,29 +93,26 @@ namespace CheckersEngine
                         }
                     }
                 }
-
             }
             return coordinateList;
         }
 
-        public void CanJump(Board board, Coordinate coordinate,Player player)
+        public void CanJump(Board board, Coordinate coordinate, Player player)
         {
-            var coordinateList = GetWalks(board, coordinate, player);
-            foreach (var item in coordinateList)
+            IList<Coordinate> coordinateList = GetWalks(board, coordinate, player);
+            foreach (Coordinate item in coordinateList)
             {
                 if (board.IsBlack(coordinate) && board.IsPiece(coordinate))
                 {
-                   if (InBounds(board, item.X - 1, item.Y - 1))
-                   {
-                       var temp1 = new Coordinate {X=item.X - 1, Y=item.Y - 1};
-                      if (board.Search(temp1))
-                      {
-                          
-                      }
-                   }
+                    if (InBounds(board, item.X - 1, item.Y - 1))
+                    {
+                        var temp1 = new Coordinate {X = item.X - 1, Y = item.Y - 1};
+                        if (board.Search(temp1))
+                        {
+                        }
+                    }
                     if (InBounds(board, item.X - 1, item.Y + 1))
                     {
-                        
                     }
                 }
             }
@@ -132,7 +124,5 @@ namespace CheckersEngine
         // 
         //
         //
-
-        
     }
 }
