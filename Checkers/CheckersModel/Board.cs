@@ -45,9 +45,9 @@ namespace CheckersModel
         /// </summary>
         public Board()
         {
-            for (int i = 0; i < 32; i++)
+            for (int i = 1; i <= 32; i++)
             {
-                board[i] = new Coordinate();
+                this[i] = new Coordinate();
             }
         }
 
@@ -245,26 +245,26 @@ namespace CheckersModel
         public void InitializeBoard(int size)
         {
             int k = 1;
-            for (; k <= 31; k++)
+            for (; k <= 32; k++)
             {
                 for (int i = 1; i <= size; i++)
                 {
                     int j = i%2 == 0 ? 2 : 1;
                     for (; j <= size; j += 2)
                     {
-                        board[k].X = i;
-                        board[k].Y = j;
-                        if (k >= 0 && k <= 11)
+                        this[k].X = i;
+                        this[k].Y = j;
+                        if (k >= 1 && k <= 12)
                         {
-                            board[k].Status = Piece.WhitePiece;
+                            this[k].Status = Piece.WhitePiece;
                         }
-                        else if (k >= 12 && k <= 19)
+                        else if (k >= 13 && k <= 20)
                         {
-                            board[k].Status = Piece.None;
+                            this[k].Status = Piece.None;
                         }
                         else
                         {
-                            board[k].Status = Piece.BlackPiece;
+                            this[k].Status = Piece.BlackPiece;
                         }
                         k++;
                     }
