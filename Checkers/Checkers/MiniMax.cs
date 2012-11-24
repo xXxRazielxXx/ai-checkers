@@ -22,11 +22,13 @@ namespace CheckersEngine
             }
             else
             {
-                int min = 10000;
-                int max = -10000;
-                foreach (Borad b in [NextGamePositions(board)])
+                int min = int.MaxValue;
+                int max = int.MinValue;
+                Rules Robj = new Rules();
+                IList<Board> boardList = Robj.NextGamePositions(board);
+                foreach (Board b in boardList)
                 {
-                    int res =MinMax( b (depth+1) !player);
+                    int res =MinMax( b, (depth+1), !player);
                     if( res > max) max=res;
                     if (res < min) min= res;
                        
