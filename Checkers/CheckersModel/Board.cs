@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace CheckersModel
 {
-    public class Board : IEnumerable
+    public class Board 
     {
         /// <summary>
         /// The number of rows on a checker board
