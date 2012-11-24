@@ -22,7 +22,7 @@ namespace CheckersEngine
             int num_of_white_sold = (NumOfWhites - NumWhiteKings);
             int num_of_black_sold = (NumOfBlacks - NumBlackKings);
 
-            return (((num_of_black_sold * soldier_constant) + (NumBlackKings* king_constant)) -((num_of_white_sold*soldier_constant)+(NumWhiteKings*king_constant));
+            return (((num_of_black_sold * soldier_constant) + (NumBlackKings* king_constant)) -((num_of_white_sold*soldier_constant)+(NumWhiteKings*king_constant)));
         }
     }
 }
