@@ -24,12 +24,13 @@ namespace CheckersModel
         /// <summary>
         ///     Defualt constructor
         /// </summary>
-        public Board()
+        public Board(int size)
         {
             for (int i = 1; i <= 32; i++)
             {
                 this[i] = new Coordinate();
             }
+            InitializeBoard(size);
         }
 
         public int NumberOfWhitePieces { set; get; }
@@ -245,6 +246,22 @@ namespace CheckersModel
                 item.Status = Piece.None;
             }
         }
+
+        /// <summary>
+        /// Get the opponent of the given player
+        /// </summary>
+        /// <param name="player">The player to get the opponent for</param>
+        /// <returns>The opponent of the given player</returns>
+        public Player GetOpponent(Player player)
+        {
+            if (player == Player.None)
+            {
+                return player;
+            }
+
+            return (player == Player.Black) ? Player.White : Player.Black;
+        }
+
 
         /// <summary>
         ///     Initialize Board
