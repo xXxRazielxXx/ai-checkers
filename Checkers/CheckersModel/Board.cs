@@ -100,7 +100,11 @@ namespace CheckersModel
         /// </summary>
         public int Grade { get; set; }
 
-
+        /// <summary>
+        /// returns the index of cor in the board array
+        /// </summary>
+        /// <param name="cor"></param>
+        /// <returns></returns>
         public int Search(Coordinate cor)
         {
             for (int coordinate = 1; coordinate <= Size; coordinate++)
@@ -117,11 +121,25 @@ namespace CheckersModel
         }
 
         /// <summary>
-        ///     Checks if on coordinate there a piece with any color
+        /// Update coordinate on board
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="orgCoord"></param>
+        /// <param name="desCoord"></param>
+        public void UpdateBoard(Coordinate orgCoord, Coordinate desCoord)
+        {
+            this[Search(desCoord)].Status = this[Search(orgCoord)].Status;
+            this[Search(orgCoord)].Status = Piece.None;
+
+
+        }
+
+        /// <summary>
+        ///     Checks if on coordinate there a soldier which is not a king with any color
         /// </summary>
         /// <param name="cor"></param>
         /// <returns></returns>
-        public bool IsPiece(Coordinate cor)
+        public bool IsSoldier(Coordinate cor)
         {
             return ((cor.Status == Piece.BlackPiece) || (cor.Status == Piece.WhitePiece));
         }
@@ -267,6 +285,24 @@ namespace CheckersModel
             return (player == Player.Black) ? Player.White : Player.Black;
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public Board Copy(Board board)
+        {
+            var nboard = new Board();
+            for (int i = 1; i <= 32; i++)
+            {
+                nboard[i].Status = board[i].Status;
+                nboard[i].X = board[i].X;
+                nboard[i].Y = board[i].Y;
+            }
+            return nboard;
+
+        }
 
         /// <summary>
         ///     Initialize Board
