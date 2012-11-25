@@ -1,5 +1,4 @@
 ﻿
-
 namespace CheckersModel
 {
     public class Coordinate
