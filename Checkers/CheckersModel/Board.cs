@@ -33,6 +33,11 @@ namespace CheckersModel
             InitializeBoard(size);
         }
 
+        /// <summary>
+        ///     Defualt constructor
+        /// </summary>
+        public Board(){}
+
         public int NumberOfWhitePieces { set; get; }
         public int NumberOfBlackPieces { set; get; }
         public int NumberOfWhiteKings { set; get; }
