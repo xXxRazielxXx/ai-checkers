@@ -7,8 +7,7 @@ namespace CheckersEngine
     {
         private static void Main()
         {
-            var board = new Board();
-            board.InitializeBoard(8);
+            var board = new Board(8);
             var print = new PrintBoardState();
             print.DrawBoard(board);
         }
