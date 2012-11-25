@@ -77,14 +77,14 @@ namespace CheckersEngine
                 {
                     foreach (Coordinate item in coordinateList)
                     {
-                        if (board.IsBlack(coordinate) && (board.IsPiece(coordinate)))
+                        if (board.IsBlack(coordinate) && (board.IsSoldier(coordinate)))
                         {
                             if (item.X > coordinate.X)
                             {
                                 coordinateList.Remove(item);
                             }
                         }
-                        if (board.IsWhite(coordinate) && (board.IsPiece(coordinate)))
+                        if (board.IsWhite(coordinate) && (board.IsSoldier(coordinate)))
                         {
                             if (item.X < coordinate.X)
                             {
@@ -97,9 +97,15 @@ namespace CheckersEngine
             return coordinateList;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public IList<Board> CalculateNewBoardsFromCoordinates(Board board, Player player)
         {
-            IList<Board> boards = new List<Board>();
+            IList<Board> newBoards = new List<Board>();
             for(var i=1;i<=board.Size;i++)
             {
                 if (board.IsOwner(player, board[i]))
@@ -113,30 +119,32 @@ namespace CheckersEngine
                         }
                         if (board.IsOpponentPiece(player, coordinate))
                         {
-                            
+                            IList<Coordinate> capturesList=CanJump(board, board[i], coordinate, player);
+                            foreach (Coordinate coord in capturesList)
+                            {
+                                Board nBoard = board.Copy(board);
+                                nBoard.UpdateBoard(board[i], coord); 
+                                IsBecameAKing(nBoard, coord);
+                                newBoards.Add(nBoard);                               
+                            }
+
                         }
                         if (!board.IsAloacted(coordinate))
                         {
-                            
+                            //create new board that represnt board after the move
+                            Board nBoard = board.Copy(board);
+                            nBoard.UpdateBoard(board[i], coordinate);  
+                            IsBecameAKing(nBoard,coordinate);
+                            newBoards.Add(nBoard);
                         }
-                    }
+                    }                   
                 }
             }
 
-            return boards;
+            return newBoards;
         }
 
-        /// <summary>
-        /// Update coordinate on board
-        /// </summary>
-        /// <param name="board"></param>
-        /// <param name="coordinate"></param>
-        public void UpdateBoard(Board board, Coordinate coordinate)
-        {
-            
-
-
-        }
+        
         /// <summary>
         /// Checks if Piece on coordinate became a King
         /// </summary>
@@ -155,38 +163,32 @@ namespace CheckersEngine
             }
 
         }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="board"></param>
-        /// <param name="coordinate"></param>
+        /// <param name="oponentCoordinate"></param>
         /// <param name="player"></param>
-        public void CanJump(Board board, Coordinate coordinate, Player player)
+        /// <param name="srcCoordinate"></param>
+        public IList<Coordinate> CanJump(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
         {
-            
-            //foreach (Coordinate item in coordinateList)
-            //{
-            //    if (board.IsBlack(coordinate) && board.IsPiece(coordinate))
-            //    {
-            //        if (InBounds(board, item.X - 1, item.Y - 1))
-            //        {
-            //            var temp1 = new Coordinate {X = item.X - 1, Y = item.Y - 1};
-            //            if ()
-            //            {
-            //            }
-            //        }
-            //        if (InBounds(board, item.X - 1, item.Y + 1))
-            //        {
-            //        }
-            //    }
-            //}
+            Player myColor = player;
+            IList<Coordinate> optionalCoordinates =GetMovesInDirection(board, oponentCoordinate, player);
+            foreach (Coordinate coord in optionalCoordinates)
+            {
+                if (player == Player.Black)
+                {
+                    if (coord.X - srcCoordinate.X != -1)
+                    {
+                        optionalCoordinates.Remove(coord);
+                    }
+                }
+                else if (player == Player.White)
+                {
+                    
+                }
+            }
         }
-
-        //  בהינתן שחקן ורשימה מעודכנת של קורדינטות מסתכלת קורדינטה קורדינטה אם היא תפוסה יש מצב חדש של הלוח
-        // אם הקורדינטה הזו תפוסה, באיזה צבע היא תפוסה, 
-        // צבע שלי - לא מצב חדש, חייל שלא שלי אז אבדוק אם אפשר לאכול אותו
-        // 
-        //
-        //
     }
 }
