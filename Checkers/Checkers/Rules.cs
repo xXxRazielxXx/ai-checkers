@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using CheckersModel;
+using System;
+using System.Linq;
+
 
 namespace CheckersEngine
 {
@@ -171,24 +174,75 @@ namespace CheckersEngine
         /// <param name="oponentCoordinate"></param>
         /// <param name="player"></param>
         /// <param name="srcCoordinate"></param>
-        public IList<Coordinate> CanJump(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
+        public IList<Coordinate> calculatesCoordsToJumpTo(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
         {
             Player myColor = player;
-            IList<Coordinate> optionalCoordinates =GetMovesInDirection(board, oponentCoordinate, player);
-            foreach (Coordinate coord in optionalCoordinates)
+            IList<Coordinate> resultCoords= new List<Coordinate>();
+            //IList<Coordinate> optionalCoordinates =GetMovesInDirection(board, oponentCoordinate, player);
+            //foreach (Coordinate coord in optionalCoordinates)
+            //{
+            //    if (player == Player.Black)
+            //    {
+            //        if (coord.X - srcCoordinate.X != -1)
+            //        {
+            //            optionalCoordinates.Remove(coord);
+            //        }
+            //    }
+            //    else if (player == Player.White)
+            //    {
+                    
+            //    }
+            //}
+            int srcX= srcCoordinate.X;
+            int srcY=srcCoordinate.Y;
+            int oponentX=oponentCoordinate.X;
+            int oponentY=oponentCoordinate.Y;
+            int destX, destY;
+
+            if(srcX<oponentX) destX=oponentX+1;
+            else destX=srcX-1;
+
+            if(srcY<oponentY) destY=oponentY+1;
+            else destY=srcY-1;
+            
+            Coordinate dest = board[destX,destY];
+            if( dest!=null)
             {
-                if (player == Player.Black)
-                {
-                    if (coord.X - srcCoordinate.X != -1)
+                if(dest.Status!=Piece.None)
+                    return null;
+            }
+            else
+            {
+                resultCoords.Add(dest);
+                dest.Status=srcCoordinate.Status;
+                IList<Coordinate> moreOptionalCaptures = GetMovesInDirection(board, dest, player);
+                IList<Coordinate> temp = new List<Coordinate>();
+                IList<Coordinate> maxEats = new List<Coordinate>();
+                int max=0;
+                foreach(Coordinate coord in moreOptionalCaptures)
+                {                   
+                    if(board.IsOpponentPiece(player,coord))
                     {
-                        optionalCoordinates.Remove(coord);
+                        temp=calculatesCoordsToJumpTo(board,dest,coord,player);
+                        if(max<temp.Count)
+                        {
+                            max= temp.Count;
+                            maxEats=temp;
+                        }
                     }
                 }
-                else if (player == Player.White)
+                if(maxEats!=null)
                 {
-                    
+                    resultCoords=resultCoords.Concat<Coordinate>(maxEats).ToList();
+               
                 }
+
             }
+            
+
+            
+            
+            return
         }
     }
 }
