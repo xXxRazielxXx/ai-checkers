@@ -7,11 +7,11 @@ using CheckersModel;
 
 namespace CheckersEngine
 {
-    internal class MiniMax
+    public class MiniMax
     {
         private const int treeDepth = 100;
         //player=1 means max ,player=0 means min
-        public int MinMax(Board board, int depth, bool player)
+        public int MinMax(Board board, int depth,Player player, bool minormax, ref Coordinate srcCoord, ref Coordinate destCoord)
         {
             if (depth >= treeDepth)
             {
@@ -22,17 +22,22 @@ namespace CheckersEngine
             {
                 int min = int.MaxValue;
                 int max = int.MinValue;
-                var Robj = new Rules();
-                // IList<Board> boardList = Robj.NextGamePositions(board);
-                //foreach (Board b in boardList)
-                //{
-                //    int res =MinMax( b, (depth+1), !player);
-                //    if( res > max) max=res;
-                //    if (res < min) min= res;
+                var robj = new Rules();
+                IList<Board> boardList = robj.CalculateNewBoardsFromCoordinates(board,player);
+                var minsrcCoord = new Coordinate();
+                var mindestCoord = new Coordinate();
+                var maxsrcCoord = new Coordinate();
+                var maxdestCoord = new Coordinate();
+                
+                foreach (Board b in boardList)
+                {
+                    int res = MinMax(b, (depth + 1), player, !minormax, ref srcCoord, ref destCoord);
+                    if (res > max) max = res;
+                    if (res < min) min = res;
 
-                //}
+                }
 
-                if (player)
+                if (minormax)
                 {
                     return max;
                 }

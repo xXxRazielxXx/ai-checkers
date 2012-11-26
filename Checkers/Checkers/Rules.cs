@@ -153,7 +153,7 @@ namespace CheckersEngine
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
-        public void IsBecameAKing(Board board, Coordinate coordinate)
+        public bool IsBecameAKing(Board board, Coordinate coordinate)
         {
             int index;
             if ((board[index=board.Search(coordinate)].Status == Piece.BlackPiece) && (coordinate.X == 1))
@@ -164,7 +164,11 @@ namespace CheckersEngine
             {
                 board[index].Status = Piece.WhiteKing;
             }
-
+            else
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -200,49 +204,51 @@ namespace CheckersEngine
             int destX, destY;
 
             if(srcX<oponentX) destX=oponentX+1;
-            else destX=srcX-1;
+            else destX=oponentX-1;
 
             if(srcY<oponentY) destY=oponentY+1;
-            else destY=srcY-1;
+            else destY=oponentY-1;
             
             Coordinate dest = board[destX,destY];
-            if( dest!=null)
+            if (dest == null)
             {
-                if(dest.Status!=Piece.None)
-                    return null;
+                return null;
             }
-            else
+            if (dest.X == destX && dest.Y == destY)
             {
+                if (dest.Status != Piece.None)
+                    return null;
                 resultCoords.Add(dest);
-                dest.Status=srcCoordinate.Status;
+                dest.Status = srcCoordinate.Status; // what if now soldier became a king?
+                IsBecameAKing(board,dest);
                 IList<Coordinate> moreOptionalCaptures = GetMovesInDirection(board, dest, player);
                 IList<Coordinate> temp = new List<Coordinate>();
                 IList<Coordinate> maxEats = new List<Coordinate>();
-                int max=0;
-                foreach(Coordinate coord in moreOptionalCaptures)
-                {                   
-                    if(board.IsOpponentPiece(player,coord))
+                int max = 0;
+                foreach (var coord in moreOptionalCaptures)
+                {
+                    if (board.IsOpponentPiece(player, coord))
                     {
-                        temp=calculatesCoordsToJumpTo(board,dest,coord,player);
-                        if(max<temp.Count)
+                        temp = calculatesCoordsToJumpTo(board, dest, coord, player);
+                        if (max < temp.Count)
                         {
-                            max= temp.Count;
-                            maxEats=temp;
+                            max = temp.Count;
+                            maxEats = temp;
+                        }
+                        if (max == temp.Count)
+                        {
+                            maxEats = maxEats.Concat<Coordinate>(temp).ToList();
                         }
                     }
                 }
-                if(maxEats!=null)
+                if (maxEats.Count>0)
                 {
-                    resultCoords=resultCoords.Concat<Coordinate>(maxEats).ToList();
-               
+                    resultCoords = maxEats;
+
                 }
-
             }
-            
 
-            
-            
-            return
+            return resultCoords;
         }
     }
 }
