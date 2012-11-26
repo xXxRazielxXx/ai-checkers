@@ -96,6 +96,36 @@ namespace CheckersModel
         }
 
         /// <summary>
+        /// Get the coordinate with row and column values from the board
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public Coordinate this[int row,int column]
+        {
+            get
+            {
+                if (row <= 0 || row > validCheckers)
+                {
+                    throw new ArgumentOutOfRangeException("row", "Position must be between 1 and 32");
+                }
+                if(column <= 0 || column > validCheckers)
+                {
+                    throw new ArgumentOutOfRangeException("column", "Position must be between 1 and 32");
+                }
+                for (int i = 1; i <= validCheckers; i++)
+                {
+                    if ((this[i].X == row) && (this[i].Y == column))
+                    {
+                        return this[i];
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
         ///     Huerisitic board grade
         /// </summary>
         public int Grade { get; set; }
@@ -123,7 +153,6 @@ namespace CheckersModel
         /// <summary>
         /// Update coordinate on board
         /// </summary>
-        /// <param name="board"></param>
         /// <param name="orgCoord"></param>
         /// <param name="desCoord"></param>
         public void UpdateBoard(Coordinate orgCoord, Coordinate desCoord)
