@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CheckersModel
 {
@@ -20,7 +21,7 @@ namespace CheckersModel
         public static readonly int validCheckers = 32;
 
         private readonly Coordinate[] board = new Coordinate[validCheckers];
-
+        
         /// <summary>
         ///     Defualt constructor
         /// </summary>
@@ -331,6 +332,21 @@ namespace CheckersModel
             }
             return nboard;
 
+        }
+
+        public IList<Coordinate> FindBoardsDifference(Board before, Board after)
+        {
+            IList<Coordinate> diff = new List<Coordinate>();
+            for(int i=1;i<=32;i++)
+            {
+                if (before[i] != after[i])
+                {
+                    if (before[i].Status == Piece.None)
+                    {
+                        diff.Add(before[i]);
+                    }
+                }
+            }
         }
 
         /// <summary>
