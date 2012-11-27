@@ -368,6 +368,7 @@ namespace CheckersModel
                         if (k >= 1 && k <= 12)
                         {
                             this[k].Status = Piece.WhitePiece;
+                            NumberOfWhitePieces++;
                         }
                         else if (k >= 13 && k <= 20)
                         {
@@ -376,6 +377,7 @@ namespace CheckersModel
                         else
                         {
                             this[k].Status = Piece.BlackPiece;
+                            NumberOfBlackPieces++;
                         }
                         k++;
                     }
