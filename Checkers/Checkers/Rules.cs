@@ -108,6 +108,7 @@ namespace CheckersEngine
         public IList<Board> CalculateNewBoardsFromCoordinates(Board board, Player player)
         {
             IList<Board> newBoards = new List<Board>();
+            IDictionary<Board, IList<Coordinate>> newBoardsPositions = new Dictionary<Board, IList<Coordinate>>();
             for(var i=1;i<=board.Size;i++)
             {
                 if (board.IsOwner(player, board[i]))
@@ -115,19 +116,26 @@ namespace CheckersEngine
                     IList<Coordinate> coordinateList = GetMovesInDirection(board, board[i], player);
                     foreach (var coordinate in coordinateList)
                     {
+                        //if a soldier of mine exists in this coord then this coord is not optional;
                         if (board.IsOwner(player, coordinate))
                         {
                             coordinateList.Remove(coordinate);
                         }
+                        //if an oppenent soldier exsist in this coord try capturing him!
                         if (board.IsOpponentPiece(player, coordinate))
                         {
                             IList<Coordinate> capturesList = CalculatesCoordsToJumpTo(board, board[i], coordinate, player);
+                            // captureList is all the coordinates presenting the board after the capture.
                             foreach (Coordinate coord in capturesList)
                             {
                                 Board nBoard = board.Copy(board);
                                 nBoard.UpdateBoard(board[i], coord); 
                                 IsBecameAKing(nBoard, coord);
-                                newBoards.Add(nBoard);                               
+                                newBoards.Add(nBoard);
+                                IList<Coordinate> temp = new List<Coordinate>();
+                                temp= temp.Concat(board[i]).ToList();
+
+                                newBoardsPositions.Add<nBoard,board[i]
                             }
 
                         }
