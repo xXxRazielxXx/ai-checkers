@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using CheckersModel;
-using System;
 using System.Linq;
 
 
@@ -122,7 +121,7 @@ namespace CheckersEngine
                         }
                         if (board.IsOpponentPiece(player, coordinate))
                         {
-                            IList<Coordinate> capturesList=CanJump(board, board[i], coordinate, player);
+                            IList<Coordinate> capturesList = CalculatesCoordsToJumpTo(board, board[i], coordinate, player);
                             foreach (Coordinate coord in capturesList)
                             {
                                 Board nBoard = board.Copy(board);
@@ -172,31 +171,15 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// 
+        /// Calculate jumps including multiple jumps and best capture route
         /// </summary>
         /// <param name="board"></param>
         /// <param name="oponentCoordinate"></param>
         /// <param name="player"></param>
         /// <param name="srcCoordinate"></param>
-        public IList<Coordinate> calculatesCoordsToJumpTo(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
+        public IList<Coordinate> CalculatesCoordsToJumpTo(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
         {
-            Player myColor = player;
             IList<Coordinate> resultCoords= new List<Coordinate>();
-            //IList<Coordinate> optionalCoordinates =GetMovesInDirection(board, oponentCoordinate, player);
-            //foreach (Coordinate coord in optionalCoordinates)
-            //{
-            //    if (player == Player.Black)
-            //    {
-            //        if (coord.X - srcCoordinate.X != -1)
-            //        {
-            //            optionalCoordinates.Remove(coord);
-            //        }
-            //    }
-            //    else if (player == Player.White)
-            //    {
-                    
-            //    }
-            //}
             int srcX= srcCoordinate.X;
             int srcY=srcCoordinate.Y;
             int oponentX=oponentCoordinate.X;
@@ -219,17 +202,16 @@ namespace CheckersEngine
                 if (dest.Status != Piece.None)
                     return null;
                 resultCoords.Add(dest);
-                dest.Status = srcCoordinate.Status; // what if now soldier became a king?
+                dest.Status = srcCoordinate.Status;
                 IsBecameAKing(board,dest);
                 IList<Coordinate> moreOptionalCaptures = GetMovesInDirection(board, dest, player);
-                IList<Coordinate> temp = new List<Coordinate>();
                 IList<Coordinate> maxEats = new List<Coordinate>();
                 int max = 0;
                 foreach (var coord in moreOptionalCaptures)
                 {
                     if (board.IsOpponentPiece(player, coord))
                     {
-                        temp = calculatesCoordsToJumpTo(board, dest, coord, player);
+                        IList<Coordinate> temp = CalculatesCoordsToJumpTo(board, dest, coord, player);
                         if (max < temp.Count)
                         {
                             max = temp.Count;
@@ -237,7 +219,7 @@ namespace CheckersEngine
                         }
                         if (max == temp.Count)
                         {
-                            maxEats = maxEats.Concat<Coordinate>(temp).ToList();
+                            maxEats = maxEats.Concat(temp).ToList();
                         }
                     }
                 }
