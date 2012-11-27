@@ -133,15 +133,15 @@ namespace CheckersEngine
                                 IsBecameAKing(nBoard, coord);
                                 newBoards.Add(nBoard);
                                 IList<Coordinate> temp = new List<Coordinate>();
-<<<<<<< .mine
+
                                 temp.Add(board[i]);
                                 temp.Add(coord);
                                 newBoardsPositions.Add(nBoard, temp);
-=======
+
                                // temp= temp.Concat(board[i]).ToList();
 
                                 //newBoardsPositions.Add<nBoard,board[i]
->>>>>>> .r46
+
                             }
 
                         }
