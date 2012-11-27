@@ -16,6 +16,8 @@ namespace CheckersView
             var board = new Board(8);
             Console.WriteLine("Game started");
             print.DrawBoard(board);
+            Program p = new Program();
+            p.StartGameWithHuman(board);
         }
 
         public void ShowPlayerChange(Player turn)
@@ -24,9 +26,10 @@ namespace CheckersView
             
         }
 
-        public void StartGameWithHuman(Board board)
+        public  void StartGameWithHuman(Board board)
         {
             var rule = new Rules();
+            var print = new PrintBoardState();
             int depth = 7;
             while (true)
             {
@@ -41,19 +44,16 @@ namespace CheckersView
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
                 {
                     board.UpdateBoard(srcCoord,destCoord);// What if human captured a pc soldier
+                    print.DrawBoard(board);
                 }
                 ShowPlayerChange(pcColor);
                 var miniMax =new MiniMax();
                 miniMax.MinMax(board, depth, pcColor, true,ref srcCoord,ref destCoord);
-
-
-
-
-
-
-
-
-
+                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
+                {
+                    board.UpdateBoard(srcCoord, destCoord);
+                    print.DrawBoard(board);
+                }
             }
         }
 
