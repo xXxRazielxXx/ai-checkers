@@ -1,7 +1,8 @@
 ﻿
+
 namespace CheckersModel
 {
-    public class Coordinate
+    public class Coordinate 
     {
         protected bool Equals(Coordinate other)
         {
