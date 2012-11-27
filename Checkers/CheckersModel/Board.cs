@@ -142,10 +142,9 @@ namespace CheckersModel
             {
                 if ((this[coordinate].X == cor.X) && (this[coordinate].Y == cor.Y))
                 {
-                    if (this[coordinate].Status == Piece.None)
-                    {
-                        return coordinate;
-                    }
+                    
+                      return coordinate;
+                    
                 }
             }
             return -1;
@@ -347,6 +346,7 @@ namespace CheckersModel
                     }
                 }
             }
+            return diff;
         }
 
         /// <summary>

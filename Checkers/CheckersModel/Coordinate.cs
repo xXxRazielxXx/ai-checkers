@@ -3,6 +3,30 @@ namespace CheckersModel
 {
     public class Coordinate
     {
+        protected bool Equals(Coordinate other)
+        {
+            return Status == other.Status && X == other.X && Y == other.Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Coordinate) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (int) Status;
+                hashCode = (hashCode*397) ^ X;
+                hashCode = (hashCode*397) ^ Y;
+                return hashCode;
+            }
+        }
+
         /// <summary>
         ///     Coordinate status property
         /// </summary>
