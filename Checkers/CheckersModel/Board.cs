@@ -325,9 +325,9 @@ namespace CheckersModel
             var nboard = new Board();
             for (int i = 1; i <= 32; i++)
             {
-                nboard[i].Status = board[i].Status;
-                nboard[i].X = board[i].X;
-                nboard[i].Y = board[i].Y;
+                nboard[i].Status = this[i].Status;
+                nboard[i].X = this[i].X;
+                nboard[i].Y = this[i].Y;
             }
             return nboard;
 
