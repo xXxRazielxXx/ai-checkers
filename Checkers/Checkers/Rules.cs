@@ -105,7 +105,7 @@ namespace CheckersEngine
         /// <param name="board"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public IList<Board> CalculateNewBoardsFromCoordinates(Board board, Player player)
+        public IDictionary<Board,IList<Coordinate>> CalculateNewBoardsFromCoordinates(Board board, Player player)
         {
             IList<Board> newBoards = new List<Board>();
             IDictionary<Board, IList<Coordinate>> newBoardsPositions = new Dictionary<Board, IList<Coordinate>>();
@@ -133,9 +133,15 @@ namespace CheckersEngine
                                 IsBecameAKing(nBoard, coord);
                                 newBoards.Add(nBoard);
                                 IList<Coordinate> temp = new List<Coordinate>();
+<<<<<<< .mine
+                                temp.Add(board[i]);
+                                temp.Add(coord);
+                                newBoardsPositions.Add(nBoard, temp);
+=======
                                // temp= temp.Concat(board[i]).ToList();
 
                                 //newBoardsPositions.Add<nBoard,board[i]
+>>>>>>> .r46
                             }
 
                         }
@@ -146,12 +152,16 @@ namespace CheckersEngine
                             nBoard.UpdateBoard(board[i], coordinate);  
                             IsBecameAKing(nBoard,coordinate);
                             newBoards.Add(nBoard);
+                            IList<Coordinate> temp = new List<Coordinate>();
+                            temp.Add(board[i]);
+                            temp.Add(coordinate);
+                            newBoardsPositions.Add(nBoard, temp);
                         }
                     }                   
                 }
             }
 
-            return newBoards;
+            return newBoardsPositions;
         }
 
         
