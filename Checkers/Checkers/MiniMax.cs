@@ -23,26 +23,43 @@ namespace CheckersEngine
                 int min = int.MaxValue;
                 int max = int.MinValue;
                 var robj = new Rules();
-                IList<Board> boardList = robj.CalculateNewBoardsFromCoordinates(board,player);
+                IDictionary<Board, IList<Coordinate>> boardCoordsList = robj.CalculateNewBoardsFromCoordinates(board,player);
                 var minsrcCoord = new Coordinate();
                 var mindestCoord = new Coordinate();
                 var maxsrcCoord = new Coordinate();
                 var maxdestCoord = new Coordinate();
                 
-                foreach (Board b in boardList)
+                foreach (KeyValuePair<Board,IList<Coordinate>> newState in boardCoordsList)
                 {
-                    int res = MinMax(b, (depth + 1), player, !minormax, ref srcCoord, ref destCoord);
-                    if (res > max) max = res;
-                    if (res < min) min = res;
+                    Coordinate newSrcCoord = new Coordinate();
+                    Coordinate newDestCoord = new Coordinate();
+                    int res = MinMax(newState.Key, (depth + 1), player, !minormax, ref newSrcCoord, ref newDestCoord);
+                    if (res > max)
+                    {
+                        max = res;
+                        maxsrcCoord = newSrcCoord;
+                        maxdestCoord = newDestCoord;
+                    }
+                    if (res < min)
+                    {
+                        min = res;
+                        minsrcCoord = newSrcCoord;
+                        mindestCoord = newDestCoord;
+                    }
 
                 }
 
                 if (minormax)
                 {
+                    srcCoord = maxsrcCoord;
+                    destCoord = maxdestCoord;
                     return max;
+                   
                 }
                 else
                 {
+                    srcCoord = minsrcCoord;
+                    destCoord = mindestCoord;
                     return min;
                 }
             }
