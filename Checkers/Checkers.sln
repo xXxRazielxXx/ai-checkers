@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckersEngine", "Checkers\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckersModel", "CheckersModel\CheckersModel.csproj", "{98A85059-00D4-4274-A021-7413E3F0E06E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckersView", "CheckersView\CheckersView.csproj", "{64BDC60D-CE6F-4976-920E-35342B295772}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -23,6 +25,10 @@ Global
 		{98A85059-00D4-4274-A021-7413E3F0E06E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98A85059-00D4-4274-A021-7413E3F0E06E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98A85059-00D4-4274-A021-7413E3F0E06E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64BDC60D-CE6F-4976-920E-35342B295772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64BDC60D-CE6F-4976-920E-35342B295772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64BDC60D-CE6F-4976-920E-35342B295772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64BDC60D-CE6F-4976-920E-35342B295772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
