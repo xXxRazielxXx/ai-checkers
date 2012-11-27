@@ -42,7 +42,13 @@ namespace CheckersModel
                     darkSquare = !darkSquare;
                     buf1.Append("|");
                     buf2.Append("|");
-
+                    var temp = buf2.ToString();
+                    var temp1 = temp.ToCharArray();
+                    Array.Reverse(temp1);
+                    temp.Remove(0);
+                    temp = new string(temp1);
+                    buf2.Clear();
+                    buf2.AppendLine(temp);
                     writer.WriteLine("{0}   {1}", buf1, buf2);
                     buf1.Length = 0;
                     buf2.Length = 0;
