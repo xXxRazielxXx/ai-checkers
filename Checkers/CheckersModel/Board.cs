@@ -159,8 +159,6 @@ namespace CheckersModel
         {
             this[Search(desCoord)].Status = this[Search(orgCoord)].Status;
             this[Search(orgCoord)].Status = Piece.None;
-
-
         }
 
         /// <summary>
