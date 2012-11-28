@@ -176,10 +176,12 @@ namespace CheckersEngine
             if ((board[index=board.Search(coordinate)].Status == Piece.BlackPiece) && (coordinate.X == 1))
             {
                 board[index].Status = Piece.BlackKing;
+                board.NumberOfBlcakKings++;
             }
             else if ((board[index = board.Search(coordinate)].Status == Piece.WhitePiece) && (coordinate.X == board.Rows))
             {
                 board[index].Status = Piece.WhiteKing;
+                board.NumberOfWhiteKings++;
             }
             else
             {
