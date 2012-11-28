@@ -6,10 +6,6 @@
     public enum Piece
     {
         /// <summary>
-        /// This indicates an invalid piece.  i.e. Invalid square
-        /// </summary>
-        Illegal,
-        /// <summary>
         /// Empty player on Coord
         /// </summary>
         None,

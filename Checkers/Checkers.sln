@@ -7,6 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckersModel", "CheckersMo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckersView", "CheckersView\CheckersView.csproj", "{64BDC60D-CE6F-4976-920E-35342B295772}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "Damka\UI\UI.csproj", "{69002231-EBB7-4C30-B389-329D95D041AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "Damka\Main\Main.csproj", "{4DF5C7A3-CD41-441B-876E-47E7EBE009EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Damka\Interfaces\Interfaces.csproj", "{E39B9658-BCDA-46DF-B734-56FAACF0687D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interpretor", "Interpretor\Interpretor.csproj", "{5BB46498-1CC5-4555-86BB-F9353FD96366}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -29,6 +37,22 @@ Global
 		{64BDC60D-CE6F-4976-920E-35342B295772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64BDC60D-CE6F-4976-920E-35342B295772}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64BDC60D-CE6F-4976-920E-35342B295772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69002231-EBB7-4C30-B389-329D95D041AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69002231-EBB7-4C30-B389-329D95D041AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69002231-EBB7-4C30-B389-329D95D041AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69002231-EBB7-4C30-B389-329D95D041AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF5C7A3-CD41-441B-876E-47E7EBE009EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF5C7A3-CD41-441B-876E-47E7EBE009EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF5C7A3-CD41-441B-876E-47E7EBE009EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF5C7A3-CD41-441B-876E-47E7EBE009EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E39B9658-BCDA-46DF-B734-56FAACF0687D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39B9658-BCDA-46DF-B734-56FAACF0687D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E39B9658-BCDA-46DF-B734-56FAACF0687D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E39B9658-BCDA-46DF-B734-56FAACF0687D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB46498-1CC5-4555-86BB-F9353FD96366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB46498-1CC5-4555-86BB-F9353FD96366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB46498-1CC5-4555-86BB-F9353FD96366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB46498-1CC5-4555-86BB-F9353FD96366}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
