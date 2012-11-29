@@ -1,9 +1,10 @@
-﻿
+﻿using System.Collections;
 
 namespace CheckersModel
 {
-    public class Coordinate 
+    public class Coordinate
     {
+
         protected bool Equals(Coordinate other)
         {
             return Status == other.Status && X == other.X && Y == other.Y;
@@ -53,7 +54,7 @@ namespace CheckersModel
             }
 
             // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
+            if (((object) a == null) || ((object) b == null))
             {
                 return false;
             }

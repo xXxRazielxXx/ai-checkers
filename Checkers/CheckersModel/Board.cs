@@ -8,17 +8,17 @@ namespace CheckersModel
         /// <summary>
         ///     The number of rows on a checker board
         /// </summary>
-        public static readonly int rows = 8;
+        public int rows = 8;
 
         /// <summary>
         ///     The number of columns on a checker board
         /// </summary>
-        public static readonly int columns = 8;
+        public int columns = 8;
 
         /// <summary>
         ///     The number of legal checkers
         /// </summary>
-        public static readonly int validCheckers = 32;
+        public static  int validCheckers = 32;
 
         private readonly Coordinate[] board = new Coordinate[validCheckers];
         
@@ -37,7 +37,13 @@ namespace CheckersModel
         /// <summary>
         ///     Defualt constructor
         /// </summary>
-        public Board(){}
+        public Board()
+        {
+            for (int i = 1; i <= 32; i++)
+            {
+                this[i] = new Coordinate();
+            }
+        }
 
         public int NumberOfWhitePieces { set; get; }
         public int NumberOfBlackPieces { set; get; }
@@ -50,6 +56,7 @@ namespace CheckersModel
         public int Rows
         {
             get { return rows; }
+            set { rows = value; }
         }
 
         /// <summary>
@@ -58,6 +65,7 @@ namespace CheckersModel
         public int Columns
         {
             get { return columns; }
+            set { columns = value; }
         }
 
         /// <summary>
@@ -66,6 +74,7 @@ namespace CheckersModel
         public int Size
         {
             get { return board.Length; }
+            set { validCheckers = value; }
         }
 
         /// <summary>
