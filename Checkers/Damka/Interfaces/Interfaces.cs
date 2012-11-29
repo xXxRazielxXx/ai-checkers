@@ -46,6 +46,7 @@ namespace Interfaces
     public interface IBoardState
     {
         Piece[,] BoardCells { get; set; }
+        Board Board { get; set; }
         IBoardState GetBoardState(Player player, MoveType moveType, Point position);
         GameState GetGameState(Player player);
     }

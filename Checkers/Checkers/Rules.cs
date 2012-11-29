@@ -177,11 +177,13 @@ namespace CheckersEngine
             {
                 board[index].Status = Piece.BlackKing;
                 board.NumberOfBlcakKings++;
+                board.NumberOfBlackPieces--;
             }
             else if ((board[index = board.Search(coordinate)].Status == Piece.WhitePiece) && (coordinate.X == board.Rows))
             {
                 board[index].Status = Piece.WhiteKing;
                 board.NumberOfWhiteKings++;
+                board.NumberOfWhitePieces--;
             }
             else
             {
@@ -189,6 +191,31 @@ namespace CheckersEngine
             }
             return true;
         }
+
+        public int NumberOfPlayerPieces(Board board,Player player)
+        {
+            switch (player.ToString())
+            {
+                case "White":
+                    {
+                        return board.NumberOfWhiteKings + board.NumberOfWhitePieces;
+                    }
+                case "Black":
+                    {
+                        return board.NumberOfBlcakKings + board.NumberOfBlackPieces;
+                    }
+            }
+
+            return 0;
+        }
+
+        public bool IsPlayerBlocked(Board board, Player player)
+        {
+            var optionalBoards = CalculateNewBoardsFromCoordinates(board, player);
+            var count = optionalBoards.Count();
+            return !(count > 0);
+        }
+
 
         /// <summary>
         /// Calculate jumps including multiple jumps and best capture route
