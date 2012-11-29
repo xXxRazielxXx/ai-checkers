@@ -100,7 +100,7 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// 
+        /// Calucalte new game boards which are optional moves
         /// </summary>
         /// <param name="board"></param>
         /// <param name="player"></param>
@@ -192,15 +192,21 @@ namespace CheckersEngine
             return true;
         }
 
+        /// <summary>
+        /// Count the number of player pieces on board
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public int NumberOfPlayerPieces(Board board,Player player)
         {
-            switch (player.ToString())
+            switch (player)
             {
-                case "White":
+                case Player.White:
                     {
                         return board.NumberOfWhiteKings + board.NumberOfWhitePieces;
                     }
-                case "Black":
+                case Player.Black:
                     {
                         return board.NumberOfBlcakKings + board.NumberOfBlackPieces;
                     }
@@ -209,6 +215,12 @@ namespace CheckersEngine
             return 0;
         }
 
+        /// <summary>
+        /// Is opponet won the game by blocking player
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public bool IsPlayerBlocked(Board board, Player player)
         {
             var optionalBoards = CalculateNewBoardsFromCoordinates(board, player);

@@ -323,7 +323,7 @@ namespace CheckersModel
 
 
         /// <summary>
-        /// 
+        /// Copy Boards
         /// </summary>
         /// <param name="board"></param>
         /// <returns></returns>
@@ -339,7 +339,12 @@ namespace CheckersModel
             return nboard;
 
         }
-
+        /// <summary>
+        /// Finds 2 boards difference
+        /// </summary>
+        /// <param name="before"></param>
+        /// <param name="after"></param>
+        /// <returns></returns>
         public IList<Coordinate> FindBoardsDifference(Board before, Board after)
         {
             IList<Coordinate> diff = new List<Coordinate>();
