@@ -13,7 +13,64 @@ namespace CheckersModel
         /// <param name="board">The board</param>
         public void DrawBoard(Board board)
         {
-            DrawBoard(board, Console.Out);
+            drawBoard(board, Console.Out);
+        }
+
+        public void drawBoard(Board board, TextWriter writer)
+        {
+            var buf1 = new StringBuilder();
+            var buf2 = new StringBuilder();            
+            writer.WriteLine("+-----------------------+   +-----------------------+");
+            int cellNum = 0;
+            int shift = 0;
+            for (int k = 1; k <= 32; k++)
+            {
+                for (int i = 8; i >0; i--)
+                {
+                    var soldierColor = "";
+                    int j = 1;
+                    if (i % 2 == 0)
+                    {
+                        j = 2;
+                        buf1.AppendFormat("   ");
+                    }
+                    for (shift=3 ; (j <= 8 && shift>=0); j += 2, shift--)
+                    {
+                        cellNum = i * 4 - shift;
+                        var coord = board[i, j];
+                        if (board.IsBlack(coord))
+                        {
+                            soldierColor = "b";
+                            if (board.IsKing(coord)) soldierColor = "b.k";
+                        }
+                        else if (board.IsWhite(coord))
+                        {
+                            soldierColor = "w";
+                            if (board.IsKing(coord)) soldierColor = "w.k";
+                        }
+                        else
+                        {
+                            soldierColor = ".";
+                        }
+                        k++;
+                        buf1.AppendFormat(" |{0}| ",soldierColor);
+                        if (cellNum >= 1 && cellNum <= 9)
+                        {
+                            buf2.AppendFormat(" | {0}| ", cellNum);
+                        }
+                        else
+                        {
+                            buf2.AppendFormat(" |{0}| ", cellNum);
+                        }
+                    }
+                    writer.WriteLine("{0}       {1}", buf1, buf2);
+                    writer.WriteLine("+-----------------------+   +-----------------------+");
+                    buf1.Length = 0;
+                    buf2.Length = 0;
+                }
+            }
+            buf1.Append("|");
+            buf2.Append("|");
         }
 
         /// <summary>
@@ -41,14 +98,7 @@ namespace CheckersModel
                     pos++;
                     darkSquare = !darkSquare;
                     buf1.Append("|");
-                    buf2.Append("|");
-                    var temp = buf2.ToString();
-                    var temp1 = temp.ToCharArray();
-                    Array.Reverse(temp1);
-                    temp.Remove(0);
-                    temp = new string(temp1);
-                    buf2.Clear();
-                    buf2.AppendLine(temp);
+                    buf2.Append("|");                    
                     writer.WriteLine("{0}   {1}", buf1, buf2);
                     buf1.Length = 0;
                     buf2.Length = 0;
