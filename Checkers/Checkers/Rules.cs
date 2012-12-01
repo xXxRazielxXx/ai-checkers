@@ -77,7 +77,7 @@ namespace CheckersEngine
             {
                 if (board.IsOwner(player, coordinate))
                 {
-                    foreach (Coordinate item in coordinateList)
+                    foreach (Coordinate item in coordinateList.Reverse())
                     {
                         if (board.IsBlack(coordinate) && (board.IsSoldier(coordinate)))
                         {
