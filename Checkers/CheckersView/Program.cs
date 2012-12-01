@@ -34,9 +34,9 @@ namespace CheckersView
             while (true)
             {
                 //first turn is always the human's
+                Console.WriteLine("Your turn, please enter a move in format 'from cell number' 'to cell number'");
                 var input=Console.ReadLine();
-                IList<Coordinate> coords = new List<Coordinate>();
-               // coords = ParseStrToCoords(input);
+                IList<Coordinate> coords = ParseStrToCoords(input, board);
                 var srcCoord = coords.First();
                 var destCoord = coords.Last();
                 Player humanColor = board.GetPlayer(srcCoord);
@@ -55,6 +55,20 @@ namespace CheckersView
                     print.DrawBoard(board);
                 }
             }
+        }
+
+        public IList<Coordinate> ParseStrToCoords(string input, Board board)
+        {
+            IList<Coordinate> moves= new List<Coordinate>();
+            char delimiterChar =' ';
+            string[] word = input.Split(delimiterChar);
+            var srcCoord= new Coordinate();
+            srcCoord= board[Int32.Parse(word[0])];
+            moves.Add(srcCoord);
+            var destCoord = new Coordinate();
+            destCoord = board[Int32.Parse(word[1])];
+            moves.Add(destCoord);
+            return moves;
         }
 
     }
