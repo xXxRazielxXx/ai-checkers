@@ -136,14 +136,8 @@ namespace CheckersEngine
 
                                 temp.Add(board[i]);
                                 temp.Add(coord);
-                                newBoardsPositions.Add(nBoard, temp);
-
-                               // temp= temp.Concat(board[i]).ToList();
-
-                                //newBoardsPositions.Add<nBoard,board[i]
-
+                                newBoardsPositions.Add(nBoard, temp);                              
                             }
-
                         }
                         if (!board.IsAloacted(coordinate))
                         {
