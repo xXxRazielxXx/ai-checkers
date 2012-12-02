@@ -105,6 +105,12 @@ namespace CheckersModel
             }
         }
 
+
+        public bool ValidMove(Coordinate srcCoordinate, Coordinate destCoordinate)
+        {
+            if(srcCoordinate.X-)
+            
+        }
         /// <summary>
         /// Get the coordinate with row and column values from the board
         /// </summary>
