@@ -1,4 +1,5 @@
 ﻿//using System;
+//using CheckersModel;
 
 //namespace CheckersEngine
 //{
@@ -6,11 +7,12 @@
 //    {
 //        private const bool maxplayer = true;
 
-//        public int Alphabeta(Node node, int depth, int alpha, int beta, bool player)
+//        public int Alphabeta(Board board, int depth, int alpha, int beta, bool player)
 //        {
-//            if (depth == 0 || node.IsTerminal(player)) // is node is a terminal node
+//            if (depth == 0 || board.IsTerminal(player)) // is node is a terminal node
 //            {
-//                return node.HeuristicFunction(player); //Implement heuristic function
+//                var obj = new HeuristicFunction();
+//                return obj.Evaluate(board);
 //            }
 //            if (player == maxplayer)
 //            {

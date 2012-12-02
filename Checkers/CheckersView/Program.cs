@@ -28,6 +28,9 @@ namespace CheckersView
 
         public  void StartGameWithHuman(Board board)
         {
+            var humanColor = Player.None;
+            var pcColor = Player.None;
+            bool firstTurn = true;
             var rule = new Rules();
             var print = new PrintBoardState();
             int depth = 7;
@@ -35,16 +38,31 @@ namespace CheckersView
             {
                 //first turn is always the human's
                 Console.WriteLine("Your turn, please enter a move in format 'from cell number' 'to cell number'");
+            HumanTurn:
                 var input=Console.ReadLine();
                 IList<Coordinate> coords = ParseStrToCoords(input, board);
                 var srcCoord = coords.First();
                 var destCoord = coords.Last();
-                Player humanColor = board.GetPlayer(srcCoord);
-                Player pcColor = board.GetOpponent(humanColor);
+                if (firstTurn)
+                {
+                    humanColor = board.GetPlayer(srcCoord);
+                    pcColor = board.GetOpponent(humanColor);
+                    firstTurn = false;
+                }
+                else if (humanColor != board.GetPlayer(srcCoord))
+                {
+                   Console.WriteLine("Wrong Input");
+                   goto HumanTurn;
+                }
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
                 {
                     board.UpdateBoard(srcCoord,destCoord);// What if human captured a pc soldier
                     print.DrawBoard(board);
+                }
+                else
+                {
+                    Console.WriteLine("Wrong Input");
+                    goto HumanTurn;
                 }
                 ShowPlayerChange(pcColor);
                 var miniMax =new MiniMax();
@@ -60,13 +78,11 @@ namespace CheckersView
         public IList<Coordinate> ParseStrToCoords(string input, Board board)
         {
             IList<Coordinate> moves= new List<Coordinate>();
-            char delimiterChar =' ';
+            const char delimiterChar = ' ';
             string[] word = input.Split(delimiterChar);
-            var srcCoord= new Coordinate();
-            srcCoord= board[Int32.Parse(word[0])];
+            Coordinate srcCoord = board[Int32.Parse(word[0])];
             moves.Add(srcCoord);
-            var destCoord = new Coordinate();
-            destCoord = board[Int32.Parse(word[1])];
+            Coordinate destCoord = board[Int32.Parse(word[1])];
             moves.Add(destCoord);
             return moves;
         }

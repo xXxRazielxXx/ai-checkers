@@ -9,7 +9,7 @@ namespace CheckersEngine
 {
     public class MiniMax
     {
-        private const int treeDepth = 100;
+        private const int treeDepth = 8;
         //player=1 means max ,player=0 means min
         public int MinMax(Board board, int depth,Player player, bool minormax, ref Coordinate srcCoord, ref Coordinate destCoord)
         {
