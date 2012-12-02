@@ -54,7 +54,7 @@ namespace CheckersView
                    Console.WriteLine("Wrong Input");
                    goto HumanTurn;
                 }
-                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
+                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y))&&board.IsValidMove(srcCoord,destCoord))
                 {
                     board.UpdateBoard(srcCoord,destCoord);// What if human captured a pc soldier
                     print.DrawBoard(board);
@@ -67,7 +67,7 @@ namespace CheckersView
                 ShowPlayerChange(pcColor);
                 var miniMax =new MiniMax();
                 miniMax.MinMax(board, depth, pcColor, true,ref srcCoord,ref destCoord);
-                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
+                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)) && board.IsValidMove(srcCoord, destCoord))
                 {
                     board.UpdateBoard(srcCoord, destCoord);
                     print.DrawBoard(board);
@@ -78,7 +78,7 @@ namespace CheckersView
         public IList<Coordinate> ParseStrToCoords(string input, Board board)
         {
             IList<Coordinate> moves= new List<Coordinate>();
-            const char delimiterChar = ' ';
+            char delimiterChar = ' ';
             string[] word = input.Split(delimiterChar);
             Coordinate srcCoord = board[Int32.Parse(word[0])];
             moves.Add(srcCoord);
