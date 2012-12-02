@@ -105,11 +105,21 @@ namespace CheckersModel
             }
         }
 
-
-        public bool ValidMove(Coordinate srcCoordinate, Coordinate destCoordinate)
+        /// <summary>
+        /// Check if valid move
+        /// </summary>
+        /// <param name="srcCoordinate"></param>
+        /// <param name="destCoordinate"></param>
+        /// <returns></returns>
+        public bool IsValidMove(Coordinate srcCoordinate, Coordinate destCoordinate)
         {
-            if(srcCoordinate.X-)
-            
+            if ((Math.Abs(srcCoordinate.X - destCoordinate.X) > 1)||(Math.Abs(srcCoordinate.Y - destCoordinate.Y)>1))
+                return false;
+            if (IsAloacted(destCoordinate))
+            {
+                return false;
+            }
+            return true;
         }
         /// <summary>
         /// Get the coordinate with row and column values from the board
