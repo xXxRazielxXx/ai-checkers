@@ -53,6 +53,10 @@
       <Project>{c4f8e3cb-364b-4c0b-bef9-ebe674be231b}</Project>
       <Name>CheckersEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Damka\Interfaces\Interfaces.csproj">
+      <Project>{e39b9658-bcda-46df-b734-56faacf0687d}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
