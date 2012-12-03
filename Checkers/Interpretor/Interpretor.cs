@@ -225,24 +225,13 @@ namespace Interpretor
 
         public GameState GetGameState(Player player)
         {
-            var rule = new Rules();
-
-            var numberplayerPieces = rule.NumberOfPlayerPieces(board, player);
-            var isplayerBlocked = rule.IsPlayerBlocked(board, player);
-            if (numberplayerPieces == 0 || isplayerBlocked)
-            {
+            if (didPlayerLost(player))
                 return GameState.Lost;
-            }
-            var numberopponentPieces = rule.NumberOfPlayerPieces(this.Board, this.Board.GetOpponent(player));
-            var isopponentBlocked = rule.IsPlayerBlocked(this.Board, this.Board.GetOpponent(player));
-            if (numberopponentPieces == 0 || isopponentBlocked)
-            {
+            else if (didPlayerLost(board.GetOpponent(player)))
                 return GameState.Won;
-            }
             else
-            {
-                return GameState.Undetermined;
-            }
+                return GameState.Undetermined;        
         }
+
     }
 }
