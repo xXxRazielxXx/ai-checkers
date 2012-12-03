@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CheckersEngine;
 
 namespace CheckersModel
 {
@@ -391,34 +390,7 @@ namespace CheckersModel
         }
 
 
-        /// <summary>
-        /// checks if player lost the game- is he blocked or have no soldiers;
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
-        public bool didPlayerLost(Player player)
-        {
-
-            var rule = new Rules();
-            var numberplayerPieces = rule.NumberOfPlayerPieces(board, player);
-            var isplayerBlocked = rule.IsPlayerBlocked(board, player);
-            if (numberplayerPieces == 0 || isplayerBlocked)
-            {
-                return true;
-            }
-            else return false;
-        }
-        /// <summary>
-        /// checks if the game is already determined (one of the oppenents)
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
-        public bool isBoardLeaf(Player player)
-        {
-            if (didPlayerLost(player) || (didPlayerLost(GetOpponent(player))))
-                return true;
-            else return false;
-        }
+       
         /// <summary>
         ///     Initialize Board
         /// </summary>
