@@ -161,6 +161,38 @@ namespace CheckersEngine
             return newBoardsPositions;
         }
 
+        /// <summary>
+        /// checks if player lost the game- is he blocked or have no soldiers;
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="srcBoard"></param>
+        /// <returns></returns>
+        public bool DidPlayerLost(Player player,Board srcBoard)
+        {
+
+            var rule = new Rules();
+            var numberplayerPieces = rule.NumberOfPlayerPieces(srcBoard, player);
+            var isplayerBlocked = rule.IsPlayerBlocked(srcBoard, player);
+            if (numberplayerPieces == 0 || isplayerBlocked)
+            {
+                return true;
+            }
+            else return false;
+        }
+
+        /// <summary>
+        /// checks if the game is already determined (one of the oppenents)
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="srcBoard"></param>
+        /// <returns></returns>
+        public bool IsBoardLeaf(Player player, Board srcBoard)
+        {
+            if (DidPlayerLost(player, srcBoard) || (DidPlayerLost(srcBoard.GetOpponent(player), srcBoard)))
+                return true;
+            else return false;
+        }
+
         
         /// <summary>
         /// Checks if Piece on coordinate became a King
