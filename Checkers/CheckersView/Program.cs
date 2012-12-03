@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using CheckersEngine;
 using CheckersModel;
+using Interfaces;
 
 namespace CheckersView
 {
@@ -72,13 +73,29 @@ namespace CheckersView
                     board.UpdateBoard(srcCoord, destCoord);
                     print.DrawBoard(board);
                 }
+                GameState game = GetGameState(humanColor, board);
+                if (game == GameState.Lost)
+                {
+                    Console.WriteLine("{0} Lost the game and {1} won",humanColor.ToString(),pcColor.ToString());
+                    break;
+                }
+                if (game == GameState.Won)
+                {
+                    Console.WriteLine("{0} Won",humanColor.ToString());
+                }
             }
         }
 
+        /// <summary>
+        /// Parse input to coordinates
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public IList<Coordinate> ParseStrToCoords(string input, Board board)
         {
             IList<Coordinate> moves= new List<Coordinate>();
-            char delimiterChar = ' ';
+            const char delimiterChar = ' ';
             string[] word = input.Split(delimiterChar);
             Coordinate srcCoord = board[Int32.Parse(word[0])];
             moves.Add(srcCoord);
@@ -86,6 +103,35 @@ namespace CheckersView
             moves.Add(destCoord);
             return moves;
         }
+
+        /// <summary>
+        /// Check GameState
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public GameState GetGameState(Player player, Board board)
+        {
+            var rule = new Rules();
+
+            var numberplayerPieces = rule.NumberOfPlayerPieces(board, player);
+            var isplayerBlocked = rule.IsPlayerBlocked(board, player);
+            if (numberplayerPieces == 0 || isplayerBlocked)
+            {
+                return GameState.Lost;
+            }
+            var numberopponentPieces = rule.NumberOfPlayerPieces(board, board.GetOpponent(player));
+            var isopponentBlocked = rule.IsPlayerBlocked(board, board.GetOpponent(player));
+            if (numberopponentPieces == 0 || isopponentBlocked)
+            {
+                return GameState.Won;
+            }
+            else
+            {
+                return GameState.Undetermined;
+            }
+        }
+
 
     }
 }
