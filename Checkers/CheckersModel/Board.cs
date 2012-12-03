@@ -122,6 +122,7 @@ namespace CheckersModel
             }
             return true;
         }
+
         /// <summary>
         /// Get the coordinate with row and column values from the board
         /// </summary>
@@ -181,7 +182,7 @@ namespace CheckersModel
         /// </summary>
         /// <param name="orgCoord"></param>
         /// <param name="desCoord"></param>
-        public void UpdateBoard(Coordinate orgCoord, Coordinate desCoord)
+        public void UpdateBoard(Coordinate orgCoord, Coordinate desCoord) //changed update so it will update according to player direction move
         {
             this[Search(desCoord)].Status = this[Search(orgCoord)].Status;
             this[Search(orgCoord)].Status = Piece.None;
@@ -342,9 +343,8 @@ namespace CheckersModel
         /// <summary>
         /// Copy Boards
         /// </summary>
-        /// <param name="board"></param>
         /// <returns></returns>
-        public Board Copy(Board board)
+        public Board Copy()
         {
             var nboard = new Board();
             for (int i = 1; i <= 32; i++)
@@ -353,6 +353,14 @@ namespace CheckersModel
                 nboard[i].X = this[i].X;
                 nboard[i].Y = this[i].Y;
             }
+            nboard.NumberOfWhitePieces = this.NumberOfWhitePieces;
+            nboard.NumberOfBlackPieces = this.NumberOfBlackPieces;
+            nboard.NumberOfBlcakKings = this.NumberOfBlcakKings;
+            nboard.NumberOfWhiteKings = this.NumberOfWhiteKings;
+            nboard.Size = this.Size;
+            nboard.Rows = this.Rows;
+            nboard.Columns = this.Columns;
+              
             return nboard;
 
         }
@@ -370,6 +378,10 @@ namespace CheckersModel
                 if (before[i] != after[i])
                 {
                     if (before[i].Status == Piece.None)
+                    {
+                        diff.Add(before[i]);
+                    }
+                    if (before[i].Status == before.PieceColor(before[i]))
                     {
                         diff.Add(before[i]);
                     }
