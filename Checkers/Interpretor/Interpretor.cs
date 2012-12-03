@@ -225,9 +225,10 @@ namespace Interpretor
 
         public GameState GetGameState(Player player)
         {
-            if (didPlayerLost(player))
+            Rules rule = new Rules();
+            if (rule.DidPlayerLost(player, board))
                 return GameState.Lost;
-            else if (didPlayerLost(board.GetOpponent(player)))
+            else if (rule.DidPlayerLost(board.GetOpponent(player), board))
                 return GameState.Won;
             else
                 return GameState.Undetermined;        
