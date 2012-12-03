@@ -23,28 +23,28 @@ namespace CheckersEngine
                 //Check in bounds
                 if (InBounds(board, coordinate.X + 1, coordinate.Y + 1))
                 {
-                    var temp1 = new Coordinate {X = coordinate.X + 1, Y = coordinate.Y + 1};
+                    var temp1 = board[coordinate.X + 1, coordinate.Y + 1];
                     coordinateList.Add(temp1);
                 }
 
                 //Check in bounds
                 if (InBounds(board, coordinate.X + 1, coordinate.Y - 1))
                 {
-                    var temp2 = new Coordinate {X = coordinate.X + 1, Y = coordinate.Y - 1};
+                    var temp2 = board[coordinate.X + 1, coordinate.Y - 1];
                     coordinateList.Add(temp2);
                 }
 
                 //Check in bounds
                 if (InBounds(board, coordinate.X - 1, coordinate.Y + 1))
                 {
-                    var temp3 = new Coordinate {X = coordinate.X - 1, Y = coordinate.Y + 1};
+                    var temp3 = board[coordinate.X - 1, coordinate.Y + 1];
                     coordinateList.Add(temp3);
                 }
 
                 //Check in bounds
                 if (InBounds(board, coordinate.X - 1, coordinate.Y - 1))
                 {
-                    var temp4 = new Coordinate {X = coordinate.X - 1, Y = coordinate.Y - 1};
+                    var temp4 = board[coordinate.X - 1, coordinate.Y - 1];
                     coordinateList.Add(temp4);
                 }
             }
@@ -114,7 +114,7 @@ namespace CheckersEngine
                 if (board.IsOwner(player, board[i]))
                 {
                     IList<Coordinate> coordinateList = GetMovesInDirection(board, board[i], player);
-                    foreach (var coordinate in coordinateList)
+                    foreach (var coordinate in coordinateList.Reverse()) //reverser list correction
                     {
                         //if a soldier of mine exists in this coord then this coord is not optional;
                         if (board.IsOwner(player, coordinate))
@@ -122,27 +122,30 @@ namespace CheckersEngine
                             coordinateList.Remove(coordinate);
                         }
                         //if an oppenent soldier exsist in this coord try capturing him!
-                        if (board.IsOpponentPiece(player, coordinate))
+                        else if (board.IsOpponentPiece(player, coordinate))
                         {
                             IList<Coordinate> capturesList = CalculatesCoordsToJumpTo(board, board[i], coordinate, player);
-                            // captureList is all the coordinates presenting the board after the capture.
-                            foreach (Coordinate coord in capturesList)
+                            if (capturesList != null)
                             {
-                                Board nBoard = board.Copy(board);
-                                nBoard.UpdateBoard(board[i], coord); 
-                                IsBecameAKing(nBoard, coord);
-                                newBoards.Add(nBoard);
-                                IList<Coordinate> temp = new List<Coordinate>();
+                                // captureList is all the coordinates presenting the board after the capture.
+                                foreach (Coordinate coord in capturesList.Reverse())
+                                {
+                                    Board nBoard = board.Copy();
+                                    nBoard.UpdateBoard(board[i], coord);
+                                    IsBecameAKing(nBoard, coord);
+                                    newBoards.Add(nBoard);
+                                    IList<Coordinate> temp = new List<Coordinate>();
 
-                                temp.Add(board[i]);
-                                temp.Add(coord);
-                                newBoardsPositions.Add(nBoard, temp);                              
+                                    temp.Add(board[i]);
+                                    temp.Add(coord);
+                                    newBoardsPositions.Add(nBoard, temp);
+                                }
                             }
                         }
-                        if (!board.IsAloacted(coordinate))
+                        else if (!board.IsAloacted(coordinate))
                         {
                             //create new board that represnt board after the move
-                            Board nBoard = board.Copy(board);
+                            Board nBoard = board.Copy();
                             nBoard.UpdateBoard(board[i], coordinate);  
                             IsBecameAKing(nBoard,coordinate);
                             newBoards.Add(nBoard);
@@ -237,6 +240,7 @@ namespace CheckersEngine
             int srcY=srcCoordinate.Y;
             int oponentX=oponentCoordinate.X;
             int oponentY=oponentCoordinate.Y;
+            Coordinate dest;
             int destX, destY;
 
             if(srcX<oponentX) destX=oponentX+1;
@@ -244,8 +248,14 @@ namespace CheckersEngine
 
             if(srcY<oponentY) destY=oponentY+1;
             else destY=oponentY-1;
-            
-            Coordinate dest = board[destX,destY];
+            if (InBounds(board, destX, destY))
+            {
+                dest = board[destX,destY];
+            }
+            else
+            {
+                return null;
+            }
             if (dest == null)
             {
                 return null;
@@ -265,14 +275,17 @@ namespace CheckersEngine
                     if (board.IsOpponentPiece(player, coord))
                     {
                         IList<Coordinate> temp = CalculatesCoordsToJumpTo(board, dest, coord, player);
-                        if (max < temp.Count)
+                        if (temp != null)
                         {
-                            max = temp.Count;
-                            maxEats = temp;
-                        }
-                        if (max == temp.Count)
-                        {
-                            maxEats = maxEats.Concat(temp).ToList();
+                            if (max < temp.Count)
+                            {
+                                max = temp.Count;
+                                maxEats = temp;
+                            }
+                            if (max == temp.Count)
+                            {
+                                maxEats = maxEats.Concat(temp).ToList();
+                            }
                         }
                     }
                 }
