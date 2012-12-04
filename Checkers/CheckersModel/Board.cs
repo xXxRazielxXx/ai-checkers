@@ -346,6 +346,8 @@ namespace CheckersModel
         public Board Copy()
         {
             var nboard = new Board();
+            //Array.Copy(board,0,nboard.board,0,Size);
+
             for (int i = 1; i <= 32; i++)
             {
                 nboard[i].Status = this[i].Status;
