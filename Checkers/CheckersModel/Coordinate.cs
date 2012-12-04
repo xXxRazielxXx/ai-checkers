@@ -5,6 +5,17 @@ namespace CheckersModel
     public class Coordinate
     {
 
+        public Coordinate(Coordinate srcCoordinate)
+        {
+            this.X = srcCoordinate.X;
+            this.Y = srcCoordinate.Y;
+            this.Status = srcCoordinate.Status;
+        }
+
+        public Coordinate()
+        {
+        }
+
         protected bool Equals(Coordinate other)
         {
             return Status == other.Status && X == other.X && Y == other.Y;
