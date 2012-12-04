@@ -169,11 +169,9 @@ namespace CheckersEngine
         /// <param name="srcBoard"></param>
         /// <returns></returns>
         public bool DidPlayerLost(Player player,Board srcBoard)
-        {
-
-            var rule = new Rules();
-            var numberplayerPieces = rule.NumberOfPlayerPieces(srcBoard, player);
-            var isplayerBlocked = rule.IsPlayerBlocked(srcBoard, player);
+        {           
+            var numberplayerPieces = NumberOfPlayerPieces(srcBoard, player);
+            var isplayerBlocked = IsPlayerBlocked(srcBoard, player);
             if (numberplayerPieces == 0 || isplayerBlocked)
             {
                 return true;
