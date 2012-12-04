@@ -40,8 +40,14 @@ namespace CheckersView
                 //first turn is always the human's
                 Console.WriteLine("Your turn, please enter a move in format 'from cell number' 'to cell number'");
             HumanTurn:
-                var input=Console.ReadLine();
+                var input=Console.ReadLine();      
                 IList<Coordinate> coords = ParseStrToCoords(input, board);
+                if (coords == null)
+                {
+                    Console.WriteLine("Wrong Input");
+                    goto HumanTurn; 
+                }
+
                 var srcCoord = coords.First();
                 var destCoord = coords.Last();
                 if (firstTurn)
@@ -97,10 +103,14 @@ namespace CheckersView
             IList<Coordinate> moves= new List<Coordinate>();
             const char delimiterChar = ' ';
             string[] word = input.Split(delimiterChar);
+            try
+            {
             Coordinate srcCoord = new Coordinate(board[Int32.Parse(word[0])]);
             moves.Add(srcCoord);
             Coordinate destCoord = new Coordinate(board[Int32.Parse(word[1])]);
             moves.Add(destCoord);
+            }
+            catch (Exception e) { return null; }            
             return moves;
         }
 
