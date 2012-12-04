@@ -97,9 +97,9 @@ namespace CheckersView
             IList<Coordinate> moves= new List<Coordinate>();
             const char delimiterChar = ' ';
             string[] word = input.Split(delimiterChar);
-            Coordinate srcCoord = board[Int32.Parse(word[0])];
+            Coordinate srcCoord = new Coordinate(board[Int32.Parse(word[0])]);
             moves.Add(srcCoord);
-            Coordinate destCoord = board[Int32.Parse(word[1])];
+            Coordinate destCoord = new Coordinate(board[Int32.Parse(word[1])]);
             moves.Add(destCoord);
             return moves;
         }
