@@ -23,28 +23,28 @@ namespace CheckersEngine
                 //Check in bounds
                 if (InBounds(board, coordinate.X + 1, coordinate.Y + 1))
                 {
-                    var temp1 = board[coordinate.X + 1, coordinate.Y + 1];
+                    var temp1 = new Coordinate(board[coordinate.X + 1, coordinate.Y + 1]);
                     coordinateList.Add(temp1);
                 }
 
                 //Check in bounds
                 if (InBounds(board, coordinate.X + 1, coordinate.Y - 1))
                 {
-                    var temp2 = board[coordinate.X + 1, coordinate.Y - 1];
+                    var temp2 = new Coordinate(board[coordinate.X + 1, coordinate.Y - 1]);
                     coordinateList.Add(temp2);
                 }
 
                 //Check in bounds
                 if (InBounds(board, coordinate.X - 1, coordinate.Y + 1))
                 {
-                    var temp3 = board[coordinate.X - 1, coordinate.Y + 1];
+                    var temp3 = new Coordinate(board[coordinate.X - 1, coordinate.Y + 1]);
                     coordinateList.Add(temp3);
                 }
 
                 //Check in bounds
                 if (InBounds(board, coordinate.X - 1, coordinate.Y - 1))
                 {
-                    var temp4 = board[coordinate.X - 1, coordinate.Y - 1];
+                    var temp4 = new Coordinate(board[coordinate.X - 1, coordinate.Y - 1]);
                     coordinateList.Add(temp4);
                 }
             }
@@ -131,12 +131,12 @@ namespace CheckersEngine
                                 foreach (Coordinate coord in capturesList.Reverse())
                                 {
                                     Board nBoard = board.Copy();
-                                    nBoard.UpdateBoard(board[i], coord);
+                                    nBoard.UpdateBoard(nBoard[nBoard.Search(board[i])], coord);
                                     IsBecameAKing(nBoard, coord);
                                     newBoards.Add(nBoard);
                                     IList<Coordinate> temp = new List<Coordinate>();
 
-                                    temp.Add(board[i]);
+                                    temp.Add(nBoard[nBoard.Search(board[i])]);
                                     temp.Add(coord);
                                     newBoardsPositions.Add(nBoard, temp);
                                 }
@@ -146,11 +146,11 @@ namespace CheckersEngine
                         {
                             //create new board that represnt board after the move
                             Board nBoard = board.Copy();
-                            nBoard.UpdateBoard(board[i], coordinate);  
+                            nBoard.UpdateBoard(nBoard[nBoard.Search(board[i])], coordinate);  
                             IsBecameAKing(nBoard,coordinate);
                             newBoards.Add(nBoard);
                             IList<Coordinate> temp = new List<Coordinate>();
-                            temp.Add(board[i]);
+                            temp.Add(nBoard[nBoard.Search(board[i])]);
                             temp.Add(coordinate);
                             newBoardsPositions.Add(nBoard, temp);
                         }
