@@ -1,38 +1,40 @@
-﻿using System;
-using CheckersModel;
+﻿using System.Collections.Generic;
 using CheckersEngine;
-using System.Collections.Generic;
+using CheckersModel;
 
 namespace checkersengine
 {
-    public class alphabeta
-    {      
-        Rules rule = new Rules();
-        public int alphabeta(Board board, int depth, int alpha, int beta,Player player, bool maxplayer, ref Coordinate srcCoord, ref Coordinate destCoord)
+    public class Alphabeta
+    {
+        private readonly Rules rule = new Rules();
+
+        public int AlphaBeta(Board board, int depth, int alpha, int beta, Player player, bool maxplayer,
+                             ref Coordinate srcCoord, ref Coordinate destCoord)
         {
-            if (depth == 0 || rule.IsBoardLeaf(player, board) ) // is node a terminal node
+            if (depth == 0 || rule.IsBoardLeaf(player, board)) // is node a terminal node
             {
                 var obj = new HeuristicFunction();
                 return obj.Evaluate(board);
             }
-            IDictionary<Board, IList<Coordinate>> boardCoordsList = rule.CalculateNewBoardsFromCoordinates(board,player);
+            IDictionary<Board, IList<Coordinate>> boardCoordsList = rule.CalculateNewBoardsFromCoordinates(board, player);
             var minsrcCoord = new Coordinate();
             var mindestCoord = new Coordinate();
             var maxsrcCoord = new Coordinate();
-            var maxdestCoord = new Coordinate();  
+            var maxdestCoord = new Coordinate();
             if (maxplayer)
-            {                     
-                foreach (KeyValuePair<Board,IList<Coordinate>> newState in boardCoordsList) //implement node
+            {
+                foreach (var newState in boardCoordsList) //implement node
                 {
-                    int max=int.MinValue;
-                    Coordinate newSrcCoord = newState.Value[0]; 
+                    int max = int.MinValue;
+                    Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
-                    int res= alphabeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer,ref newSrcCoord,ref newDestCoord);
-                    if(res>max)
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord,
+                                        ref newDestCoord);
+                    if (res > max)
                     {
-                        maxsrcCoord= newSrcCoord;
-                        maxdestCoord=newDestCoord;
-                    }                    
+                        maxsrcCoord = newSrcCoord;
+                        maxdestCoord = newDestCoord;
+                    }
                     if (beta < alpha)
                     {
                         break;
@@ -45,15 +47,16 @@ namespace checkersengine
             }
             else
             {
-                foreach (KeyValuePair<Board,IList<Coordinate>> newState in boardCoordsList) //implement node
+                foreach (var newState in boardCoordsList) //implement node
                 {
-                    int min=int.MaxValue;
-                    Coordinate newSrcCoord = newState.Value[0]; 
+                    int min = int.MaxValue;
+                    Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
-                    int res = alphabeta(newState.Key, depth - 1, alpha, beta, player,!maxplayer,ref newSrcCoord, ref newDestCoord);
-                    if(res< min)
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord,
+                                        ref newDestCoord);
+                    if (res < min)
                     {
-                        minsrcCoord =newSrcCoord;
+                        minsrcCoord = newSrcCoord;
                         mindestCoord = newDestCoord;
                     }
                     if (beta < alpha)
@@ -61,11 +64,10 @@ namespace checkersengine
                         break;
                     }
                 }
-                 srcCoord = minsrcCoord;
-                 destCoord = mindestCoord;
+                srcCoord = minsrcCoord;
+                destCoord = mindestCoord;
                 return beta;
             }
         }
     }
 }
-
