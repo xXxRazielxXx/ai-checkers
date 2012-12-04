@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using CheckersModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-
+using CheckersModel;
 
 namespace CheckersEngine
 {
@@ -53,7 +51,7 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        ///  Check if in bound
+        ///     Check if in bound
         /// </summary>
         /// <param name="board"></param>
         /// <param name="row"></param>
@@ -65,7 +63,7 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        ///  Get Moves In Direction
+        ///     Get Moves In Direction
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
@@ -101,31 +99,32 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// Calucalte new game boards which are optional moves
+        ///     Calucalte new game boards which are optional moves
         /// </summary>
         /// <param name="board"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public IDictionary<Board,IList<Coordinate>> CalculateNewBoardsFromCoordinates(Board board, Player player)
+        public IDictionary<Board, IList<Coordinate>> CalculateNewBoardsFromCoordinates(Board board, Player player)
         {
             IList<Board> newBoards = new List<Board>();
             IDictionary<Board, IList<Coordinate>> newBoardsPositions = new Dictionary<Board, IList<Coordinate>>();
-            for(var i=1;i<=board.Size;i++)
+            for (int i = 1; i <= board.Size; i++)
             {
                 if (board.IsOwner(player, board[i]))
                 {
                     IList<Coordinate> coordinateList = GetMovesInDirection(board, board[i], player);
-                    foreach (var coordinate in coordinateList.Reverse()) //reverser list correction
+                    foreach (Coordinate coordinate in coordinateList.Reverse()) //reverser list correction
                     {
                         //if a soldier of mine exists in this coord then this coord is not optional;
                         if (board.IsOwner(player, coordinate))
                         {
                             coordinateList.Remove(coordinate);
                         }
-                        //if an oppenent soldier exsist in this coord try capturing him!
+                            //if an oppenent soldier exsist in this coord try capturing him!
                         else if (board.IsOpponentPiece(player, coordinate))
                         {
-                            IList<Coordinate> capturesList = CalculatesCoordsToJumpTo(board, board[i], coordinate, player);
+                            IList<Coordinate> capturesList = CalculatesCoordsToJumpTo(board, board[i], coordinate,
+                                                                                      player);
                             if (capturesList != null)
                             {
                                 // captureList is all the coordinates presenting the board after the capture.
@@ -147,15 +146,15 @@ namespace CheckersEngine
                         {
                             //create new board that represnt board after the move
                             Board nBoard = board.Copy();
-                           nBoard.UpdateBoard(nBoard[nBoard.Search(board[i])], coordinate);  
-                            IsBecameAKing(nBoard,coordinate);
+                            nBoard.UpdateBoard(nBoard[nBoard.Search(board[i])], coordinate);
+                            IsBecameAKing(nBoard, coordinate);
                             newBoards.Add(nBoard);
                             IList<Coordinate> temp = new List<Coordinate>();
                             temp.Add(nBoard[nBoard.Search(board[i])]);
                             temp.Add(coordinate);
                             newBoardsPositions.Add(nBoard, temp);
                         }
-                    }                   
+                    }
                 }
             }
 
@@ -163,12 +162,12 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// checks if player lost the game- is he blocked or have no soldiers;
+        ///     checks if player lost the game- is he blocked or have no soldiers;
         /// </summary>
         /// <param name="player"></param>
         /// <param name="srcBoard"></param>
         /// <returns></returns>
-        public bool DidPlayerLost(Player player,Board srcBoard)
+        public bool DidPlayerLost(Player player, Board srcBoard)
         {           
             var numberplayerPieces = NumberOfPlayerPieces(srcBoard, player);
             var isplayerBlocked = IsPlayerBlocked(srcBoard, player);
@@ -180,7 +179,7 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// checks if the game is already determined (one of the oppenents)
+        ///     checks if the game is already determined (one of the oppenents)
         /// </summary>
         /// <param name="player"></param>
         /// <param name="srcBoard"></param>
@@ -192,16 +191,16 @@ namespace CheckersEngine
             else return false;
         }
 
-        
+
         /// <summary>
-        /// Checks if Piece on coordinate became a King
+        ///     Checks if Piece on coordinate became a King
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
         public bool IsBecameAKing(Board board, Coordinate coordinate)
         {
             int index;
-            if ((board[index=board.Search(coordinate)].Status == Piece.BlackPiece) && (coordinate.X == 1))
+            if ((board[index = board.Search(coordinate)].Status == Piece.BlackPiece) && (coordinate.X == 1))
             {
                 board[index].Status = Piece.BlackKing;
                 board.NumberOfBlcakKings++;
@@ -221,12 +220,12 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// Count the number of player pieces on board
+        ///     Count the number of player pieces on board
         /// </summary>
         /// <param name="board"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public int NumberOfPlayerPieces(Board board,Player player)
+        public int NumberOfPlayerPieces(Board board, Player player)
         {
             switch (player)
             {
@@ -244,44 +243,45 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// Is opponet won the game by blocking player
+        ///     Is opponet won the game by blocking player
         /// </summary>
         /// <param name="board"></param>
         /// <param name="player"></param>
         /// <returns></returns>
         public bool IsPlayerBlocked(Board board, Player player)
         {
-            var optionalBoards = CalculateNewBoardsFromCoordinates(board, player);
-            var count = optionalBoards.Count();
+            IDictionary<Board, IList<Coordinate>> optionalBoards = CalculateNewBoardsFromCoordinates(board, player);
+            int count = optionalBoards.Count();
             return !(count > 0);
         }
 
 
         /// <summary>
-        /// Calculate jumps including multiple jumps and best capture route
+        ///     Calculate jumps including multiple jumps and best capture route
         /// </summary>
         /// <param name="board"></param>
         /// <param name="oponentCoordinate"></param>
         /// <param name="player"></param>
         /// <param name="srcCoordinate"></param>
-        public IList<Coordinate> CalculatesCoordsToJumpTo(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
+        public IList<Coordinate> CalculatesCoordsToJumpTo(Board board, Coordinate srcCoordinate,
+                                                          Coordinate oponentCoordinate, Player player)
         {
-            IList<Coordinate> resultCoords= new List<Coordinate>();
-            int srcX= srcCoordinate.X;
-            int srcY=srcCoordinate.Y;
-            int oponentX=oponentCoordinate.X;
-            int oponentY=oponentCoordinate.Y;
+            IList<Coordinate> resultCoords = new List<Coordinate>();
+            int srcX = srcCoordinate.X;
+            int srcY = srcCoordinate.Y;
+            int oponentX = oponentCoordinate.X;
+            int oponentY = oponentCoordinate.Y;
             Coordinate dest;
             int destX, destY;
 
-            if(srcX<oponentX) destX=oponentX+1;
-            else destX=oponentX-1;
+            if (srcX < oponentX) destX = oponentX + 1;
+            else destX = oponentX - 1;
 
-            if(srcY<oponentY) destY=oponentY+1;
-            else destY=oponentY-1;
+            if (srcY < oponentY) destY = oponentY + 1;
+            else destY = oponentY - 1;
             if (InBounds(board, destX, destY))
             {
-                dest = new Coordinate(board[destX,destY]);
+                dest = new Coordinate(board[destX, destY]);
             }
             else
             {
@@ -297,11 +297,11 @@ namespace CheckersEngine
                     return null;
                 resultCoords.Add(dest);
                 dest.Status = srcCoordinate.Status;
-                IsBecameAKing(board,dest);
+                IsBecameAKing(board, dest);
                 IList<Coordinate> moreOptionalCaptures = GetMovesInDirection(board, dest, player);
                 IList<Coordinate> maxEats = new List<Coordinate>();
                 int max = 0;
-                foreach (var coord in moreOptionalCaptures)
+                foreach (Coordinate coord in moreOptionalCaptures)
                 {
                     if (board.IsOpponentPiece(player, coord))
                     {
@@ -320,10 +320,9 @@ namespace CheckersEngine
                         }
                     }
                 }
-                if (maxEats.Count>0)
+                if (maxEats.Count > 0)
                 {
                     resultCoords = maxEats;
-
                 }
             }
 
