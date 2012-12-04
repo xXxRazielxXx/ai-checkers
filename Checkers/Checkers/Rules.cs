@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CheckersModel;
 using System.Linq;
 
@@ -146,7 +147,7 @@ namespace CheckersEngine
                         {
                             //create new board that represnt board after the move
                             Board nBoard = board.Copy();
-                            nBoard.UpdateBoard(nBoard[nBoard.Search(board[i])], coordinate);  
+                           nBoard.UpdateBoard(nBoard[nBoard.Search(board[i])], coordinate);  
                             IsBecameAKing(nBoard,coordinate);
                             newBoards.Add(nBoard);
                             IList<Coordinate> temp = new List<Coordinate>();
@@ -282,7 +283,7 @@ namespace CheckersEngine
             else destY=oponentY-1;
             if (InBounds(board, destX, destY))
             {
-                dest = board[destX,destY];
+                dest = new Coordinate(board[destX,destY]);
             }
             else
             {
