@@ -31,8 +31,8 @@ namespace CheckersEngine
                 
                 foreach (KeyValuePair<Board,IList<Coordinate>> newState in boardCoordsList)
                 {
-                    Coordinate newSrcCoord = newState.Value[0]; //newSrcCoord was empty
-                    Coordinate newDestCoord = newState.Value[1]; //newDestCoord was empty
+                    Coordinate newSrcCoord = new Coordinate(newState.Value[0]); //newSrcCoord was empty
+                    Coordinate newDestCoord = new Coordinate( newState.Value[1]); //newDestCoord was empty
                     int res = MinMax(newState.Key, (depth + 1), player, !minormax, ref newSrcCoord, ref newDestCoord);
                     if (res > max)
                     {
