@@ -3,7 +3,7 @@ using CheckersEngine;
 using CheckersModel;
 
 namespace checkersengine
-{
+{   
     public class Alphabeta
     {
         private readonly Rules rule = new Rules();
@@ -28,8 +28,7 @@ namespace checkersengine
                     int max = int.MinValue;
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
-                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord,
-                                        ref newDestCoord);
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord, ref newDestCoord);                 
                     if (res > max)
                     {
                         maxsrcCoord = newSrcCoord;
@@ -52,9 +51,10 @@ namespace checkersengine
                     int min = int.MaxValue;
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
-                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord,
-                                        ref newDestCoord);
+
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord, ref newDestCoord);                             
                     if (res < min)
+
                     {
                         minsrcCoord = newSrcCoord;
                         mindestCoord = newDestCoord;
@@ -70,4 +70,4 @@ namespace checkersengine
             }
         }
     }
-}
+    }
