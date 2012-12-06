@@ -123,8 +123,12 @@ namespace CheckersEngine
                             //if an oppenent soldier exsist in this coord try capturing him!
                         else if (board.IsOpponentPiece(player, coordinate))
                         {
+<<<<<<< .mine
+                            IList<Coordinate> capturesList = coordsToCaptureAndDest(board, board[i], coordinate, player).Keys.ToList();
+=======
                             IList<Coordinate> capturesList = CalculatesCoordsToJumpTo(board, board[i], coordinate,
                                                                                       player);
+>>>>>>> .r87
                             if (capturesList != null)
                             {
                                 // captureList is all the coordinates presenting the board after the capture.
@@ -274,8 +278,14 @@ namespace CheckersEngine
             Coordinate dest;
             int destX, destY;
 
+<<<<<<< .mine
+            //find the direction of the optional capture and set destination accordingly
+            if(srcX<oponentX) destX=oponentX+1;
+            else destX=oponentX-1;
+=======
             if (srcX < oponentX) destX = oponentX + 1;
             else destX = oponentX - 1;
+>>>>>>> .r87
 
             if (srcY < oponentY) destY = oponentY + 1;
             else destY = oponentY - 1;
@@ -293,15 +303,21 @@ namespace CheckersEngine
             }
             if (dest.X == destX && dest.Y == destY)
             {
+                // in case destination is not empty we cant capture
                 if (dest.Status != Piece.None)
                     return null;
                 resultCoords.Add(dest);
                 dest.Status = srcCoordinate.Status;
                 IsBecameAKing(board, dest);
-                IList<Coordinate> moreOptionalCaptures = GetMovesInDirection(board, dest, player);
+                //find coordinates if we can continue capture from dest
+                IList<Coordinate> moreOptionalDirCaptures = GetMovesInDirection(board, dest, player);
                 IList<Coordinate> maxEats = new List<Coordinate>();
                 int max = 0;
+<<<<<<< .mine
+                foreach (var coord in moreOptionalDirCaptures)
+=======
                 foreach (Coordinate coord in moreOptionalCaptures)
+>>>>>>> .r87
                 {
                     if (board.IsOpponentPiece(player, coord))
                     {
@@ -328,5 +344,98 @@ namespace CheckersEngine
 
             return resultCoords;
         }
+        
+        public IDictionary<Coordinate,IList<Coordinate>> findCaptures (Board board, Player player)
+        {
+            IDictionary<Coordinate, IList<Coordinate>> res = new Dictionary<Coordinate, IList<Coordinate>>();
+            for(int i =1; i<=32; i++)
+            {
+                if(board.IsOwner(player, board[i]))
+                {
+                    var coordsInDir=GetMovesInDirection(board,board[i],player);
+                    if (coordsInDir == null) break;
+                    foreach(Coordinate coordindir in coordsInDir)
+                    {
+                        if(board.IsOpponentPiece(board.GetOpponent(player),coordindir))
+                        {
+                            var coordsToJumpTo = coordsToCaptureAndDest(board, board[i], coordindir, player);
+                            if (coordsToJumpTo.Count != 0)
+                            {
+                                res = res.Concat(coordsToJumpTo).ToDictionary(pair => pair.Key, pair => pair.Value);
+                            }
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+        public IDictionary<Coordinate, IList<Coordinate>> coordsToCaptureAndDest( Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
+        {
+            IDictionary<Coordinate, IList<Coordinate>> map = new Dictionary<Coordinate, IList<Coordinate>>();
+            int srcX= srcCoordinate.X;
+            int srcY=srcCoordinate.Y;
+            int oponentX=oponentCoordinate.X;
+            int oponentY=oponentCoordinate.Y;
+            Coordinate dest;
+            int destX, destY;
+
+            //find the direction of the optional capture and set destination accordingly
+            if(srcX<oponentX) destX=oponentX+1;
+            else destX=oponentX-1;
+
+            if(srcY<oponentY) destY=oponentY+1;
+            else destY=oponentY-1;
+            if (InBounds(board, destX, destY))
+            {
+                dest = new Coordinate(board[destX,destY]);
+            }
+            else
+            {
+                return null;
+            }
+            if (dest == null)
+            {
+                return null;
+            }
+            if (dest.Status != Piece.None)
+                    return map;
+            else 
+            {
+                dest.Status = srcCoordinate.Status;
+                IsBecameAKing(board,dest);
+                //find coordinates if we can continue capture from dest
+                IList<Coordinate> moreOptionalDirCaptures = GetMovesInDirection(board, dest, player);
+                if(moreOptionalDirCaptures==null) 
+                {
+                   map.Add(dest,null);
+                    return map;
+                }
+                IDictionary<Coordinate, IList<Coordinate>> temp;
+                foreach(var CID in moreOptionalDirCaptures)
+                {
+                    if(board.IsOpponentPiece(player, CID))
+                    {
+                        temp=coordsToCaptureAndDest(board,dest,CID,player);
+                        if(temp.Values.Count()>map.Values.Count())
+                        {
+                            map=temp;
+                            foreach(var pair in map)
+                            {
+                                map[pair.Key].Add(CID);
+                            }
+                        }
+                        else if (temp.Values.Count()==map.Values.Count())
+                        {                          
+                            map= map.Concat(temp).ToDictionary(pair => pair.Key, pair => pair.Value);
+                            foreach(var pair in temp)
+                            {
+                                map[pair.Key].Add(CID);
+                            }
+                        }                        
+                    }                              
+                }  
+                return map;  
+        }
+    }
     }
 }
