@@ -113,7 +113,7 @@ namespace CheckersModel
         /// <returns></returns>
         public bool IsValidMove(Coordinate srcCoordinate, Coordinate destCoordinate)
         {
-            if ((Math.Abs(srcCoordinate.X - destCoordinate.X) > 1)||(Math.Abs(srcCoordinate.Y - destCoordinate.Y)>1))
+            if ((Math.Abs(srcCoordinate.X - destCoordinate.X) > 1) || (Math.Abs(srcCoordinate.Y - destCoordinate.Y) > 1))
                 return false;
             if (IsAloacted(destCoordinate))
             {
