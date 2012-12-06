@@ -13,7 +13,8 @@ namespace CheckersEngine
         //player=1 means max ,player=0 means min
         public int MinMax(Board board, int depth,Player player, bool minormax, ref Coordinate srcCoord, ref Coordinate destCoord)
         {
-            if (depth >= treeDepth)
+            var robj = new Rules();
+            if ((depth >= treeDepth)||robj.IsBoardLeaf(player,board))
             {
                 var obj = new HeuristicFunction();
                 return obj.Evaluate(board);
@@ -21,8 +22,8 @@ namespace CheckersEngine
             else
             {
                 int min = int.MaxValue;
-                int max = int.MinValue;
-                var robj = new Rules();
+                int max = int.MinValue;  
+              
                 IDictionary<Board, IList<Coordinate>> boardCoordsList = robj.CalculateNewBoardsFromCoordinates(board,player);
                 var minsrcCoord = new Coordinate();
                 var mindestCoord = new Coordinate();
