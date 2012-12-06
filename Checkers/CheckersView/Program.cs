@@ -58,7 +58,7 @@ namespace CheckersView
                 }
                 else if (humanColor != board.GetPlayer(srcCoord))
                 {
-                   Console.WriteLine("Wrong Input");
+                   Console.WriteLine("This is not your piece , please enter cell number which allocated with your piece color");
                    goto HumanTurn;
                 }
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y))&&board.IsValidMove(srcCoord,destCoord))
@@ -68,7 +68,7 @@ namespace CheckersView
                 }
                 else
                 {
-                    Console.WriteLine("Wrong Input");
+                    Console.WriteLine("This is not a valid move, please enter again");
                     goto HumanTurn;
                 }
                 ShowPlayerChange(pcColor);
