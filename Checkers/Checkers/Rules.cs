@@ -123,12 +123,9 @@ namespace CheckersEngine
                             //if an oppenent soldier exsist in this coord try capturing him!
                         else if (board.IsOpponentPiece(player, coordinate))
                         {
-<<<<<<< .mine
+
                             IList<Coordinate> capturesList = coordsToCaptureAndDest(board, board[i], coordinate, player).Keys.ToList();
-=======
-                            IList<Coordinate> capturesList = CalculatesCoordsToJumpTo(board, board[i], coordinate,
-                                                                                      player);
->>>>>>> .r87
+
                             if (capturesList != null)
                             {
                                 // captureList is all the coordinates presenting the board after the capture.
@@ -278,14 +275,9 @@ namespace CheckersEngine
             Coordinate dest;
             int destX, destY;
 
-<<<<<<< .mine
             //find the direction of the optional capture and set destination accordingly
             if(srcX<oponentX) destX=oponentX+1;
             else destX=oponentX-1;
-=======
-            if (srcX < oponentX) destX = oponentX + 1;
-            else destX = oponentX - 1;
->>>>>>> .r87
 
             if (srcY < oponentY) destY = oponentY + 1;
             else destY = oponentY - 1;
@@ -313,11 +305,7 @@ namespace CheckersEngine
                 IList<Coordinate> moreOptionalDirCaptures = GetMovesInDirection(board, dest, player);
                 IList<Coordinate> maxEats = new List<Coordinate>();
                 int max = 0;
-<<<<<<< .mine
                 foreach (var coord in moreOptionalDirCaptures)
-=======
-                foreach (Coordinate coord in moreOptionalCaptures)
->>>>>>> .r87
                 {
                     if (board.IsOpponentPiece(player, coord))
                     {
