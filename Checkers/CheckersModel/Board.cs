@@ -104,23 +104,7 @@ namespace CheckersModel
                 board[position] = value;
             }
         }
-
-        /// <summary>
-        /// Check if valid move
-        /// </summary>
-        /// <param name="srcCoordinate"></param>
-        /// <param name="destCoordinate"></param>
-        /// <returns></returns>
-        public bool IsValidMove(Coordinate srcCoordinate, Coordinate destCoordinate)
-        {
-            if ((Math.Abs(srcCoordinate.X - destCoordinate.X) > 1) || (Math.Abs(srcCoordinate.Y - destCoordinate.Y) > 1))
-                return false;
-            if (IsAloacted(destCoordinate))
-            {
-                return false;
-            }
-            return true;
-        }
+        
 
         /// <summary>
         /// Get the coordinate with row and column values from the board
@@ -185,6 +169,38 @@ namespace CheckersModel
         {
             this[Search(desCoord)].Status = this[Search(orgCoord)].Status;
             this[Search(orgCoord)].Status = Piece.None;
+        }
+
+
+        /// <summary>
+        /// Update board with the current number of soldiers 
+        /// </summary>
+        /// <param name="captured"></param>
+        /// <param name="player"></param>
+        public void UpdateCapturedSoldiers(Coordinate captured, Player player)
+        {
+            if (player == Player.Black)
+            {
+                if (IsKing(captured))
+                {
+                   NumberOfBlcakKings--;
+                }
+                else
+                {
+                    NumberOfBlackPieces--;
+                }
+            }
+            if (player == Player.White)
+            {
+                if (IsKing(captured))
+                {
+                    NumberOfWhiteKings--;
+                }
+                else
+                {
+                    NumberOfWhitePieces--;
+                }
+            }
         }
 
         /// <summary>
