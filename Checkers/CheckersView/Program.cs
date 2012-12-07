@@ -6,6 +6,7 @@ using System.Text;
 using CheckersEngine;
 using CheckersModel;
 using Interfaces;
+using checkersengine;
 
 namespace CheckersView
 {
@@ -107,9 +108,11 @@ namespace CheckersView
 
 
                 ShowPlayerChange(pcColor);
-                var miniMax =new MiniMax();
+                //var miniMax =new MiniMax();
+                var alphaBeta = new Alphabeta();
                 Board temp = new Board();
-                miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
+                alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,ref destCoord, ref temp);
+                //miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
                 {
                     //board.UpdateBoard(srcCoord, destCoord);
