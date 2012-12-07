@@ -19,66 +19,63 @@ namespace CheckersEngine
                 var obj = new HeuristicFunction();
                 return obj.Evaluate(board);
             }
+            int min = int.MaxValue;
+            int max = int.MinValue;
+
+            IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = robj.FindCaptures(board, player);
+            IDictionary<Board, IList<Coordinate>> boardCoordsList;
+            if (capturesAvailable.Count > 0)
+            {
+                boardCoordsList = robj.CreateNewBoards(board, capturesAvailable);
+
+            }
             else
             {
-                int min = int.MaxValue;
-                int max = int.MinValue;
+                boardCoordsList = robj.CalculateNewBoardsFromCoordinates(board,player);
+            }
+            var minsrcCoord = new Coordinate();
+            var mindestCoord = new Coordinate();
+            var maxsrcCoord = new Coordinate();
+            var maxdestCoord = new Coordinate();
+            var minBoard = new Board();
+            var maxBoard = new Board();
 
-                IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = robj.FindCaptures(board, player);
-                IDictionary<Board, IList<Coordinate>> boardCoordsList;
-                if (capturesAvailable.Count > 0)
+            foreach (KeyValuePair<Board,IList<Coordinate>> newState in boardCoordsList)
+            {
+                Coordinate newSrcCoord = new Coordinate(newState.Value[0]); //newSrcCoord was empty
+                Coordinate newDestCoord = new Coordinate( newState.Value[1]); //newDestCoord was empty
+                int res = MinMax(newState.Key, (depth + 1), player, !minormax, ref newSrcCoord, ref newDestCoord, ref updateBoard);
+                if (res > max)
                 {
-                    boardCoordsList = robj.CreateNewBoards(board, capturesAvailable);
-
+                    max = res;
+                    maxsrcCoord = newSrcCoord;
+                    maxdestCoord = newDestCoord;
+                    maxBoard = newState.Key.Copy();
                 }
-                else
+                if (res < min)
                 {
-                    boardCoordsList = robj.CalculateNewBoardsFromCoordinates(board,player);
-                }
-                var minsrcCoord = new Coordinate();
-                var mindestCoord = new Coordinate();
-                var maxsrcCoord = new Coordinate();
-                var maxdestCoord = new Coordinate();
-                var minBoard = new Board();
-                var maxBoard = new Board();
-
-                foreach (KeyValuePair<Board,IList<Coordinate>> newState in boardCoordsList)
-                {
-                    Coordinate newSrcCoord = new Coordinate(newState.Value[0]); //newSrcCoord was empty
-                    Coordinate newDestCoord = new Coordinate( newState.Value[1]); //newDestCoord was empty
-                    int res = MinMax(newState.Key, (depth + 1), player, !minormax, ref newSrcCoord, ref newDestCoord, ref updateBoard);
-                    if (res > max)
-                    {
-                        max = res;
-                        maxsrcCoord = newSrcCoord;
-                        maxdestCoord = newDestCoord;
-                        maxBoard = newState.Key.Copy();
-                    }
-                    if (res < min)
-                    {
-                        min = res;
-                        minsrcCoord = newSrcCoord;
-                        mindestCoord = newDestCoord;
-                        minBoard = newState.Key.Copy();
-                    }
-
+                    min = res;
+                    minsrcCoord = newSrcCoord;
+                    mindestCoord = newDestCoord;
+                    minBoard = newState.Key.Copy();
                 }
 
-                if (minormax)
-                {
-                    srcCoord = maxsrcCoord;
-                    destCoord = maxdestCoord;
-                    updateBoard = maxBoard.Copy();
-                    return max;
+            }
+
+            if (minormax)
+            {
+                srcCoord = maxsrcCoord;
+                destCoord = maxdestCoord;
+                updateBoard = maxBoard.Copy();
+                return max;
                    
-                }
-                else
-                {
-                    srcCoord = minsrcCoord;
-                    destCoord = mindestCoord;
-                    updateBoard = minBoard.Copy();
-                    return min;
-                }
+            }
+            else
+            {
+                srcCoord = minsrcCoord;
+                destCoord = mindestCoord;
+                updateBoard = minBoard.Copy();
+                return min;
             }
         }
     }
