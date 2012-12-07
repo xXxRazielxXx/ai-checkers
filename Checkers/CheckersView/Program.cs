@@ -34,12 +34,13 @@ namespace CheckersView
             bool firstTurn = true;
             var rule = new Rules();
             var print = new PrintBoardState();
-            int depth = 7;
+            int depth = 7;            
             while (true)
             {
                 //first turn is always the human's
                 Console.WriteLine("Your turn, please enter a move in format 'from cell number' 'to cell number'");
             HumanTurn:
+                bool capMove = false;
                 var input=Console.ReadLine();      
                 IList<Coordinate> coords = ParseStrToCoords(input, board);
                 if (coords == null)
@@ -61,9 +62,29 @@ namespace CheckersView
                    Console.WriteLine("This is not your piece , please enter cell number which allocated with your piece color");
                    goto HumanTurn;
                 }
-                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y))&&board.IsValidMove(srcCoord,destCoord))
+                IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board, humanColor);
+                if (capturesAvailable.Count > 0)
                 {
-                    board.UpdateBoard(srcCoord,destCoord);// What if human captured a pc soldier
+                    IList<Coordinate> captures = MapContainsCoords(capturesAvailable, srcCoord, destCoord);
+                    if (captures.Count == 0)
+                    {
+                        Console.WriteLine("You must capture maximum opponent soldiers on board");
+                        goto HumanTurn;
+                    }
+                    else
+                    {
+                        foreach (var coordinate in captures)
+                        {
+                            board[coordinate.X,coordinate.Y].Status=Piece.None;
+                            board.UpdateCapturedSoldiers(coordinate,pcColor);
+                            capMove = true;
+                        }
+                    }
+                }                
+                if (capMove || rule.IsValidMove(board,srcCoord,destCoord, humanColor))
+                {
+                    board.UpdateBoard(srcCoord,destCoord);
+                    rule.IsBecameAKing(board, board[destCoord.X, destCoord.Y]);
                     print.DrawBoard(board);
                 }
                 else
@@ -71,15 +92,31 @@ namespace CheckersView
                     Console.WriteLine("This is not a valid move, please enter again");
                     goto HumanTurn;
                 }
+
+                GameState game = GetGameState(humanColor, board);
+                if (game == GameState.Lost)
+                {
+                    Console.WriteLine("{0} Lost the game and {1} won", humanColor.ToString(), pcColor.ToString());
+                    break;
+                }
+                if (game == GameState.Won)
+                {
+                    Console.WriteLine("{0} Won", humanColor.ToString());
+                    break;
+                }
+
+
                 ShowPlayerChange(pcColor);
                 var miniMax =new MiniMax();
-                miniMax.MinMax(board, depth, pcColor, true,ref srcCoord,ref destCoord);
-                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)) && board.IsValidMove(srcCoord, destCoord))
+                Board temp = new Board();
+                miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
+                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
                 {
-                    board.UpdateBoard(srcCoord, destCoord);
+                    //board.UpdateBoard(srcCoord, destCoord);
+                    board = temp.Copy();
                     print.DrawBoard(board);
                 }
-                GameState game = GetGameState(humanColor, board);
+                game = GetGameState(humanColor, board);
                 if (game == GameState.Lost)
                 {
                     Console.WriteLine("{0} Lost the game and {1} won",humanColor.ToString(),pcColor.ToString());
@@ -88,6 +125,7 @@ namespace CheckersView
                 if (game == GameState.Won)
                 {
                     Console.WriteLine("{0} Won",humanColor.ToString());
+                    break;
                 }
             }
         }
@@ -140,6 +178,29 @@ namespace CheckersView
             {
                 return GameState.Undetermined;
             }
+        }
+
+
+        /// <summary>
+        /// Checks if the move (source, dest) is contained in the map
+        /// </summary>
+        /// <param name="capturesAvailable"></param>
+        /// <param name="srcCoord"></param>
+        /// <param name="destCoord"></param>
+        /// <returns> if move contained in map returns the captured coordinates, else return empty (move isn't in map)</returns>
+        public IList<Coordinate> MapContainsCoords(IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable,
+                                      Coordinate srcCoord, Coordinate destCoord)
+        {
+            IList<Coordinate> captures=new List<Coordinate>();
+            foreach (var item in capturesAvailable)
+            {
+                if (item.Key.First().X == srcCoord.X && item.Key.First().Y == srcCoord.Y && item.Key.Last().X == destCoord.X && item.Key.Last().Y == destCoord.Y)
+                {
+                    captures = item.Value;
+                    return captures;
+                }
+            }
+            return captures;
         }
 
 
