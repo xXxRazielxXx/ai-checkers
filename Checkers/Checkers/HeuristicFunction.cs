@@ -104,7 +104,7 @@ namespace CheckersEngine
         {
             Rules rule = new Rules();
             IList<Coordinate> coordinatesinDirection = rule.GetMovesInDirection(board, coordinate, player);
-            IDictionary<Coordinate, IList<Coordinate>> captures = new Dictionary<Coordinate, IList<Coordinate>>();
+            IDictionary<IList<Coordinate>, Coordinate> captures = new Dictionary<IList<Coordinate>,Coordinate>();
             int max = 0;
             foreach (var cid in coordinatesinDirection)
             {
@@ -113,9 +113,9 @@ namespace CheckersEngine
                     captures = rule.CoordsToCaptureAndDest(board, coordinate, cid, player);
                     if (captures.Count > 0)
                     {
-                        if (captures.ElementAt(0).Value.Count > max)
+                        if (captures.ElementAt(0).Key.Count > max)
                         {
-                            max = captures.ElementAt(0).Value.Count;
+                            max = captures.ElementAt(0).Key.Count;
                         }
                     }
                 }
