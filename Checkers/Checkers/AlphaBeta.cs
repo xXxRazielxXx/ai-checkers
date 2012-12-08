@@ -15,7 +15,7 @@ namespace checkersengine
             if (depth == 0 || rule.IsBoardLeaf(player, board)) // is node a terminal node
             {
                 var obj = new HeuristicFunction();
-                return obj.Evaluate(board);
+                return obj.Evaluate(board,player);
             }
             IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = robj.FindCaptures(board, player);
             IDictionary<Board, IList<Coordinate>> boardCoordsList;
@@ -41,7 +41,7 @@ namespace checkersengine
                 {                  
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
-                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard);                 
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, board.GetOpponent(player), !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard);                 
                     if (res > alpha)
                     {                        
                         alpha = res;
@@ -66,7 +66,7 @@ namespace checkersengine
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
 
-                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard);                             
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, board.GetOpponent(player), !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard);                             
                     if (res < beta)
 
                     {

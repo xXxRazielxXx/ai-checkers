@@ -9,7 +9,7 @@ namespace CheckersEngine
 {
     public class MiniMax
     {
-        private const int treeDepth = 8;
+        private const int treeDepth = 10;
         //player=1 means max ,player=0 means min
         public int MinMax(Board board, int depth,Player player, bool minormax, ref Coordinate srcCoord, ref Coordinate destCoord,ref Board updateBoard)
         {
@@ -17,7 +17,7 @@ namespace CheckersEngine
             if ((depth >= treeDepth)||robj.IsBoardLeaf(player,board))
             {
                 var obj = new HeuristicFunction();
-                return obj.Evaluate(board);
+                return obj.Evaluate(board,player);
             }
             int min = int.MaxValue;
             int max = int.MinValue;
@@ -44,7 +44,7 @@ namespace CheckersEngine
             {
                 Coordinate newSrcCoord = new Coordinate(newState.Value[0]); //newSrcCoord was empty
                 Coordinate newDestCoord = new Coordinate( newState.Value[1]); //newDestCoord was empty
-                int res = MinMax(newState.Key, (depth + 1), player, !minormax, ref newSrcCoord, ref newDestCoord, ref updateBoard);
+                int res = -MinMax(newState.Key, (depth + 1), board.GetOpponent(player), minormax, ref newSrcCoord, ref newDestCoord, ref updateBoard);
                 if (res > max)
                 {
                     max = res;
@@ -52,31 +52,29 @@ namespace CheckersEngine
                     maxdestCoord = newDestCoord;
                     maxBoard = newState.Key.Copy();
                 }
-                if (res < min)
-                {
-                    min = res;
-                    minsrcCoord = newSrcCoord;
-                    mindestCoord = newDestCoord;
-                    minBoard = newState.Key.Copy();
-                }
+                //if (res < min)
+                //{
+                //    min = res;
+                //    minsrcCoord = newSrcCoord;
+                //    mindestCoord = newDestCoord;
+                //    minBoard = newState.Key.Copy();
+                //}
 
             }
 
-            if (minormax)
-            {
                 srcCoord = maxsrcCoord;
                 destCoord = maxdestCoord;
                 updateBoard = maxBoard.Copy();
                 return max;
                    
-            }
-            else
-            {
-                srcCoord = minsrcCoord;
-                destCoord = mindestCoord;
-                updateBoard = minBoard.Copy();
-                return min;
-            }
+            
+            //else
+            //{
+            //    srcCoord = minsrcCoord;
+            //    destCoord = mindestCoord;
+            //    updateBoard = minBoard.Copy();
+            //    return min;
+            //}
         }
     }
 }

@@ -125,7 +125,7 @@ namespace Interpretor
                     }
                     if (boardState.BoardCells[i, j] == Piece.BlackKing)
                     {
-                        temp.NumberOfBlcakKings++;
+                        temp.NumberOfBlackKings++;
                     }
                     if (boardState.BoardCells[i, j] == Piece.WhitePiece)
                     {
