@@ -38,41 +38,39 @@ namespace checkersengine
             if (maxplayer)
             {
                 foreach (var newState in boardCoordsList) //implement node
-                {
-                    int max = int.MinValue;
+                {                  
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
                     int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard);                 
-                    if (res > max)
-                    {
+                    if (res > alpha)
+                    {                        
+                        alpha = res;
                         maxsrcCoord = newSrcCoord;
                         maxdestCoord = newDestCoord;
-                         maxBoard = newState.Key.Copy();
+                        maxBoard = newState.Key.Copy();
                     }
                     if (beta < alpha)
                     {
                         break;
-                    }
-                    srcCoord = maxsrcCoord;
-                    destCoord = maxdestCoord;
-                    updateBoard = maxBoard.Copy();
-    
+                    }                       
                 }
-
+                srcCoord = maxsrcCoord;
+                destCoord = maxdestCoord;
+                updateBoard = maxBoard.Copy();
                 return alpha;
             }
             else
             {
                 foreach (var newState in boardCoordsList) //implement node
-                {
-                    int min = int.MaxValue;
+                {                   
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
 
                     int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, player, !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard);                             
-                    if (res < min)
+                    if (res < beta)
 
                     {
+                        beta = res;
                         minsrcCoord = newSrcCoord;
                         mindestCoord = newDestCoord;
                         minBoard = newState.Key.Copy();
