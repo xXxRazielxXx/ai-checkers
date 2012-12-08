@@ -35,7 +35,7 @@ namespace CheckersView
             bool firstTurn = true;
             var rule = new Rules();
             var print = new PrintBoardState();
-            int depth = 7;            
+            int depth = 3;            
             while (true)
             {
                 //first turn is always the human's
