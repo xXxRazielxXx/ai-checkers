@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlphaBeta.cs" />
+    <Compile Include="FileEngine.cs" />
     <Compile Include="HeuristicFunction.cs" />
     <Compile Include="MiniMax.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
