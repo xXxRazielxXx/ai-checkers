@@ -47,6 +47,10 @@ namespace Interfaces
     {
         Piece[,] BoardCells { get; set; }
         Board Board { get; set; }
+        Piece[,] ConvertBoardToBoardState(Board ourBoard);
+        Board ConvertBoardStateToBoard(IBoardState boardState);
+        Point ConvertPointToCoordinate(int x, int y);
+        Point ConvertMoveTypeToCoordinate(Point position, MoveType move);
         IBoardState GetBoardState(Player player, MoveType moveType, Point position);
         GameState GetGameState(Player player);
     }
