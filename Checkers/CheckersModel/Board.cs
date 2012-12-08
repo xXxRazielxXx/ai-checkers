@@ -45,8 +45,8 @@ namespace CheckersModel
             }
         }
 
-        public int NumberOfWhitePieces { set; get; }
-        public int NumberOfBlackPieces { set; get; }
+        public int NumberOfWhitePieces { set; get; } // only non king soldiers
+        public int NumberOfBlackPieces { set; get; } // only non king soldiers
         public int NumberOfWhiteKings { set; get; }
         public int NumberOfBlcakKings { set; get; }
 
