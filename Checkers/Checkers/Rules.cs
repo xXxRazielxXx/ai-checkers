@@ -222,7 +222,7 @@ namespace CheckersEngine
             if ((board[index = board.Search(coordinate)].Status == Piece.BlackPiece) && (coordinate.X == 1))
             {
                 board[index].Status = Piece.BlackKing;
-                board.NumberOfBlcakKings++;
+                board.NumberOfBlackKings++;
                 board.NumberOfBlackPieces--;
             }
             else if ((board[index = board.Search(coordinate)].Status == Piece.WhitePiece) && (coordinate.X == board.Rows))
@@ -254,7 +254,7 @@ namespace CheckersEngine
                     }
                 case Player.Black:
                     {
-                        return board.NumberOfBlcakKings + board.NumberOfBlackPieces;
+                        return board.NumberOfBlackKings + board.NumberOfBlackPieces;
                     }
             }
 
