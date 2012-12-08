@@ -115,7 +115,6 @@ namespace CheckersView
                 //miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
                 {
-                    //board.UpdateBoard(srcCoord, destCoord);
                     board = temp.Copy();
                     print.DrawBoard(board);
                 }

@@ -7,6 +7,7 @@ using System.Text;
 using CheckersEngine;
 using CheckersModel;
 using Interfaces;
+using checkersengine;
 
 
 namespace Interpretor
@@ -29,11 +30,24 @@ namespace Interpretor
     /// </summary>
     public class Move : IMove
     {
-        public IBoardState Board { get; private set; }
+        public IBoardState Board { get;  set; }
 
-        public Move(IBoardState board)
+        public Move(IBoardState board,Player player)
         {
-            this.Board = board;
+            Rules rule = new Rules();
+            var ourBoard = board.ConvertBoardStateToBoard(board);
+            var alphaBeta = new Alphabeta();
+            Board temp = new Board();
+            var srcCoord = new Coordinate();
+            var destCoord = new Coordinate();
+            int depth = 5;
+            alphaBeta.AlphaBeta(ourBoard, depth, Int32.MinValue, Int32.MaxValue, player, true, ref srcCoord, ref destCoord, ref temp);
+            if ((rule.InBounds(ourBoard, srcCoord.X, srcCoord.Y)) && (rule.InBounds(ourBoard, destCoord.X, destCoord.Y)))
+            {
+                ourBoard = temp.Copy();
+                board.BoardCells= board.ConvertBoardToBoardState(ourBoard);
+                Board = board;
+            }
         }
     }
 
@@ -58,7 +72,7 @@ namespace Interpretor
         /// <returns></returns>
         public IMove GetBoardMove(IBoardState boardState)
         {
-            IMove move = new Move(boardState);
+            IMove move = new Move(boardState,playerColor);
             return move;
         }
     }
@@ -91,9 +105,9 @@ namespace Interpretor
             int k = 32;
             for (int i = 0; i < ourBoard.Rows; i++)
             {
-                int j = i%2 == 0 ? 1 : 0;
+                int j = i%2 == 0 ? 7 : 6;
 
-                for (; j < ourBoard.Columns; k--, j += 2)
+                for (; j >=0; k--, j -= 2)
                 {
                     BoardCells[i, j] = ourBoard[k].Status;
                 }
@@ -108,37 +122,38 @@ namespace Interpretor
         /// <returns></returns>
         public Board ConvertBoardStateToBoard(IBoardState boardState)
         {
-            var temp = new Board();
-            int k = 1;
-            for (int i = 0; i < temp.Rows; i++)
+            
+            int k = 32;
+            for (int i = 0; i < board.Rows; i++)
             {
-                int j = i%2 == 0 ? 1 : 0;
+                int j = i%2 == 0 ? 7 : 6;
 
-                for (; j < temp.Columns; k++, j += 2)
+                for (int shift=0; j >=0; k--, j -= 2, shift++)
                 {
-                    temp[k].Status = boardState.BoardCells[i, j];
-                    temp[k].X = i + 1;
-                    temp[k].Y = j;
+                    k = (8-i)*4 - shift;
+                    board[k].Status = boardState.BoardCells[i, j];
+                    board[k].X = 8-i;
+                    board[k].Y = j+1;
                     if (boardState.BoardCells[i, j] == Piece.BlackPiece)
                     {
-                        temp.NumberOfBlackPieces++;
+                        board.NumberOfBlackPieces++;
                     }
                     if (boardState.BoardCells[i, j] == Piece.BlackKing)
                     {
-                        temp.NumberOfBlackKings++;
+                        board.NumberOfBlackKings++;
                     }
                     if (boardState.BoardCells[i, j] == Piece.WhitePiece)
                     {
-                        temp.NumberOfWhitePieces++;
+                        board.NumberOfWhitePieces++;
                     }
                     if (boardState.BoardCells[i, j] == Piece.WhiteKing)
                     {
-                        temp.NumberOfWhiteKings++;
+                        board.NumberOfWhiteKings++;
                     }
                 }
             }
-            temp.Columns = board.Rows = 8;
-            temp.Size = 32;
+            //temp.Columns = board.Rows = 8;
+            //temp.Size = 32;
 
             return board;
         }
@@ -153,16 +168,7 @@ namespace Interpretor
         /// <returns></returns>
         public Point ConvertPointToCoordinate(int x, int y)
         {
-            var p = new Point {X = x, Y = y};
-            if (x%2 == 0 && y%2 != 0)
-            {
-                p.X++;
-            }
-            if (x%2 != 0 && y%2 == 0)
-            {
-                p.X++;
-                p.Y += 2;
-            }
+            var p = new Point { X = board.rows - y, Y = x+1 };
             return p;
         }
 
@@ -214,13 +220,12 @@ namespace Interpretor
         /// <returns></returns>
         public IBoardState GetBoardState(Player player, MoveType moveType, Point position)
         {
-            IBoardState boardState = new BoardState(8);
-            boardState.Board = ConvertBoardStateToBoard(this);
-            position = ConvertPointToCoordinate(position.X, position.Y);
+            this.Board = ConvertBoardStateToBoard(this);
             var point = ConvertMoveTypeToCoordinate(position, moveType);
+            position = ConvertPointToCoordinate(position.X, position.Y);
             board.UpdateBoard(board[position.X, position.Y], board[point.X, point.Y]);
-            boardState.BoardCells = ConvertBoardToBoardState(board);
-            return boardState;
+            this.BoardCells = ConvertBoardToBoardState(board);
+            return this;
         }
 
         public GameState GetGameState(Player player)
