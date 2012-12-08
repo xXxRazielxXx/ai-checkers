@@ -144,7 +144,7 @@ namespace CheckersEngine
                         else if (board.IsOpponentPiece(player, coordinate))
                         {
 
-                            IList<Coordinate> capturesList = CoordsToCaptureAndDest(board, board[i], coordinate, player).Keys.ToList();
+                            IList<Coordinate> capturesList = CoordsToCaptureAndDest(board, board[i], coordinate, player).Values.ToList();
 
                             if (capturesList.Count!=0)
                             {
@@ -313,7 +313,7 @@ namespace CheckersEngine
                 }
                 else if (srcBoard.GetPlayer(move) != player)
                 {
-                    IDictionary<Coordinate, IList<Coordinate>> captures = CoordsToCaptureAndDest(srcBoard, coordinate,
+                    IDictionary<IList<Coordinate>,Coordinate> captures = CoordsToCaptureAndDest(srcBoard, coordinate,
                                                                                                  move, player);
                     if (captures.Count > 0)
                     {
@@ -421,7 +421,7 @@ namespace CheckersEngine
                             {
                                 foreach (var item in coordsToJumpTo)
                                 {
-                                    res.Add(new List<Coordinate>{board[i],item.Key},item.Value); //first - source , second - dest in first list
+                                    res.Add(new List<Coordinate>{board[i],item.Value},item.Key); //first - source , second - dest in first list
                                 }
                                 //res = res.Concat(coordsToJumpTo).ToDictionary(pair => pair.Key, pair => pair.Value);
                             }
@@ -441,9 +441,9 @@ namespace CheckersEngine
         /// <param name="oponentCoordinate"></param>
         /// <param name="player"></param>
         /// <returns> a dictionary of dest coords and lists of captures</returns>
-        public IDictionary<Coordinate, IList<Coordinate>> CoordsToCaptureAndDest( Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
+        public IDictionary<IList<Coordinate>, Coordinate> CoordsToCaptureAndDest(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
         {
-            IDictionary<Coordinate, IList<Coordinate>> map = new Dictionary<Coordinate, IList<Coordinate>>();
+            IDictionary<IList<Coordinate>, Coordinate> map = new Dictionary<IList<Coordinate>,Coordinate>();
             int srcX= srcCoordinate.X;
             int srcY=srcCoordinate.Y;
             int oponentX=oponentCoordinate.X;
@@ -478,7 +478,7 @@ namespace CheckersEngine
             }
             //find coordinates if we can continue capture from dest
             IList<Coordinate> moreOptionalDirCaptures = GetMovesInDirection(board, dest, player);
-            map.Add(dest, new List<Coordinate> {oponentCoordinate});
+            map.Add(new List<Coordinate> {oponentCoordinate}, dest);
             if(moreOptionalDirCaptures.Count==0) 
             {              
                 return map;
@@ -487,27 +487,34 @@ namespace CheckersEngine
             {
                 if(board.IsOpponentPiece(player, cid))
                 {
-                    IDictionary<Coordinate, IList<Coordinate>> temp = CoordsToCaptureAndDest(board,dest,cid,player);
-                    if(temp.Values.Count()>map.Values.Count())
-                    {
+                    IDictionary<IList<Coordinate>, Coordinate> temp = CoordsToCaptureAndDest(board,dest,cid,player);
+                    if(temp.Keys.Count()>map.Keys.Count())
+                    {                       
                         map=temp;
-                        if (map.ContainsKey(dest))
-                            map.Remove(dest);
+                        if (map.Values.Contains(dest))
+                        {
+                            var item = map.FirstOrDefault( (x => x.Value.X == dest.X && x.Value.Y == dest.Y));
+                            map.Remove(item.Key);
+                        }
+                            
 
                     }
-                    else if (temp.Values.Count()==map.Values.Count())
+                    else if (temp.Keys.Count()==map.Keys.Count())
                     {                          
                         map= map.Concat(temp).ToDictionary(pair => pair.Key, pair => pair.Value);
-                        if (map.ContainsKey(dest))
-                            map.Remove(dest);
+                        if (map.Values.Contains(dest))
+                        {
+                            var item = map.FirstOrDefault((x => x.Value.X == dest.X && x.Value.Y == dest.Y));
+                            map.Remove(item.Key);
+                        }
                     }
                 }
             }
-            if (!map.ContainsKey(dest))
+            if (!map.Values.Contains(dest))
             {
                 foreach (var item in map)
                 {
-                    item.Value.Add(oponentCoordinate);
+                    item.Key.Add(oponentCoordinate);
                 }
             }
             if(board[oponentCoordinate.X, oponentCoordinate.Y].Status == Piece.None)
