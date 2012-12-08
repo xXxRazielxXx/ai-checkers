@@ -48,7 +48,7 @@ namespace CheckersModel
         public int NumberOfWhitePieces { set; get; } // only non king soldiers
         public int NumberOfBlackPieces { set; get; } // only non king soldiers
         public int NumberOfWhiteKings { set; get; }
-        public int NumberOfBlcakKings { set; get; }
+        public int NumberOfBlackKings { set; get; }
 
         /// <summary>
         ///     Get the number of rows on the board
@@ -183,7 +183,7 @@ namespace CheckersModel
             {
                 if (IsKing(captured))
                 {
-                   NumberOfBlcakKings--;
+                   NumberOfBlackKings--;
                 }
                 else
                 {
@@ -372,7 +372,7 @@ namespace CheckersModel
             }
             nboard.NumberOfWhitePieces = this.NumberOfWhitePieces;
             nboard.NumberOfBlackPieces = this.NumberOfBlackPieces;
-            nboard.NumberOfBlcakKings = this.NumberOfBlcakKings;
+            nboard.NumberOfBlackKings = this.NumberOfBlackKings;
             nboard.NumberOfWhiteKings = this.NumberOfWhiteKings;
             nboard.Size = this.Size;
             nboard.Rows = this.Rows;
