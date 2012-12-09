@@ -17,11 +17,12 @@ namespace CheckersEngine
         /// </summary>
         /// <param name="srcCoordinate"></param>
         /// <param name="destCoordinate"></param>
-        public void WriteToFile(Coordinate srcCoordinate, Coordinate destCoordinate)
+        /// <param name="path"></param>
+        public void WriteToFile(Coordinate srcCoordinate, Coordinate destCoordinate, string path)
         {
             while (true)
             {
-                string path = @"F:\Projects\Checkers\sync.txt";
+                //string path = @"F:\Projects\Checkers\sync.txt";
                 if (File.Exists(path))
                 {
                     FileInfo fileInfo = new FileInfo(path);
