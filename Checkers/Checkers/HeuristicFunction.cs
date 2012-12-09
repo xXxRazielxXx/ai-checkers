@@ -17,6 +17,8 @@ namespace CheckersEngine
             int score = 0;
             int safeBlack = 0;
             int safeWhite = 0;
+            int BlackscloseToKing = 0;
+            int whitescloseToKing=0;
                  
             const int kingConstant = 130;
             const int soldierConstant = 100;
@@ -35,14 +37,19 @@ namespace CheckersEngine
                 if (board.GetPlayer(board[i]) == Player.Black)
                 {
                     safeBlack += Safeness(board, board[i], Player.Black) * 10;
+                    BlackscloseToKing += CloseToBecomeAKing(board[i])*5;
                 }
                 else if (board.GetPlayer(board[i]) == Player.White)
                 {
                     safeWhite += Safeness(board,board[i], Player.White)*10;
+                    whitescloseToKing += CloseToBecomeAKing(board[i]) * 5;
+
                 }
             }
             int safe = safeBlack - safeWhite;
+            int closeToking = BlackscloseToKing - whitescloseToKing;
             score += safe;
+            score += closeToking;
 
 
             const int RANDOMIZER_MIN = -10;
@@ -192,7 +199,7 @@ namespace CheckersEngine
             }
             else
             {
-                if (coord.Status == Piece.BlackKing)
+                if (coord.Status == Piece.BlackPiece)
                 {
                     return 8 - coord.X;
                 }
