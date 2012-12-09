@@ -157,7 +157,7 @@ namespace CheckersEngine
                                     IList<Coordinate> temp = new List<Coordinate>();
 
                                     temp.Add(nBoard[nBoard.Search(board[i])]);
-                                    temp.Add(coord);
+                                    temp.Add(nBoard[nBoard.Search(coord)]);
                                     newBoardsPositions.Add(nBoard, temp);
                                 }
                             }
@@ -170,7 +170,7 @@ namespace CheckersEngine
                             IsBecameAKing(nBoard, coordinate);
                             IList<Coordinate> temp = new List<Coordinate>();
                             temp.Add(nBoard[nBoard.Search(board[i])]);
-                            temp.Add(coordinate);
+                            temp.Add(nBoard[nBoard.Search(coordinate)]);
                             newBoardsPositions.Add(nBoard, temp);
                         }
                     }
@@ -453,10 +453,10 @@ namespace CheckersEngine
         }
 
         /// <summary>
-        /// Create new boards
+        /// Create new boards if there are captures
         /// </summary>
         /// <param name="srcBoard"></param>
-        /// <param name="capturesAvailable"></param>
+        /// <param name="capturesAvailable">first list is source&dest and second list is captured coords</param>
         /// <returns></returns>
         public IDictionary<Board, IList<Coordinate>> CreateNewBoards(Board srcBoard,IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable)
         {
@@ -464,7 +464,7 @@ namespace CheckersEngine
             foreach (var item in capturesAvailable)
             {
                 Board nBoard = srcBoard.Copy();
-                nBoard.UpdateBoard(nBoard[nBoard.Search(item.Key.First())], item.Key.Last());
+                nBoard.UpdateBoard(nBoard[nBoard.Search(item.Key.First())], item.Key.Last()); // update board from(board[i]) to where(item.key.lasdt()) 
                 IsBecameAKing(nBoard, item.Key.Last());
                 Player player = nBoard.GetPlayer(item.Key.First());
                 Player oPlayer = nBoard.GetOpponent(player);
@@ -475,12 +475,17 @@ namespace CheckersEngine
                 }
                 IList<Coordinate> temp = new List<Coordinate>();
                 temp.Add(nBoard[nBoard.Search(item.Key.First())]);
-                temp.Add(item.Key.Last());
+                temp.Add(nBoard[nBoard.Search(item.Key.Last())]);
                 res.Add(nBoard,temp);
             }
             return res;
         }
 
+        /// <summary>
+        /// Define depth according to number of soldiers on board
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public int DefineDepth(Board board)
         {
             int num = board.NumOfSolOnBoard();
