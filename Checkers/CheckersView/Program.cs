@@ -124,7 +124,7 @@ namespace CheckersView
                 //var miniMax =new MiniMax();
                 var alphaBeta = new Alphabeta();
                 Board temp = new Board();                
-                //depth = rule.DefineDepth(board);
+                depth = rule.DefineDepth(board);
                 alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,ref destCoord, ref temp);
                 //miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
@@ -262,12 +262,12 @@ namespace CheckersView
                     while (oppMove.Count == 0)
                     {
                         oppMove = file.ReadFromFile(stream,board, path);
-                    }
+                    }                    
                     srcCoord = oppMove.First();
                     destCoord = oppMove.Last();
-                    if (board.GetPlayer(srcCoord) != oppColor)
+                    if (board.GetPlayer(destCoord) != oppColor)
                     {
-                        Console.WriteLine("This is Not your piece");
+                        //Console.WriteLine("This is Not your piece");
                         goto OppTurn;
                     }
                     IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board,
