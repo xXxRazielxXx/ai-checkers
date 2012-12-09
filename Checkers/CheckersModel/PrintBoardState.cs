@@ -16,7 +16,7 @@ namespace CheckersModel
             drawBoard(board, Console.Out);
         }
 
-        public void drawBoard(Board board, TextWriter writer)
+        private void drawBoard(Board board, TextWriter writer)
         {
             var buf1 = new StringBuilder();
             var buf2 = new StringBuilder();            
