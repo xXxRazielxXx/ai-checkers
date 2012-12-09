@@ -268,6 +268,7 @@ namespace CheckersView
                     if (board.GetPlayer(destCoord) != oppColor)
                     {
                         //Console.WriteLine("This is Not your piece");
+                        stream.Close();
                         goto OppTurn;
                     }
                     IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board,
