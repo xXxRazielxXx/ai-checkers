@@ -18,7 +18,7 @@ namespace CheckersEngine
         /// <param name="srcCoordinate"></param>
         /// <param name="destCoordinate"></param>
         /// <param name="path"></param>
-        public void WriteToFile(Coordinate srcCoordinate, Coordinate destCoordinate, string path)
+        public void WriteToFile(FileStream stream ,Coordinate srcCoordinate, Coordinate destCoordinate, string path)
         {
             while (true)
             {
@@ -31,8 +31,7 @@ namespace CheckersEngine
                         Console.WriteLine("Access is denied");
                     }
                 }
-                using (var stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
-                {
+
                     byte[] byteData = null;
                     string source = "[" + srcCoordinate.X.ToString(CultureInfo.InvariantCulture) + "," +
                                     srcCoordinate.Y.ToString(CultureInfo.InvariantCulture) + "]";
@@ -43,7 +42,7 @@ namespace CheckersEngine
                     byteData = Encoding.ASCII.GetBytes(result);
                     stream.Write(byteData, 0, byteData.Length);
                     break;
-                }
+                
             }
         }
 
