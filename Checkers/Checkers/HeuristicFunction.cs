@@ -10,15 +10,52 @@ namespace CheckersEngine
     public class HeuristicFunction
     {
         private readonly Random random=new Random();
-        // calculates the pieces 'safeness' 
-        // assumption: the computer is the black player
-        public int Evaluate (Board board, Player player)
+
+        public int Evaluate(Board board,Player player)
+        {
+            const int kingConstant = 130;
+            const int soldierConstant = 100;
+            int score = 0;
+            int blackCaptures = 0;
+            int whiteCaptures = 0;
+
+            int numWhiteKings = board.NumberOfWhiteKings;
+            int numBlackKings = board.NumberOfBlackKings;
+            int numOfWhiteSold = board.NumberOfWhitePieces; 
+            int numOfBlackSold = board.NumberOfBlackPieces;
+
+            int blackScore = (numOfBlackSold * soldierConstant) + (numBlackKings * kingConstant);
+            int whiteScore = (numOfWhiteSold * soldierConstant) + (numWhiteKings * kingConstant);
+            score += ((blackScore - whiteScore) * 200) / (blackScore + whiteScore);
+            score += blackScore - whiteScore;
+
+            for (int i = 1; i <= 32; i++)
+            {
+                if (board.GetPlayer(board[i]) == Player.Black)
+                {                   
+                    blackCaptures += (CanCapture(board, board[i], Player.Black)/(numOfBlackSold+numBlackKings)) * 30;
+                }
+                else if (board.GetPlayer(board[i]) == Player.White)
+                {                    
+                    whiteCaptures += (CanCapture(board, board[i], Player.White)/(numOfWhiteSold+numWhiteKings)) * 30;
+                }
+            }
+            score += (blackScore - whiteCaptures);
+            return (player == Player.Black) ? score : -score;
+
+        }
+
+        public int Evaluate_old (Board board, Player player)
         {
             int score = 0;
             int safeBlack = 0;
             int safeWhite = 0;
             int BlackscloseToKing = 0;
             int whitescloseToKing=0;
+            int whiteCanBeCaptured = 0;
+            int blackCanBeCaptured = 0;
+            int blackCaptures = 0;
+            int whiteCaptures = 0;
                  
             const int kingConstant = 130;
             const int soldierConstant = 100;
@@ -36,25 +73,40 @@ namespace CheckersEngine
             {
                 if (board.GetPlayer(board[i]) == Player.Black)
                 {
-                    safeBlack += Safeness(board, board[i], Player.Black) * 10;
+                   // safeBlack += Safeness(board, board[i], Player.Black) * 10;
                     BlackscloseToKing += CloseToBecomeAKing(board[i])*5;
+                    blackCanBeCaptured += CanBeCaptured(board, board[i], Player.Black)*60;
+                    blackCaptures += CanCapture(board, board[i], Player.Black)*30;
                 }
                 else if (board.GetPlayer(board[i]) == Player.White)
                 {
-                    safeWhite += Safeness(board,board[i], Player.White)*10;
+                    //safeWhite += Safeness(board,board[i], Player.White)*10;
                     whitescloseToKing += CloseToBecomeAKing(board[i]) * 5;
+                    whiteCanBeCaptured += CanBeCaptured(board, board[i], Player.White)*60;
+                    whiteCaptures += CanCapture(board, board[i], Player.White)*30;
 
                 }
             }
-            int safe = safeBlack - safeWhite;
+            //int safe = safeBlack - safeWhite;
             int closeToking = BlackscloseToKing - whitescloseToKing;
-            score += safe;
+            int canBeCapture = blackCanBeCaptured - whiteCanBeCaptured;
+            int captures = blackCaptures -whiteCaptures;
+            //score += safe;
             score += closeToking;
-
+            score += canBeCapture;
+            score += captures;
 
             const int RANDOMIZER_MIN = -10;
             const int RANDOMIZER_MAX = 10;
             return (player == Player.Black) ? score : -score + random.Next(RANDOMIZER_MIN, RANDOMIZER_MAX);
+            //if (player == Player.Black)
+            //{
+            //    return score - whiteCanBeCaptured;
+            //}
+            //else
+            //{
+            //    return -score + blackCanBeCaptured;
+            //}
         }
 
         ///// <summary>
