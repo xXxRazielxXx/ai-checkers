@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CheckersEngine;
 using CheckersModel;
 
@@ -37,7 +38,7 @@ namespace checkersengine
             var maxBoard = new Board();
             if (maxplayer)
             {
-                foreach (var newState in boardCoordsList) //implement node
+                foreach (var newState in boardCoordsList) 
                 {                  
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
@@ -45,11 +46,11 @@ namespace checkersengine
                     if (res > alpha)
                     {                        
                         alpha = res;
-                        maxsrcCoord = newSrcCoord;
-                        maxdestCoord = newDestCoord;
+                        maxsrcCoord = newState.Value[0];
+                        maxdestCoord = newState.Value[1];
                         maxBoard = newState.Key.Copy();
                     }
-                    if (beta < alpha)
+                    if (beta <= alpha)
                     {
                         break;
                     }                       
@@ -61,7 +62,7 @@ namespace checkersengine
             }
             else
             {
-                foreach (var newState in boardCoordsList) //implement node
+                foreach (var newState in boardCoordsList)
                 {                   
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
@@ -71,11 +72,11 @@ namespace checkersengine
 
                     {
                         beta = res;
-                        minsrcCoord = newSrcCoord;
-                        mindestCoord = newDestCoord;
+                        minsrcCoord = newState.Value[0];
+                        mindestCoord = newState.Value[1];
                         minBoard = newState.Key.Copy();
                     }
-                    if (beta < alpha)
+                    if (beta <= alpha)
                     {
                         break;
                     }
