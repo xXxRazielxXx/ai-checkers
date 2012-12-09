@@ -257,18 +257,19 @@ namespace CheckersView
             {
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
                 {
+                    ShowPlayerChange(oppColor);
+                    string color = string.Empty;
                     bool capMove = false;
                     IList<Coordinate> oppMove = new List<Coordinate>();
                     while (oppMove.Count == 0)
                     {
-                        oppMove = file.ReadFromFile(stream,board, path);
+                        oppMove = file.ReadFromFile(stream,board, path,out color);
                     }                    
                     srcCoord = oppMove.First();
                     destCoord = oppMove.Last();
-                    if (board.GetPlayer(destCoord) != oppColor)
+                    if ((color!=oppColor.ToString()) || (board.GetPlayer(srcCoord) != oppColor))
                     {
                         //Console.WriteLine("This is Not your piece");
-                        stream.Close();
                         goto OppTurn;
                     }
                     IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board,
@@ -341,7 +342,7 @@ namespace CheckersView
                         board = temp.Copy();
                         print.DrawBoard(board);
                     }
-                    file.WriteToFile(stream, srcCoord, destCoord, path);
+                    file.WriteToFile(stream, srcCoord, destCoord, path, pcColor);
                     GameState game = GetGameState(oppColor, board);
                     if (game == GameState.Lost)
                     {

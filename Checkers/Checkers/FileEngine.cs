@@ -18,7 +18,7 @@ namespace CheckersEngine
         /// <param name="srcCoordinate"></param>
         /// <param name="destCoordinate"></param>
         /// <param name="path"></param>
-        public void WriteToFile(FileStream stream, Coordinate srcCoordinate, Coordinate destCoordinate, string path)
+        public void WriteToFile(FileStream stream, Coordinate srcCoordinate, Coordinate destCoordinate, string path, Player player)
         {
             while (true)
             {
@@ -38,7 +38,7 @@ namespace CheckersEngine
                 string destanation = "[" + destCoordinate.X.ToString(CultureInfo.InvariantCulture) + "," +
                                      destCoordinate.Y.ToString(CultureInfo.InvariantCulture) + "]";
 
-                string result = source + " " + destanation;
+                string result = source + " " + destanation+" "+player.ToString();
                 byteData = Encoding.ASCII.GetBytes(result);
                 stream.Write(byteData, 0, byteData.Length);
                 break;
@@ -51,21 +51,24 @@ namespace CheckersEngine
         /// </summary>
         /// <param name="board"></param>
         /// <param name="path"></param>
-        public IList<Coordinate> ReadFromFile(FileStream stream, Board board, string path)
+        public IList<Coordinate> ReadFromFile(FileStream stream, Board board, string path,out string playerColor)
         {
             IList<Coordinate> cor = new List<Coordinate>();
             if (File.Exists(@path))
             {
+                string temp = string.Empty;
                 byte[] byteData = new byte[stream.Length];
                 stream.Read(byteData, 0, (int) stream.Length);
                 string content = Encoding.ASCII.GetString(byteData);
                 //cor = ShmulToCoordinate(board, content);
-                cor = debugging(board, content);
+                cor = debugging(board, content,out temp);
+                playerColor = temp;
                 return cor;
             }
             else
             {
                 //Console.WriteLine("File is not located in the specific location");
+                playerColor = string.Empty;
                 return cor;
             }
         }
@@ -76,7 +79,7 @@ namespace CheckersEngine
         /// <param name="board"></param>
         /// <param name="coordinates"></param>
         /// <returns>A list of coordinates</returns>
-        private IList<Coordinate> ShmulToCoordinate(Board board, string coordinates)
+        private IList<Coordinate> ShmulToCoordinate(Board board, string coordinates, out string playerColor)
         {
             IList<Coordinate> coords = new List<Coordinate>();
             const char delimiterChar = ' ';
@@ -97,10 +100,11 @@ namespace CheckersEngine
             }
             coords[0].Status = board[board.Search(coords[0])].Status;
             coords[1].Status = board[board.Search(coords[1])].Status;
+            playerColor = word[2];
             return coords;
         }
 
-        private IList<Coordinate> debugging(Board board, string coordinates)
+        private IList<Coordinate> debugging(Board board, string coordinates, out string playerColor)
         {
             IList<Coordinate> coords = new List<Coordinate>();
             const char delimiterChar = ' ';
@@ -113,6 +117,7 @@ namespace CheckersEngine
             coords.Add(new Coordinate {X = x, Y = y});
             coords[0].Status = board[board.Search(coords[0])].Status;
             coords[1].Status = board[board.Search(coords[1])].Status;
+            playerColor = word[2];
             return coords;
         }
     }
