@@ -39,32 +39,31 @@ namespace CheckersEngine
             int playerSum = 0;
             int opponentSum = 0;
             int diffKings, diffCaptures, diffCanBeCaptured = 0;
-            int numPlyKings = 0, numPlycap = 0, numPlyCanBeCap = 0, numOppkings = 0,numOppcap = 0, numOppCabBeCap = 0;
+            int numPlyKings = 0, numPlycap = 0, numPlyCanBeCap = 0, numOppkings = 0, numOppcap = 0, numOppCabBeCap = 0;
             for (int i = 1; i <= 32; i++)
             {
                 int coordSum = 0;
                 if (board.IsKing(board[i]))
                     coordSum += kingConstant;
                 //else if (board.IsSoldier(board[i]))
-                  //  coordSum += soldierConstant;
+                //  coordSum += soldierConstant;
 
-                int Safe=Safeness(board, board[i], board.GetPlayer(board[i]));
+                int Safe = Safeness(board, board[i], board.GetPlayer(board[i]));
                 coordSum += Safe;
-                int cap =CanCapture(board, board[i], board.GetPlayer(board[i]));
+                int cap = CanCapture(board, board[i], board.GetPlayer(board[i]));
                 coordSum += cap;
-                int close= CloseToBecomeAKing(board[i]);
+                int close = CloseToBecomeAKing(board[i]);
                 coordSum += close;
-                int captured= CanBeCaptured(board, board[i], board.GetPlayer(board[i]));
+                int captured = CanBeCaptured(board, board[i], board.GetPlayer(board[i]));
                 coordSum += captured;
-                
+
                 if (board.IsOwner(player, board[i]))
                 {
                     playerSum += coordSum;
                     numPlycap += cap;
                     numPlyCanBeCap += captured;
-
                 }
-                else if(board.IsOwner(board.GetOpponent(player),board[i]))
+                else if (board.IsOwner(board.GetOpponent(player), board[i]))
                 {
                     opponentSum += coordSum;
                     numOppcap += cap;
@@ -84,7 +83,8 @@ namespace CheckersEngine
             diffKings = numPlyKings - numOppkings;
             diffCaptures = numPlycap - numOppcap;
             diffCanBeCaptured = numPlyCanBeCap - numOppCabBeCap;
-            return (int) Math.Round(((float)diffKings*0.3) + ((float)diffCaptures*0.5) - ((float)diffCanBeCaptured*0.9));
+            return
+                (int) Math.Round(((float) diffKings*0.3) + ((float) diffCaptures*0.5) - ((float) diffCanBeCaptured*0.9));
             //return playerSum - opponentSum;
         }
 
@@ -132,7 +132,7 @@ namespace CheckersEngine
         {
             Rules rule = new Rules();
             IList<Coordinate> coordinatesinDirection = rule.GetMovesInDirection(board, coordinate, player);
-            IDictionary<IList<Coordinate>, Coordinate> captures = new Dictionary<IList<Coordinate>,Coordinate>();
+            IDictionary<IList<Coordinate>, Coordinate> captures = new Dictionary<IList<Coordinate>, Coordinate>();
             int max = 0;
             foreach (var cid in coordinatesinDirection)
             {
@@ -153,7 +153,7 @@ namespace CheckersEngine
 
         private int CloseToBecomeAKing(Coordinate coord)
         {
-            if(coord.Status==Piece.BlackKing||coord.Status==Piece.WhiteKing)
+            if (coord.Status == Piece.BlackKing || coord.Status == Piece.WhiteKing)
             {
                 return 0;
             }
@@ -161,11 +161,11 @@ namespace CheckersEngine
             {
                 if (coord.Status == Piece.BlackKing)
                 {
-                    return 8-coord.X;
+                    return 8 - coord.X;
                 }
-                else if (coord.Status==Piece.WhitePiece)
+                else if (coord.Status == Piece.WhitePiece)
                 {
-                    return 8- (8 - coord.X);
+                    return 8 - (8 - coord.X);
                 }
                 else
                 {
@@ -173,6 +173,7 @@ namespace CheckersEngine
                 }
             }
         }
+
         /// <summary>
         /// returns the number of ways in which soldier on coord can be captured;
         /// </summary>
@@ -183,16 +184,16 @@ namespace CheckersEngine
         public int CanBeCaptured(Board board, Coordinate coord, Player player)
         {
             int num = 0;
-            Rules rule=new Rules();
+            Rules rule = new Rules();
             IList<Coordinate> optionalCoords = rule.OptionalMoves(board, coord, player);
             IList<Coordinate> coordsInDir = rule.GetMovesInDirection(board, coord, player);
             //collect all coords behind coord
             IList<Coordinate> coordsfrombehind = optionalCoords.Where(opCor => !coordsInDir.Contains(opCor)).ToList();
             foreach (var CID in coordsInDir)
             {
-                if (board.GetPlayer(board[CID.X, CID.Y]) == board.GetOpponent(player) && 
-                    rule.CoordsToCaptureAndDest(board,CID,coord,board.GetOpponent(player)).Count>0)               
-                    num++;                
+                if (board.GetPlayer(board[CID.X, CID.Y]) == board.GetOpponent(player) &&
+                    rule.CoordsToCaptureAndDest(board, CID, coord, board.GetOpponent(player)).Count > 0)
+                    num++;
             }
             foreach (var CFB in coordsfrombehind)
             {
@@ -202,6 +203,5 @@ namespace CheckersEngine
             }
             return num;
         }
-       
     }
 }
