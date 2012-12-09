@@ -233,17 +233,17 @@ namespace CheckersView
 
             //define path to share file.
             Console.WriteLine("Please Enter Path Line:");
-            string path = Console.ReadKey().ToString();
+            string path = Console.ReadLine();
 
             //define colors.
             Console.WriteLine("Opponent color is white? [Yes/No]");
-            string opponentColor = Console.ReadKey().ToString();
+            string opponentColor = Console.ReadLine();
             oppColor = opponentColor == "Yes" ? Player.White : Player.Black;
             pcColor = oppColor == Player.White ? Player.Black : Player.White;
 
             //define who starts.
             Console.WriteLine("Opponent Starts? [Yes/No]");
-            string opponentStarts = Console.ReadKey().ToString();
+            string opponentStarts = Console.ReadLine();
             if (opponentStarts == "Yes")
                 goto OppTurn;
             else
@@ -320,6 +320,7 @@ namespace CheckersView
                 board = temp.Copy();
                 print.DrawBoard(board);
             }
+            file.WriteToFile(srcCoord,destCoord,path);
             game = GetGameState(oppColor, board);
             if (game == GameState.Lost)
             {
