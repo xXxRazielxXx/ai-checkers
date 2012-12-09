@@ -63,7 +63,8 @@ namespace CheckersEngine
                     byte[] byteData = new byte[stream.Length];
                     stream.Read(byteData, 0, (int)stream.Length);
                     string content = Encoding.ASCII.GetString(byteData);
-                    cor = ShmulToCoordinate(board, content);
+                    //cor = ShmulToCoordinate(board, content);
+                    cor = debugging(board, content);
                     return cor;
                 }
             }
@@ -99,6 +100,22 @@ namespace CheckersEngine
                     item.Y = 8 - item.Y;
                 }
             }
+            coords[0].Status = board[board.Search(coords[0])].Status;
+            coords[1].Status = board[board.Search(coords[1])].Status;
+            return coords;
+        }
+
+        private IList<Coordinate> debugging(Board board, string coordinates)
+        {
+            IList<Coordinate> coords = new List<Coordinate>();
+            const char delimiterChar = ' ';
+            string[] word = coordinates.Split(delimiterChar);
+            int x = Int32.Parse(word[0].Substring(1, 1));
+            int y = Int32.Parse(word[0].Substring(3, 1));
+            coords.Add(new Coordinate { X = x, Y = y });
+            x = Int32.Parse(word[1].Substring(1, 1));
+            y = Int32.Parse(word[1].Substring(3, 1));
+            coords.Add(new Coordinate { X = x, Y = y });
             coords[0].Status = board[board.Search(coords[0])].Status;
             coords[1].Status = board[board.Search(coords[1])].Status;
             return coords;
