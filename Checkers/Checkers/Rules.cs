@@ -489,11 +489,11 @@ namespace CheckersEngine
         public int DefineDepth(Board board)
         {
             int num = board.NumOfSolOnBoard();
-            if (num > 17)
+            if (num > 16)
                 return 5;
-            else if (num < 17 && num > 11)
-                return 7;
-            else return 10;
+            else if (num < 16 && num > 8)
+                return 6;
+            else return 9;
         }
     }
 }
