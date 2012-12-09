@@ -490,10 +490,10 @@ namespace CheckersEngine
         {
             int num = board.NumOfSolOnBoard();
             if (num > 16)
-                return 5;
-            else if (num < 16 && num > 8)
                 return 6;
-            else return 9;
+            else if (num < 16 && num > 8)
+                return 8;
+            else return 11;
         }
     }
 }
