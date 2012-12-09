@@ -251,65 +251,77 @@ namespace CheckersView
 
 
         OppTurn:
-            bool capMove = false;
-            IList<Coordinate> oppMove = new List<Coordinate>();
-            while (oppMove.Count == 0)
+            try
             {
-                oppMove = file.ReadFromFile(board, path);
-            }
-            srcCoord = oppMove.First();
-            destCoord = oppMove.Last();
-            if (board.GetPlayer(srcCoord) != oppColor)
-            {
-                Console.WriteLine("This is Not your piece");
-                goto OppTurn;
-            }
-            IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board, oppColor);
-            if (capturesAvailable.Count > 0)
-            {
-                IList<Coordinate> captures = MapContainsCoords(capturesAvailable, srcCoord, destCoord);
-                if (captures.Count == 0)
+                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
                 {
-                    Console.WriteLine("You must capture maximum opponent soldiers on board");
-                    goto OppTurn;
-                }
-                else
-                {
-                    foreach (var coordinate in captures)
+                    bool capMove = false;
+                    IList<Coordinate> oppMove = new List<Coordinate>();
+                    while (oppMove.Count == 0)
                     {
-                        board[coordinate.X, coordinate.Y].Status = Piece.None;
-                        board.UpdateCapturedSoldiers(coordinate, pcColor);
-                        capMove = true;
+                        oppMove = file.ReadFromFile(stream,board, path);
+                    }
+                    srcCoord = oppMove.First();
+                    destCoord = oppMove.Last();
+                    if (board.GetPlayer(srcCoord) != oppColor)
+                    {
+                        Console.WriteLine("This is Not your piece");
+                        goto OppTurn;
+                    }
+                    IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board,
+                                                                                                            oppColor);
+                    if (capturesAvailable.Count > 0)
+                    {
+                        IList<Coordinate> captures = MapContainsCoords(capturesAvailable, srcCoord, destCoord);
+                        if (captures.Count == 0)
+                        {
+                            Console.WriteLine("You must capture maximum opponent soldiers on board");
+                            goto OppTurn;
+                        }
+                        else
+                        {
+                            foreach (var coordinate in captures)
+                            {
+                                board[coordinate.X, coordinate.Y].Status = Piece.None;
+                                board.UpdateCapturedSoldiers(coordinate, pcColor);
+                                capMove = true;
+                            }
+                        }
+                    }
+                    if (capMove || rule.IsValidMove(board, srcCoord, destCoord, oppColor))
+                    {
+                        board.UpdateBoard(srcCoord, destCoord);
+                        rule.IsBecameAKing(board, board[destCoord.X, destCoord.Y]);
+                        print.DrawBoard(board);
+                    }
+                    else
+                    {
+                        Console.WriteLine("This is not a valid move, please enter again");
+                        goto OppTurn;
+                    }
+
+                    //check if game has been determined
+                    GameState game = GetGameState(oppColor, board);
+                    if (game == GameState.Lost)
+                    {
+                        Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
+                        return;
+                    }
+                    if (game == GameState.Won)
+                    {
+                        Console.WriteLine("{0} Won", oppColor.ToString());
+                        return;
                     }
                 }
             }
-            if (capMove || rule.IsValidMove(board, srcCoord, destCoord, oppColor))
+            catch (Exception)
             {
-                board.UpdateBoard(srcCoord, destCoord);
-                rule.IsBecameAKing(board, board[destCoord.X, destCoord.Y]);
-                print.DrawBoard(board);
-            }
-            else
-            {
-                Console.WriteLine("This is not a valid move, please enter again");
+
                 goto OppTurn;
             }
 
-            //check if game has been determined
-            GameState game = GetGameState(oppColor, board);
-            if (game == GameState.Lost)
-            {
-                Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
-                return;
-            }
-            if (game == GameState.Won)
-            {
-                Console.WriteLine("{0} Won", oppColor.ToString());
-                return;
-            }
 
-
-        MyTurn:
+            MyTurn:
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
             {
                 ShowPlayerChange(pcColor);
