@@ -56,20 +56,29 @@ namespace CheckersEngine
         {
             IList<Coordinate> cor = new List<Coordinate>();
             if (File.Exists(@path))
-            {               
-                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                try
                 {
-                    byte[] byteData = new byte[stream.Length];
-                    stream.Read(byteData, 0, (int)stream.Length);
-                    string content = Encoding.ASCII.GetString(byteData);
-                    //cor = ShmulToCoordinate(board, content);
-                    cor = debugging(board, content);
-                    return cor;
+                    using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
+                    {
+                        byte[] byteData = new byte[stream.Length];
+                        stream.Read(byteData, 0, (int)stream.Length);
+                        string content = Encoding.ASCII.GetString(byteData);
+                        //cor = ShmulToCoordinate(board, content);
+                        cor = debugging(board, content);
+                        return cor;
+                    }
                 }
+                catch (Exception)
+                {
+
+                    return cor;
+                }            
+                
             }
             else
             {
-                Console.WriteLine("File is not located in the specific location");
+                //Console.WriteLine("File is not located in the specific location");
                 return cor;
             }
         }
