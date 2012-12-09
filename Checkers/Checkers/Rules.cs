@@ -325,78 +325,6 @@ namespace CheckersEngine
         }
 
 
-        ///// <summary>
-        /////     Calculate jumps including multiple jumps and best capture route
-        ///// </summary>
-        ///// <param name="board"></param>
-        ///// <param name="oponentCoordinate"></param>
-        ///// <param name="player"></param>
-        ///// <param name="srcCoordinate"></param>
-        //public IList<Coordinate> CalculatesCoordsToJumpTo(Board board, Coordinate srcCoordinate,
-        //                                                  Coordinate oponentCoordinate, Player player)
-        //{
-        //    IList<Coordinate> resultCoords = new List<Coordinate>();
-        //    int srcX = srcCoordinate.X;
-        //    int srcY = srcCoordinate.Y;
-        //    int oponentX = oponentCoordinate.X;
-        //    int oponentY = oponentCoordinate.Y;
-        //    Coordinate dest;
-        //    int destX, destY;
-
-        //    //find the direction of the optional capture and set destination accordingly
-        //    if(srcX<oponentX) destX=oponentX+1;
-        //    else destX=oponentX-1;
-
-        //    if (srcY < oponentY) destY = oponentY + 1;
-        //    else destY = oponentY - 1;
-        //    if (InBounds(board, destX, destY))
-        //    {
-        //        dest = new Coordinate(board[destX, destY]);
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //    if (dest.X == destX && dest.Y == destY)
-        //    {
-        //        // in case destination is not empty we cant capture
-        //        if (dest.Status != Piece.None)
-        //            return null;
-        //        resultCoords.Add(dest);
-        //        dest.Status = srcCoordinate.Status;
-        //        IsBecameAKing(board, dest);
-        //        //find coordinates if we can continue capture from dest
-        //        IList<Coordinate> moreOptionalDirCaptures = GetMovesInDirection(board, dest, player);
-        //        IList<Coordinate> maxEats = new List<Coordinate>();
-        //        int max = 0;
-        //        foreach (var coord in moreOptionalDirCaptures)
-        //        {
-        //            if (board.IsOpponentPiece(player, coord))
-        //            {
-        //                IList<Coordinate> temp = CalculatesCoordsToJumpTo(board, dest, coord, player);
-        //                if (temp != null)
-        //                {
-        //                    if (max < temp.Count)
-        //                    {
-        //                        max = temp.Count;
-        //                        maxEats = temp;
-        //                    }
-        //                    if (max == temp.Count)
-        //                    {
-        //                        maxEats = maxEats.Concat(temp).ToList();
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        if (maxEats.Count > 0)
-        //        {
-        //            resultCoords = maxEats;
-        //        }
-        //    }
-
-        //    return resultCoords;
-        //}
-        
         /// <summary>
         /// Find dictionary of all captures on board per player
         /// </summary>
@@ -551,6 +479,16 @@ namespace CheckersEngine
                 res.Add(nBoard,temp);
             }
             return res;
+        }
+
+        public int DefineDepth(Board board)
+        {
+            int num = board.NumOfSolOnBoard();
+            if (num > 17)
+                return 5;
+            else if (num < 17 && num > 11)
+                return 7;
+            else return 10;
         }
     }
 }

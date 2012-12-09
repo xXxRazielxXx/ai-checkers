@@ -137,11 +137,6 @@ namespace CheckersModel
         }
 
         /// <summary>
-        ///     Huerisitic board grade
-        /// </summary>
-        public int Grade { get; set; }
-
-        /// <summary>
         /// returns the index of cor in the board array
         /// </summary>
         /// <param name="cor"></param>
@@ -406,9 +401,17 @@ namespace CheckersModel
             }
             return diff;
         }
+        /// <summary>
+        /// returns number of soldiers on board
+        /// </summary>
+        /// <returns></returns>
+        public int NumOfSolOnBoard()
+        {
+            return NumberOfBlackKings + NumberOfBlackPieces + NumberOfWhiteKings + NumberOfWhitePieces;
+        }
 
 
-       
+
         /// <summary>
         ///     Initialize Board
         /// </summary>
