@@ -16,23 +16,31 @@ namespace CheckersView
     {
         static void Main(string[] args)
         {
+            bool input = true;
             var print = new PrintBoardState();
             var board = new Board(8);
             Console.WriteLine("Game started");
             print.DrawBoard(board);
             Program p = new Program();
             Console.WriteLine("for PC vs Human Press 1, for PC vs PC press 2");
-            string type = Console.ReadLine();
-            if (type == "1")
+            while (input)
             {
-                p.StartGameWithHuman(board);
-            }
-            else if (type == "2")
-            {
-                p.StartGameWithPC(board);
-            }
-         
-            return;            
+                string type = Console.ReadLine();
+                if (type == "1")
+                {
+                    input = false;
+                    p.StartGameWithHuman(board);
+                }
+                else if (type == "2")
+                {
+                    input = false;
+                    p.StartGameWithPC(board);
+                    }
+                else
+                {
+                    Console.WriteLine("Incorrect Input");
+                }
+            }        
         }
 
         public void ShowPlayerChange(Player turn)
@@ -164,7 +172,7 @@ namespace CheckersView
             Coordinate destCoord = new Coordinate(board[Int32.Parse(word[1])]);
             moves.Add(destCoord);
             }
-            catch (Exception e) { return null; }            
+            catch (Exception) { return null; }            
             return moves;
         }
 
@@ -233,9 +241,20 @@ namespace CheckersView
 
             FileEngine file = new FileEngine();
 
+            path:
             //define path to share file.
             Console.WriteLine("Please Enter Path Line:");
             string path = Console.ReadLine();
+            try
+            {
+                Path.IsPathRooted(path);
+            }
+            catch (Exception)
+            {
+
+                goto path;
+            }
+            
 
             //define colors.
             Console.WriteLine("Opponent color is white? [Yes/No]");
@@ -358,7 +377,7 @@ namespace CheckersView
                 Thread.Sleep(5000);
                 goto OppTurn;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 goto MyTurn;
             }
