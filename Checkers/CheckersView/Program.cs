@@ -336,7 +336,7 @@ namespace CheckersView
                     print.DrawBoard(board);
                 }
                 file.WriteToFile(stream ,srcCoord, destCoord, path);
-                game = GetGameState(oppColor, board);
+                GameState game = GetGameState(oppColor, board);
                 if (game == GameState.Lost)
                 {
                     Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
