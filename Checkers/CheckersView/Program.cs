@@ -324,34 +324,42 @@ namespace CheckersView
 
 
             MyTurn:
-            using (var stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
+            try
             {
-                ShowPlayerChange(pcColor);
-                var alphaBeta = new Alphabeta();
-                Board temp = new Board();
-                alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,
-                                    ref destCoord,
-                                    ref temp);
-                if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
+                using (var stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
                 {
-                    board = temp.Copy();
-                    print.DrawBoard(board);
+                    ShowPlayerChange(pcColor);
+                    var alphaBeta = new Alphabeta();
+                    Board temp = new Board();
+                    alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,
+                                        ref destCoord,
+                                        ref temp);
+                    if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) &&
+                        (rule.InBounds(board, destCoord.X, destCoord.Y)))
+                    {
+                        board = temp.Copy();
+                        print.DrawBoard(board);
+                    }
+                    file.WriteToFile(stream, srcCoord, destCoord, path);
+                    GameState game = GetGameState(oppColor, board);
+                    if (game == GameState.Lost)
+                    {
+                        Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
+                        return;
+                    }
+                    if (game == GameState.Won)
+                    {
+                        Console.WriteLine("{0} Won", oppColor.ToString());
+                        return;
+                    }
                 }
-                file.WriteToFile(stream ,srcCoord, destCoord, path);
-                GameState game = GetGameState(oppColor, board);
-                if (game == GameState.Lost)
-                {
-                    Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
-                    return;
-                }
-                if (game == GameState.Won)
-                {
-                    Console.WriteLine("{0} Won", oppColor.ToString());
-                    return;
-                }
+                Thread.Sleep(5000);
+                goto OppTurn;
             }
-            Thread.Sleep(5000);
-            goto OppTurn;
+            catch (Exception e)
+            {
+                goto MyTurn;
+            }
         }
     }
 }
