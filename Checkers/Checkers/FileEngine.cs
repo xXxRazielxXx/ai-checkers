@@ -48,25 +48,28 @@ namespace CheckersEngine
 
 
         /// <summary>
-        /// Safely read from a file and converting to our ccordinate data
+        /// Safely read from a file and convert to our coordinate data
         /// </summary>
         /// <param name="board"></param>
         /// <param name="path"></param>
-        public void ReadFromFile(Board board, string path)
+        public IList<Coordinate> ReadFromFile(Board board, string path)
         {
+            IList<Coordinate> cor = new List<Coordinate>();
             if (File.Exists(@path))
-            {
+            {               
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
                 {
                     byte[] byteData = new byte[stream.Length];
                     stream.Read(byteData, 0, (int)stream.Length);
                     string content = Encoding.ASCII.GetString(byteData);
-                    var cor = ShmulToCoordinate(board, content);
+                    cor = ShmulToCoordinate(board, content);
+                    return cor;
                 }
             }
             else
             {
                 Console.WriteLine("File is not located in the specific location");
+                return cor;
             }
         }
 

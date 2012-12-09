@@ -19,7 +19,18 @@ namespace CheckersView
             Console.WriteLine("Game started");
             print.DrawBoard(board);
             Program p = new Program();
-            p.StartGameWithHuman(board);
+            Console.WriteLine("for PC vs Human Press 1, for PC vs PC press 2");
+            string type=Console.ReadKey().ToString();
+            if (type == "1")
+            {
+                p.StartGameWithHuman(board);
+            }
+            else if (type == "2")
+            {
+                p.StartGameWithPC(board);
+            }
+         
+            return;            
         }
 
         public void ShowPlayerChange(Player turn)
@@ -110,7 +121,8 @@ namespace CheckersView
                 ShowPlayerChange(pcColor);
                 //var miniMax =new MiniMax();
                 var alphaBeta = new Alphabeta();
-                Board temp = new Board();
+                Board temp = new Board();                
+                //depth = rule.DefineDepth(board);
                 alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,ref destCoord, ref temp);
                 //miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
@@ -206,5 +218,120 @@ namespace CheckersView
         }
 
 
+        public void StartGameWithPC(Board board)
+        {
+            var oppColor = Player.None;
+            var pcColor = Player.None;
+            //bool firstTurn = true;
+            var rule = new Rules();
+            var print = new PrintBoardState();
+            int depth = 5;
+            Coordinate srcCoord = new Coordinate();
+            Coordinate destCoord = new Coordinate();
+
+            FileEngine file = new FileEngine();
+
+            //define path to share file.
+            Console.WriteLine("Please Enter Path Line:");
+            string path = Console.ReadKey().ToString();
+
+            //define colors.
+            Console.WriteLine("Opponent color is white? [Yes/No]");
+            string opponentColor = Console.ReadKey().ToString();
+            oppColor = opponentColor == "Yes" ? Player.White : Player.Black;
+            pcColor = oppColor == Player.White ? Player.Black : Player.White;
+
+            //define who starts.
+            Console.WriteLine("Opponent Starts? [Yes/No]");
+            string opponentStarts = Console.ReadKey().ToString();
+            if (opponentStarts == "Yes")
+                goto OppTurn;
+            else
+                goto MyTurn;
+
+
+        OppTurn:
+            bool capMove = false;
+            IList<Coordinate> oppMove = new List<Coordinate>();
+            while (oppMove.Count == 0)
+            {
+                oppMove = file.ReadFromFile(board, path);
+            }
+            srcCoord = oppMove.First();
+            destCoord = oppMove.Last();
+            if (board.GetPlayer(srcCoord) != oppColor)
+            {
+                Console.WriteLine("This is Not your piece");
+                goto OppTurn;
+            }
+            IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board, oppColor);
+            if (capturesAvailable.Count > 0)
+            {
+                IList<Coordinate> captures = MapContainsCoords(capturesAvailable, srcCoord, destCoord);
+                if (captures.Count == 0)
+                {
+                    Console.WriteLine("You must capture maximum opponent soldiers on board");
+                    goto OppTurn;
+                }
+                else
+                {
+                    foreach (var coordinate in captures)
+                    {
+                        board[coordinate.X, coordinate.Y].Status = Piece.None;
+                        board.UpdateCapturedSoldiers(coordinate, pcColor);
+                        capMove = true;
+                    }
+                }
+            }
+            if (capMove || rule.IsValidMove(board, srcCoord, destCoord, oppColor))
+            {
+                board.UpdateBoard(srcCoord, destCoord);
+                rule.IsBecameAKing(board, board[destCoord.X, destCoord.Y]);
+                print.DrawBoard(board);
+            }
+            else
+            {
+                Console.WriteLine("This is not a valid move, please enter again");
+                goto OppTurn;
+            }
+
+            //check if game has been determined
+            GameState game = GetGameState(oppColor, board);
+            if (game == GameState.Lost)
+            {
+                Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
+                return;
+            }
+            if (game == GameState.Won)
+            {
+                Console.WriteLine("{0} Won", oppColor.ToString());
+                return;
+            }
+
+
+        MyTurn:
+            ShowPlayerChange(pcColor);
+            var alphaBeta = new Alphabeta();
+            Board temp = new Board();
+            alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord, ref destCoord,
+                                ref temp);
+            if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
+            {
+                board = temp.Copy();
+                print.DrawBoard(board);
+            }
+            game = GetGameState(oppColor, board);
+            if (game == GameState.Lost)
+            {
+                Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
+                return;
+            }
+            if (game == GameState.Won)
+            {
+                Console.WriteLine("{0} Won", oppColor.ToString());
+                return;
+            }
+            goto OppTurn;
+        }
     }
 }
