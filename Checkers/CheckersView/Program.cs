@@ -20,7 +20,7 @@ namespace CheckersView
             print.DrawBoard(board);
             Program p = new Program();
             Console.WriteLine("for PC vs Human Press 1, for PC vs PC press 2");
-            string type=Console.ReadKey().ToString();
+            string type = Console.ReadLine();
             if (type == "1")
             {
                 p.StartGameWithHuman(board);
