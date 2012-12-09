@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Timers;
 using CheckersEngine;
 using CheckersModel;
 using Interfaces;
@@ -348,6 +350,7 @@ namespace CheckersView
                     return;
                 }
             }
+            Thread.Sleep(5000);
             goto OppTurn;
         }
     }
