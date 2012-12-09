@@ -42,8 +42,8 @@ namespace CheckersEngine
 
             foreach (KeyValuePair<Board,IList<Coordinate>> newState in boardCoordsList)
             {
-                Coordinate newSrcCoord = new Coordinate(newState.Value[0]); //newSrcCoord was empty
-                Coordinate newDestCoord = new Coordinate( newState.Value[1]); //newDestCoord was empty
+                Coordinate newSrcCoord = new Coordinate(newState.Value[0]); 
+                Coordinate newDestCoord = new Coordinate( newState.Value[1]); 
                 int res = -MinMax(newState.Key, (depth + 1), board.GetOpponent(player), minormax, ref newSrcCoord, ref newDestCoord, ref updateBoard);
                 if (res > max)
                 {
@@ -52,13 +52,6 @@ namespace CheckersEngine
                     maxdestCoord = newDestCoord;
                     maxBoard = newState.Key.Copy();
                 }
-                //if (res < min)
-                //{
-                //    min = res;
-                //    minsrcCoord = newSrcCoord;
-                //    mindestCoord = newDestCoord;
-                //    minBoard = newState.Key.Copy();
-                //}
 
             }
 
@@ -66,15 +59,6 @@ namespace CheckersEngine
                 destCoord = maxdestCoord;
                 updateBoard = maxBoard.Copy();
                 return max;
-                   
-            
-            //else
-            //{
-            //    srcCoord = minsrcCoord;
-            //    destCoord = mindestCoord;
-            //    updateBoard = minBoard.Copy();
-            //    return min;
-            //}
         }
     }
 }
