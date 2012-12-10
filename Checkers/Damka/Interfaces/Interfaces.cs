@@ -16,19 +16,19 @@ namespace Interfaces
         BottomLeft
     }
 
-    //public enum CellType 
+    //public enum CellType
     //{
-    //    Empty=Piece.None,
-    //    Black=Piece.BlackPiece,
-    //    White=Piece.WhitePiece,
-    //    BlackQueen=Piece.BlackKing,
-    //    WhiteQueen=Piece.WhiteKing
+    //    Empty,
+    //    Black,
+    //    White,
+    //    BlackQueen,
+    //    WhiteQueen
     //}
 
     //public enum Player
     //{
-    //    Black=CheckersModel.Player.Black,
-    //    White=CheckersModel.Player.White
+    //    Black,
+    //    White
     //}
 
     public interface IMove
@@ -51,13 +51,13 @@ namespace Interfaces
         Board ConvertBoardStateToBoard(IBoardState boardState);
         Point ConvertPointToCoordinate(int x, int y);
         Point ConvertMoveTypeToCoordinate(Point position, MoveType move);
-        IBoardState GetBoardState(Player player, MoveType moveType, Point position);
+        IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating);
         GameState GetGameState(Player player);
     }
 
     public interface IPlayer
     {
-        IMove GetBoardMove(IBoardState boardState);
+        IMove GetBoardMove(IBoardState boardState,int depth);
     }
     public interface IPlayerCreator
     {
