@@ -69,8 +69,9 @@ namespace Interpretor
         /// Return IMove with current boardstate
         /// </summary>
         /// <param name="boardState"></param>
+        /// <param name="depth"></param>
         /// <returns></returns>
-        public IMove GetBoardMove(IBoardState boardState)
+        public IMove GetBoardMove(IBoardState boardState,int depth)
         {
             IMove move = new Move(boardState,playerColor);
             return move;
@@ -217,14 +218,18 @@ namespace Interpretor
         /// <param name="player"></param>
         /// <param name="moveType"></param>
         /// <param name="position"></param>
+        /// <param name="needToContinueEating"></param>
         /// <returns></returns>
-        public IBoardState GetBoardState(Player player, MoveType moveType, Point position)
+        public IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating)
         {
             this.Board = ConvertBoardStateToBoard(this);
             var point = ConvertMoveTypeToCoordinate(position, moveType);
             position = ConvertPointToCoordinate(position.X, position.Y);
             board.UpdateBoard(board[position.X, position.Y], board[point.X, point.Y]);
+            //check if dest coord is empty in not check for capture.
+            //check if human choose his piece
             this.BoardCells = ConvertBoardToBoardState(board);
+            needToContinueEating = false; //No correct
             return this;
         }
 

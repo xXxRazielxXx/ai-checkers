@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using CheckersModel;
 using Interfaces;
 
-
 namespace UI
 {
     public partial class Form1 : Form
@@ -29,6 +28,7 @@ namespace UI
             this.playerCreator = playerCreator;
 
             InitializeComponent();
+            depthCombo.SelectedIndex = 3;
         }
 
         public static System.Drawing.Bitmap Resize1(System.Drawing.Bitmap value, int newWidth, int newHeight)
@@ -63,11 +63,11 @@ namespace UI
                     squares[i, j].Size = new Size(squreSize,squreSize);
 
                     bool isDark = true;
-                    Image img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\darkTile.png");
+                    Image img = Bitmap.FromFile(@"..\..\..\Pictures\darkTile.png");
                     if ((j+delta) % 2 == 0)
                     {
                         isDark = false;
-                        img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\lightTile.png");
+                        img = Bitmap.FromFile(@"..\..\..\Pictures\lightTile.png");
                     }
                     squares[i, j].Tag = new SquareData(isDark,new Point(j,i));
                     squares[i, j].Image = Form1.Resize1(new Bitmap(img), squreSize, squreSize);
@@ -115,49 +115,49 @@ namespace UI
                     if (currBoard.BoardCells[i, j] == Piece.None)
                         continue;
 
-                    Image img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\blackOnDarkTile.png");
+                    Image img = Bitmap.FromFile(@"..\..\..\Pictures\blackOnDarkTile.png");
                     if (currBoard.BoardCells[i, j] == Piece.BlackPiece)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\blackOnDarkTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackOnDarkTile.png");
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\blackOnLightTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackOnLightTile.png");
                         }
                     }
                     else if (currBoard.BoardCells[i, j] == Piece.BlackKing)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\blackQueenOnDarkTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackQueenOnDarkTile.png");
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\blackQueenOnLightTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackQueenOnLightTile.png");
                         }
                     }
                     else if (currBoard.BoardCells[i, j] == Piece.WhitePiece)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\whiteOnDarkTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteOnDarkTile.png");
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\whiteOnLightTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteOnLightTile.png");
                         }
                     }
                     else if (currBoard.BoardCells[i, j] == Piece.WhiteKing)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\whiteQueenOnDarkTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteQueenOnDarkTile.png");
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"F:\Projects\Checkers\Checkers\Damka\UI\whiteQueenOnLightTile.png");
+                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteQueenOnLightTile.png");
                         }
                     }
 
@@ -227,21 +227,37 @@ namespace UI
             }
 
             MoveType moveType = this.ConvertToMove(deltaX,deltaY);
-            IBoardState newBoard = currBoard.GetBoardState(player, moveType, srcSquare.Position);
+            bool needToContinueEating;
+            IBoardState newBoard = currBoard.GetBoardState(player, moveType, srcSquare.Position,out needToContinueEating);
             if (newBoard != null)
             {
-                this.PlayMove(newBoard);
+                this.PlayMove(newBoard, needToContinueEating);
             }
             else
             {
                 MessageBox.Show("Invalid move");
             }
         }
-        private void PlayMove(IBoardState newBoard)
+        private void PlayMove(IBoardState newBoard,bool needToContinueEating)
         {
             currBoard = newBoard;
-
+            
             GameState stateAfterMove = currBoard.GetGameState(player);
+            this.PaintBoard();
+            if (stateAfterMove == GameState.Won)
+            {
+                MessageBox.Show("Won!!!!");
+                players = null;
+                return;
+            }
+
+            // check if player needs to continue eating
+            if (needToContinueEating)
+            {
+                return;
+            }
+
+            // switch players
 
             if (player == Player.White)
             {
@@ -250,16 +266,9 @@ namespace UI
             else
             {
                 player = Player.White;
-            }
-            this.PaintBoard();
+            }            
             playersTurn.BackColor = this.ConvertToColor();
 
-            if (stateAfterMove == GameState.Won)
-            {
-                MessageBox.Show("Won!!!!");
-                players = null;
-                return;
-            }
 
             if (players[player] is UserPlayer)
             {
@@ -267,11 +276,44 @@ namespace UI
             }
             else
             {
-                //MessageBox.Show("", "", MessageBoxButtons.YesNo);
+                InteractivePause(new TimeSpan(0,0,0,0,300));
             }
 
-            IMove pcMove = players[player].GetBoardMove(currBoard);
-            this.PlayMove(pcMove.Board);
+            int depth;
+            try 
+	        {	        
+        		depth = int.Parse(depthCombo.Text);
+	        }
+	        catch (Exception)
+	        {
+                depth = 4;
+	        }
+            IMove pcMove = players[player].GetBoardMove(currBoard,depth);
+            this.PlayMove(pcMove.Board,false);
+        }
+        private void InteractivePause(TimeSpan length)
+        {
+            DateTime start = DateTime.Now;
+            TimeSpan restTime = new TimeSpan(200000); // 20 milliseconds
+            while (true)
+            {
+                System.Windows.Forms.Application.DoEvents();
+                TimeSpan remainingTime = start.Add(length).Subtract(DateTime.Now);
+                if (remainingTime > restTime)
+                {
+                    //System.Diagnostics.Debug.WriteLine(string.Format("1: {0}", remainingTime));
+                    // Wait an insignificant amount of time so that the
+                    // CPU usage doesn't hit the roof while we wait.
+                    System.Threading.Thread.Sleep(restTime);
+                }
+                else
+                {
+                    //System.Diagnostics.Debug.WriteLine(string.Format("2: {0}", remainingTime));
+                    if (remainingTime.Ticks > 0)
+                        System.Threading.Thread.Sleep(remainingTime);
+                    break;
+                }
+            }
         }
         private Color ConvertToColor()
         {
@@ -297,10 +339,6 @@ namespace UI
             }
         }
 
-        private void performMoveButton_Click(object sender, EventArgs e)
-        {
-            this.PerformMove(int.Parse(moveSrcTextbox.Text), int.Parse(moveDstTextbox.Text));
-        }
 
         private void remotePCVsPCToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -329,8 +367,17 @@ namespace UI
             this.PaintBoard();
 
             // first player is the PC
-            IMove pcMove = players[player].GetBoardMove(currBoard);
-            this.PlayMove(pcMove.Board);
+            int depth;
+            try
+            {
+                depth = int.Parse(depthCombo.Text);
+            }
+            catch (Exception)
+            {
+                depth = 4;
+            }
+            IMove pcMove = players[player].GetBoardMove(currBoard,depth);
+            this.PlayMove(pcMove.Board,false);
         }
 
         private void playerVsPCToolStripMenuItem_Click(object sender, EventArgs e)
@@ -350,8 +397,17 @@ namespace UI
             // first player is the PC
             if (pcPlayer == player)
             {
-                IMove pcMove = players[player].GetBoardMove(currBoard);
-                this.PlayMove(pcMove.Board);
+                int depth;
+                try
+                {
+                    depth = int.Parse(depthCombo.Text);
+                }
+                catch (Exception)
+                {
+                    depth = 4;
+                }
+                IMove pcMove = players[player].GetBoardMove(currBoard,depth);
+                this.PlayMove(pcMove.Board,false);
             }
         }
 
@@ -372,6 +428,11 @@ namespace UI
             DialogResult res = MessageBox.Show("PC player with Black?", "Choose pc player color", MessageBoxButtons.YesNo);
             return (res == DialogResult.Yes) ? Player.Black : Player.White;
         }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 
     public class UserPlayer : IPlayer
@@ -382,7 +443,7 @@ namespace UI
             this.userPlayerColor = userPlayerColor;
         }
 
-        public IMove GetBoardMove(IBoardState boardState)
+        public IMove GetBoardMove(IBoardState boardState,int depth)
         {
             return null;
         }

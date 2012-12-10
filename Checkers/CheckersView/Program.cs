@@ -56,7 +56,7 @@ namespace CheckersView
             bool firstTurn = true;
             var rule = new Rules();
             var print = new PrintBoardState();
-            int depth = 5;            
+            int depth =2;            
             while (true)
             {
                 //first turn is always the human's
@@ -87,7 +87,7 @@ namespace CheckersView
                 IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board, humanColor);
                 if (capturesAvailable.Count > 0)
                 {
-                    IList<Coordinate> captures = MapContainsCoords(capturesAvailable, srcCoord, destCoord);
+                    IList<Coordinate> captures = rule.MapContainsCoords(capturesAvailable, srcCoord, destCoord);
                     if (captures.Count == 0)
                     {
                         Console.WriteLine("You must capture maximum opponent soldiers on board");
@@ -131,9 +131,10 @@ namespace CheckersView
                 ShowPlayerChange(pcColor);
                 //var miniMax =new MiniMax();
                 var alphaBeta = new Alphabeta();
-                Board temp = new Board();                
-                depth = rule.DefineDepth(board);
-                alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,ref destCoord, ref temp);
+                Board temp = new Board();  
+                IList<Coordinate> tempCaptures= new List<Coordinate>();
+                //depth = rule.DefineDepth(board);
+                alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord, ref destCoord, ref temp, ref tempCaptures);
                 //miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
                 {
@@ -212,20 +213,7 @@ namespace CheckersView
         /// <param name="srcCoord"></param>
         /// <param name="destCoord"></param>
         /// <returns> if move contained in map returns the captured coordinates, else return empty (move isn't in map)</returns>
-        public IList<Coordinate> MapContainsCoords(IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable,
-                                      Coordinate srcCoord, Coordinate destCoord)
-        {
-            IList<Coordinate> captures=new List<Coordinate>();
-            foreach (var item in capturesAvailable)
-            {
-                if (item.Key.First().X == srcCoord.X && item.Key.First().Y == srcCoord.Y && item.Key.Last().X == destCoord.X && item.Key.Last().Y == destCoord.Y)
-                {
-                    captures = item.Value;
-                    return captures;
-                }
-            }
-            return captures;
-        }
+        
 
 
         public void StartGameWithPC(Board board)
@@ -277,7 +265,7 @@ namespace CheckersView
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
                 {
                     ShowPlayerChange(oppColor);
-                    string color = string.Empty;
+                    Player color = Player.None;
                     bool capMove = false;
                     IList<Coordinate> oppMove = new List<Coordinate>();
                     while (oppMove.Count == 0)
@@ -285,8 +273,11 @@ namespace CheckersView
                         oppMove = file.ReadFromFile(stream,board, path,out color);
                     }                    
                     srcCoord = oppMove.First();
-                    destCoord = oppMove.Last();
-                    if ((color!=oppColor.ToString()) || (board.GetPlayer(srcCoord) != oppColor))
+                    oppMove.RemoveAt(0);
+                    destCoord = oppMove[1];
+                    oppMove.RemoveAt(1);
+                    var capturesOppdid = oppMove; //is there a more elegant way to get all the rest of the list?
+                    if ((color!=oppColor) || (board.GetPlayer(srcCoord) != oppColor))
                     {
                         //Console.WriteLine("This is Not your piece");
                         goto OppTurn;
@@ -295,15 +286,15 @@ namespace CheckersView
                                                                                                             oppColor);
                     if (capturesAvailable.Count > 0)
                     {
-                        IList<Coordinate> captures = MapContainsCoords(capturesAvailable, srcCoord, destCoord);
-                        if (captures.Count == 0)
+                        var boolean =rule.MapContainsCoordsOfCaptures(capturesAvailable, srcCoord, destCoord, capturesOppdid);
+                        if (!boolean)
                         {
                             Console.WriteLine("You must capture maximum opponent soldiers on board");
                             goto OppTurn;
                         }
                         else
                         {
-                            foreach (var coordinate in captures)
+                            foreach (var coordinate in capturesOppdid)
                             {
                                 board[coordinate.X, coordinate.Y].Status = Piece.None;
                                 board.UpdateCapturedSoldiers(coordinate, pcColor);
@@ -352,16 +343,17 @@ namespace CheckersView
                     ShowPlayerChange(pcColor);
                     var alphaBeta = new Alphabeta();
                     Board temp = new Board();
+                    IList<Coordinate> tempCaptures = new List<Coordinate>();
                     alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,
                                         ref destCoord,
-                                        ref temp);
+                                        ref temp,ref tempCaptures);
                     if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) &&
                         (rule.InBounds(board, destCoord.X, destCoord.Y)))
                     {
                         board = temp.Copy();
                         print.DrawBoard(board);
                     }
-                    file.WriteToFile(stream, srcCoord, destCoord, path, pcColor);
+                    file.WriteToFile(stream, srcCoord, destCoord,tempCaptures, path, pcColor);
                     GameState game = GetGameState(oppColor, board);
                     if (game == GameState.Lost)
                     {

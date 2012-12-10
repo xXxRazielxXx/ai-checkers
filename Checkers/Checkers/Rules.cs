@@ -23,7 +23,7 @@ namespace CheckersEngine
             if ((Math.Abs(srcCoord.X - destCoord.X) > 1) || (Math.Abs(srcCoord.Y - destCoord.Y) > 1))
                 return false;
             IList<Coordinate> coordsInDir = GetMovesInDirection(board, srcCoord, player);
-           return coordsInDir.Contains(destCoord)&& !board.IsAloacted(destCoord);
+            return coordsInDir.Contains(destCoord) && !board.IsAloacted(destCoord);
         }
 
 
@@ -93,7 +93,7 @@ namespace CheckersEngine
         public IList<Coordinate> GetMovesInDirection(Board board, Coordinate coordinate, Player player)
         {
             IList<Coordinate> coordinateList = OptionalMoves(board, coordinate, player);
-            if (coordinateList.Count!=0)
+            if (coordinateList.Count != 0)
             {
                 if (board.IsOwner(player, coordinate))
                 {
@@ -144,12 +144,13 @@ namespace CheckersEngine
                         else if (board.IsOpponentPiece(player, coordinate))
                         {
 
-                            IList<Coordinate> capturesList = CoordsToCaptureAndDest(board, board[i], coordinate, player).Values.ToList();
+                            IList<Coordinate> destList =
+                                CoordsToCaptureAndDest(board, board[i], coordinate, player).Values.ToList();
 
-                            if (capturesList.Count!=0)
+                            if (destList.Count != 0)
                             {
-                                // captureList is all the coordinates presenting the board after the capture.
-                                foreach (Coordinate coord in capturesList.Reverse())
+                                // destList is all the coordinates presenting the board after the capture.
+                                foreach (Coordinate coord in destList.Reverse())
                                 {
                                     Board nBoard = board.Copy();
                                     nBoard.UpdateBoard(nBoard[nBoard.Search(board[i])], coord);
@@ -187,7 +188,7 @@ namespace CheckersEngine
         /// <param name="srcBoard"></param>
         /// <returns></returns>
         public bool DidPlayerLost(Player player, Board srcBoard)
-        {           
+        {
             var numberplayerPieces = NumberOfPlayerPieces(srcBoard, player);
             var isplayerBlocked = IsPlayerBlocked(srcBoard, player);
             if (numberplayerPieces == 0 || isplayerBlocked)
@@ -273,7 +274,7 @@ namespace CheckersEngine
             {
                 if (board.GetPlayer(board[i]) == player)
                 {
-                    if (!IsCoordinateBlocked(board,board[i], player))
+                    if (!IsCoordinateBlocked(board, board[i], player))
                     {
                         return false;
                     }
@@ -313,7 +314,7 @@ namespace CheckersEngine
                 }
                 else if (srcBoard.GetPlayer(move) != player)
                 {
-                    IDictionary<IList<Coordinate>,Coordinate> captures = CoordsToCaptureAndDest(srcBoard, coordinate,
+                    IDictionary<IList<Coordinate>, Coordinate> captures = CoordsToCaptureAndDest(srcBoard, coordinate,
                                                                                                  move, player);
                     if (captures.Count > 0)
                     {
@@ -330,26 +331,28 @@ namespace CheckersEngine
         /// </summary>
         /// <param name="board"></param>
         /// <param name="player"></param>
-        /// <returns>dictionary of coordinate (destination cords) and list of coordinates (captured coordinates)</returns>
-        public IDictionary<IList<Coordinate>,IList<Coordinate>> FindCaptures (Board board, Player player)
+        /// <returns>dictionary of 2 lists : first  list of coordinates (captured coordinates) , second coordinates (src-destination cords)-</returns>
+        public IDictionary<IList<Coordinate>, IList<Coordinate>> FindCaptures(Board board, Player player)
         {
-            IDictionary<IList<Coordinate>, IList<Coordinate>> res = new Dictionary<IList<Coordinate>, IList<Coordinate>>();
-            for(int i =1; i<=32; i++)
+            IDictionary<IList<Coordinate>, IList<Coordinate>> res =
+                new Dictionary<IList<Coordinate>, IList<Coordinate>>();
+            for (int i = 1; i <= 32; i++)
             {
-                if(board.IsOwner(player, board[i]))
+                if (board.IsOwner(player, board[i]))
                 {
-                    var coordsInDir=GetMovesInDirection(board,board[i],player);
-                    if (coordsInDir.Count==0) break;
-                    foreach(Coordinate coordindir in coordsInDir)
+                    var coordsInDir = GetMovesInDirection(board, board[i], player);
+                    if (coordsInDir.Count == 0) break;
+                    foreach (Coordinate coordindir in coordsInDir)
                     {
-                        if(board.IsOpponentPiece(player,coordindir))
+                        if (board.IsOpponentPiece(player, coordindir))
                         {
                             var coordsToJumpTo = CoordsToCaptureAndDest(board, board[i], coordindir, player);
+                                //coordsToCapAndDest returns 2 lists- first captures list, second src-dest list
                             if (coordsToJumpTo.Count != 0)
                             {
                                 foreach (var item in coordsToJumpTo)
                                 {
-                                    res.Add(new List<Coordinate>{board[i],item.Value},item.Key); //first - source , second - dest in first list
+                                    res.Add(item.Key, new List<Coordinate> {board[i], item.Value});
                                 }
                                 //res = res.Concat(coordsToJumpTo).ToDictionary(pair => pair.Key, pair => pair.Value);
                             }
@@ -368,37 +371,39 @@ namespace CheckersEngine
         /// <param name="srcCoordinate"></param>
         /// <param name="oponentCoordinate"></param>
         /// <param name="player"></param>
-        /// <returns> a dictionary of dest coords and lists of captures</returns>
-        public IDictionary<IList<Coordinate>, Coordinate> CoordsToCaptureAndDest(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate, Player player)
+        /// <returns> a dictionary of dest coord and lists of captures</returns>
+        public IDictionary<IList<Coordinate>, Coordinate> CoordsToCaptureAndDest(Board board, Coordinate srcCoordinate,
+                                                                                 Coordinate oponentCoordinate,
+                                                                                 Player player)
         {
-            IDictionary<IList<Coordinate>, Coordinate> map = new Dictionary<IList<Coordinate>,Coordinate>();
-            int srcX= srcCoordinate.X;
-            int srcY=srcCoordinate.Y;
-            int oponentX=oponentCoordinate.X;
-            int oponentY=oponentCoordinate.Y;
+            IDictionary<IList<Coordinate>, Coordinate> map = new Dictionary<IList<Coordinate>, Coordinate>();
+            int srcX = srcCoordinate.X;
+            int srcY = srcCoordinate.Y;
+            int oponentX = oponentCoordinate.X;
+            int oponentY = oponentCoordinate.Y;
             Coordinate dest;
             Piece opponentPiece = new Piece();
             int destX, destY;
 
             //find the direction of the optional capture and set destination accordingly
-            if(srcX<oponentX) destX=oponentX+1;
-            else destX=oponentX-1;
+            if (srcX < oponentX) destX = oponentX + 1;
+            else destX = oponentX - 1;
 
-            if(srcY<oponentY) destY=oponentY+1;
-            else destY=oponentY-1;
+            if (srcY < oponentY) destY = oponentY + 1;
+            else destY = oponentY - 1;
             if (InBounds(board, destX, destY))
             {
-                dest = new Coordinate(board[destX,destY]);
+                dest = new Coordinate(board[destX, destY]);
             }
             else
             {
                 return map;
             }
             if (dest.Status != Piece.None)
-                    return map;
+                return map;
             dest.Status = srcCoordinate.Status;
-            
-            IsBecameAKing(board,dest);
+
+            IsBecameAKing(board, dest);
             if (board.IsKing(dest))
             {
                 opponentPiece = board[oponentCoordinate.X, oponentCoordinate.Y].Status;
@@ -407,29 +412,29 @@ namespace CheckersEngine
             //find coordinates if we can continue capture from dest
             IList<Coordinate> moreOptionalDirCaptures = GetMovesInDirection(board, dest, player);
             map.Add(new List<Coordinate> {oponentCoordinate}, dest);
-            if(moreOptionalDirCaptures.Count==0) 
-            {              
-                return map;
-            }            
-            foreach(var cid in moreOptionalDirCaptures)
+            if (moreOptionalDirCaptures.Count == 0)
             {
-                if(board.IsOpponentPiece(player, cid))
+                return map;
+            }
+            foreach (var cid in moreOptionalDirCaptures)
+            {
+                if (board.IsOpponentPiece(player, cid))
                 {
-                    IDictionary<IList<Coordinate>, Coordinate> temp = CoordsToCaptureAndDest(board,dest,cid,player);
-                    if(temp.Keys.Count()>map.Keys.Count())
-                    {                       
-                        map=temp;
+                    IDictionary<IList<Coordinate>, Coordinate> temp = CoordsToCaptureAndDest(board, dest, cid, player);
+                    if (temp.Keys.Count() > map.Keys.Count())
+                    {
+                        map = temp;
                         if (map.Values.Contains(dest))
                         {
-                            var item = map.FirstOrDefault( (x => x.Value.X == dest.X && x.Value.Y == dest.Y));
+                            var item = map.FirstOrDefault((x => x.Value.X == dest.X && x.Value.Y == dest.Y));
                             map.Remove(item.Key);
                         }
-                            
+
 
                     }
-                    else if (temp.Keys.Count()==map.Keys.Count())
-                    {                          
-                        map= map.Concat(temp).ToDictionary(pair => pair.Key, pair => pair.Value);
+                    else if (temp.Keys.Count() == map.Keys.Count())
+                    {
+                        map = map.Concat(temp).ToDictionary(pair => pair.Key, pair => pair.Value);
                         if (map.Values.Contains(dest))
                         {
                             var item = map.FirstOrDefault((x => x.Value.X == dest.X && x.Value.Y == dest.Y));
@@ -445,7 +450,7 @@ namespace CheckersEngine
                     item.Key.Add(oponentCoordinate);
                 }
             }
-            if(board[oponentCoordinate.X, oponentCoordinate.Y].Status == Piece.None)
+            if (board[oponentCoordinate.X, oponentCoordinate.Y].Status == Piece.None)
             {
                 board[oponentCoordinate.X, oponentCoordinate.Y].Status = opponentPiece;
             }
@@ -456,27 +461,30 @@ namespace CheckersEngine
         /// Create new boards if there are captures
         /// </summary>
         /// <param name="srcBoard"></param>
-        /// <param name="capturesAvailable">first list is source&dest and second list is captured coords</param>
+        /// <param name="capturesAvailable">first list are captures and second list is src-dest coords</param>
         /// <returns></returns>
-        public IDictionary<Board, IList<Coordinate>> CreateNewBoards(Board srcBoard,IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable)
+        public IDictionary<Board, IList<Coordinate>> CreateNewBoards(Board srcBoard,
+                                                                     IDictionary<IList<Coordinate>, IList<Coordinate>>
+                                                                         capturesAvailable)
         {
             IDictionary<Board, IList<Coordinate>> res = new Dictionary<Board, IList<Coordinate>>();
             foreach (var item in capturesAvailable)
             {
                 Board nBoard = srcBoard.Copy();
-                nBoard.UpdateBoard(nBoard[nBoard.Search(item.Key.First())], item.Key.Last()); // update board from(board[i]) to where(item.key.lasdt()) 
-                IsBecameAKing(nBoard, item.Key.Last());
-                Player player = nBoard.GetPlayer(item.Key.First());
+                nBoard.UpdateBoard(nBoard[nBoard.Search(item.Value.First())], item.Value.Last());
+                    // update board from(board[i]) to where(item.key.lasdt()) 
+                IsBecameAKing(nBoard, item.Value.Last());
+                Player player = nBoard.GetPlayer(item.Value.First());
                 Player oPlayer = nBoard.GetOpponent(player);
-                foreach (var capCoord in item.Value)
+                foreach (var capCoord in item.Key)
                 {
-                        nBoard[nBoard.Search(capCoord)].Status=Piece.None;
-                        nBoard.UpdateCapturedSoldiers(capCoord,oPlayer);
+                    nBoard[nBoard.Search(capCoord)].Status = Piece.None;
+                    nBoard.UpdateCapturedSoldiers(capCoord, oPlayer);
                 }
                 IList<Coordinate> temp = new List<Coordinate>();
-                temp.Add(nBoard[nBoard.Search(item.Key.First())]);
-                temp.Add(nBoard[nBoard.Search(item.Key.Last())]);
-                res.Add(nBoard,temp);
+                temp.Add(nBoard[nBoard.Search(item.Value.First())]);
+                temp.Add(nBoard[nBoard.Search(item.Value.Last())]);
+                res.Add(nBoard, temp);
             }
             return res;
         }
@@ -494,6 +502,80 @@ namespace CheckersEngine
             else if (num < 16 && num > 8)
                 return 8;
             else return 12;
+        }
+
+        /// <summary>
+        /// convert from boardCoordslist to boardSrcDestCap map
+        /// </summary>
+        /// <param name="boardCoordsList"></param>
+        /// <param name="capturesAvailable"></param>
+        /// <returns></returns>
+        public IDictionary<IDictionary<Board, IList<Coordinate>>, IList<Coordinate>> ConvertToMapWithCaptures(
+            IDictionary<Board, IList<Coordinate>> boardCoordsList,
+            IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable)
+        {
+            IDictionary<IDictionary<Board, IList<Coordinate>>, IList<Coordinate>> result =
+                new Dictionary<IDictionary<Board, IList<Coordinate>>, IList<Coordinate>>();
+            foreach (var item in boardCoordsList)
+            {
+                var srcCoord = item.Value[0];
+                var destCoord = item.Value[1];
+
+                IList<Coordinate> captures = MapContainsCoords(capturesAvailable, srcCoord, destCoord);
+                if (captures.Count != 0)
+                {
+                    IDictionary<Board, IList<Coordinate>> temp = new Dictionary<Board, IList<Coordinate>>();
+                    temp.Add(item.Key, item.Value);
+                    result.Add(temp, captures);
+                    capturesAvailable.Remove(captures);
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// checks if exists a item in map that src-dest equals to src-dest we get from function.
+        /// </summary>
+        /// <param name="capturesAvailable"> first list is captures list, second list is src-dest</param>
+        /// <param name="srcCoord"></param>
+        /// <param name="destCoord"></param>
+        /// <returns></returns>
+        public IList<Coordinate> MapContainsCoords(IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable,
+                                                   Coordinate srcCoord, Coordinate destCoord)
+        {
+            IList<Coordinate> captures = new List<Coordinate>();
+            foreach (var item in capturesAvailable)
+            {
+                if (item.Value.First().X == srcCoord.X && item.Value.First().Y == srcCoord.Y &&
+                    item.Value.Last().X == destCoord.X && item.Value.Last().Y == destCoord.Y)
+                {
+                    captures = item.Key;
+                    return captures;
+                }
+            }
+            return captures;
+
+        }
+
+        /// <summary>
+        /// checks if a list captuers is one of ther options of valid captuers
+        /// </summary>
+        /// <param name="capturesAvailable"></param>
+        /// <param name="srcCoord"></param>
+        /// <param name="destCoord"></param>
+        /// <param name="capturesOppdid"></param>
+        /// <returns></returns>
+        public bool MapContainsCoordsOfCaptures(  IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable , Coordinate srcCoord ,  Coordinate destCoord , IList<Coordinate> capturesOppdid )
+        {
+            foreach (var item in capturesAvailable)
+            {
+                if (item.Value.First().X == srcCoord.X && item.Value.First().Y == srcCoord.Y &&
+                    item.Value.Last().X == destCoord.X && item.Value.Last().Y == destCoord.Y && item.Key==capturesOppdid)
+                {
+                    return true;
+                }
+            }            
+            return false;
         }
     }
 }
