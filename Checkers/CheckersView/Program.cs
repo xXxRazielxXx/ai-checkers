@@ -272,10 +272,10 @@ namespace CheckersView
                     {
                         oppMove = file.ReadFromFile(stream,board, path,out color);
                     }                    
-                    srcCoord = oppMove.First();
+                    srcCoord = oppMove.First(); 
                     oppMove.RemoveAt(0);
-                    destCoord = oppMove[1];
-                    oppMove.RemoveAt(1);
+                    destCoord = oppMove[0]; 
+                    oppMove.RemoveAt(0);
                     var capturesOppdid = oppMove; //is there a more elegant way to get all the rest of the list?
                     if ((color!=oppColor) || (board.GetPlayer(srcCoord) != oppColor))
                     {
