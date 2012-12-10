@@ -157,7 +157,7 @@ namespace CheckersEngine
             IList<Coordinate> coords = new List<Coordinate>();
             const char delimiterChar = ' ';
             string[] word = coordinates.Split(delimiterChar);
-            for (int i = 0; i < word.Length-1; i++)
+            for (int i = 0; i < word.Length; i++)
             {
                 int x = Int32.Parse(word[i].Substring(1, 1));
                 int y = Int32.Parse(word[i].Substring(3, 1));
