@@ -94,7 +94,7 @@ namespace CheckersEngine
                byte[] byteData = new byte[stream.Length];
                 stream.Read(byteData, 0, (int) stream.Length);
                 string content = Encoding.ASCII.GetString(byteData);
-                cor = ShmulToCoordinate(board, content);
+                cor = ShmulToCoordinate(board, content,out temp);
                 //cor = debugging(board, content, out temp);
             }
             if (temp == "B")
