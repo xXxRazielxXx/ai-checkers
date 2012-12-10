@@ -493,7 +493,7 @@ namespace CheckersEngine
                 return 6;
             else if (num < 16 && num > 8)
                 return 8;
-            else return 11;
+            else return 12;
         }
     }
 }
