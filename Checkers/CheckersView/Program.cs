@@ -58,6 +58,7 @@ namespace CheckersView
         /// <param name="board"></param>
         public void StartGameWithHuman(Board board)
         {
+            int countmovesforDraw = 0;
             var humanColor = Player.None;
             var pcColor = Player.None;
             bool firstTurn = true;
@@ -123,8 +124,13 @@ namespace CheckersView
                     goto HumanTurn;
                 }
 
-
+                
                 GameState game = GetGameState(humanColor, board);
+                if (GameState.Draw == CheckDraw(board, board[destCoord.X, destCoord.Y], capMove, ref countmovesforDraw))
+                {
+                    Console.WriteLine("Draw");
+                    break;
+                }
                 if (game == GameState.Lost)
                 {
                     Console.WriteLine("{0} Lost the game and {1} won", humanColor.ToString(), pcColor.ToString());
@@ -151,8 +157,13 @@ namespace CheckersView
                     board = temp.Copy();
                     print.DrawBoard(board);
                 }
-
+                bool pcCaptured = tempCaptures.Count > 0;
                 game = GetGameState(humanColor, board);
+                if (GameState.Draw == CheckDraw(board, board[destCoord.X, destCoord.Y], pcCaptured, ref countmovesforDraw))
+                {
+                    Console.WriteLine("Draw");
+                    break;
+                }
                 if (game == GameState.Lost)
                 {
                     Console.WriteLine("{0} Lost the game and {1} won", humanColor.ToString(), pcColor.ToString());
@@ -163,6 +174,7 @@ namespace CheckersView
                     Console.WriteLine("{0} Won", humanColor.ToString());
                     break;
                 }
+               
             }
         }
 
@@ -219,13 +231,37 @@ namespace CheckersView
             }
         }
 
+        /// <summary>
+        /// Checks if drow and return number of moves
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="coordinate"></param>
+        /// <param name="canCapture"></param>
+        /// <param name="count"></param>
+        public GameState CheckDraw(Board board, Coordinate coordinate, bool canCapture,ref int count)
+        {
+            if (board.IsKing(coordinate) && !canCapture)
+            {
+                count++;
+                if (count == 15)
+                {
+                    return GameState.Draw;
+                }
+            }
+            else
+            {
+                count = 0;
+            }
+            return GameState.Undetermined;
+        }
 
         /// <summary>
-        /// Checks if the move (source, dest) is contained in the map
+        /// Pc VS Pc
         /// </summary>
-        /// <returns> if move contained in map returns the captured coordinates, else return empty (move isn't in map)</returns>
+        /// <returns> </returns>
         public void StartGameWithPc(Board board)
         {
+            int countmovesforDraw = 0;
             var oppColor = Player.None;
             var pcColor = Player.None;
             var rule = new Rules();
@@ -312,6 +348,11 @@ namespace CheckersView
 
                     //check if game has been determined
                     GameState game = GetGameState(oppColor, board);
+                    if (GameState.Draw == CheckDraw(board, board[destCoord.X, destCoord.Y], capMove, ref countmovesforDraw))
+                    {
+                        Console.WriteLine("Draw");
+                        return;
+                    }
                     if (game == GameState.Lost)
                     {
                         Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
@@ -335,6 +376,7 @@ namespace CheckersView
             {
                 using (var stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
                 {
+                    
                     ShowPlayerChange(pcColor);
                     var alphaBeta = new Alphabeta();
                     Board temp = new Board();
@@ -350,7 +392,13 @@ namespace CheckersView
                         print.DrawBoard(board);
                     }
                     file.WriteToFile(stream, srcCoord, destCoord, tempCaptures, path, pcColor);
+                    bool pcCaptured = tempCaptures.Count > 0; 
                     GameState game = GetGameState(oppColor, board);
+                    if (GameState.Draw == CheckDraw(board, board[destCoord.X, destCoord.Y], pcCaptured, ref countmovesforDraw))
+                    {
+                        Console.WriteLine("Draw");
+                        return;
+                    }
                     if (game == GameState.Lost)
                     {
                         Console.WriteLine("{0} Lost the game and {1} won", oppColor.ToString(), pcColor.ToString());
