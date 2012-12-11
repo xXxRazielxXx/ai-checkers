@@ -5,10 +5,11 @@ using CheckersEngine;
 using CheckersModel;
 
 namespace checkersengine
-{   
+{
     public class Alphabeta
     {
         private readonly Rules rule = new Rules();
+
         /// <summary>
         /// alpha beta algorithm
         /// boardcoordlist- each item in this map contains a new board (representing a new state) and a list of 2 coords representing the move that brought to this new state
@@ -25,21 +26,21 @@ namespace checkersengine
         /// <param name="updateBoard"></param>
         /// <returns></returns>
         public int AlphaBeta(Board board, int depth, int alpha, int beta, Player player, bool maxplayer,
-                             ref Coordinate srcCoord, ref Coordinate destCoord, ref Board updateBoard, ref IList<Coordinate> captures )
+                             ref Coordinate srcCoord, ref Coordinate destCoord, ref Board updateBoard,
+                             ref IList<Coordinate> captures)
         {
             var robj = new Rules();
             if (depth == 0 || rule.IsBoardLeaf(player, board)) // is node a terminal node
             {
                 var obj = new HeuristicFunction();
-                return obj.Evaluate(board,player);
+                return obj.Evaluate(board, player);
             }
             IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = robj.FindCaptures(board, player);
             IDictionary<Board, IList<Coordinate>> boardCoordsList;
-           // IDictionary<IDictionary<Board,IList<Coordinate>>,IList<Coordinate>> mapBoardSrcDestCap;
+            // IDictionary<IDictionary<Board,IList<Coordinate>>,IList<Coordinate>> mapBoardSrcDestCap;
             if (capturesAvailable.Count > 0)
             {
                 boardCoordsList = robj.CreateNewBoards(board, capturesAvailable);
-
             }
             else
             {
@@ -47,12 +48,12 @@ namespace checkersengine
             }
 
             //mapBoardSrcDestCap = robj.ConvertToMapWithCaptures(boardCoordsList, capturesAvailable);
-         
+
             var minsrcCoord = new Coordinate();
             var mindestCoord = new Coordinate();
             var maxsrcCoord = new Coordinate();
             var maxdestCoord = new Coordinate();
-            var maxCapturesList= new List<Coordinate>();
+            var maxCapturesList = new List<Coordinate>();
             var minCapturesList = new List<Coordinate>();
             var minBoard = new Board();
             var maxBoard = new Board();
@@ -63,15 +64,16 @@ namespace checkersengine
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
                     IList<Coordinate> capturesList = robj.MapContainsCoords(capturesAvailable, newSrcCoord, newDestCoord);
-                    IList<Coordinate> tempCapList= new List<Coordinate>();
-                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, board.GetOpponent(player), !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard, ref tempCapList);                 
+                    IList<Coordinate> tempCapList = new List<Coordinate>();
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, board.GetOpponent(player), !maxplayer,
+                                        ref newSrcCoord, ref newDestCoord, ref updateBoard, ref tempCapList);
                     if (res > alpha)
-                    {                        
+                    {
                         alpha = res;
                         maxsrcCoord = newState.Value[0];
                         maxdestCoord = newState.Value[1];
                         maxBoard = newState.Key.Copy();
-                        maxCapturesList=new List<Coordinate>(capturesList);
+                        maxCapturesList = new List<Coordinate>(capturesList);
                     }
                     if (beta <= alpha)
                     {
@@ -91,12 +93,13 @@ namespace checkersengine
             else
             {
                 foreach (var newState in boardCoordsList)
-                {                   
+                {
                     Coordinate newSrcCoord = newState.Value[0];
                     Coordinate newDestCoord = newState.Value[1];
                     IList<Coordinate> capturesList = robj.MapContainsCoords(capturesAvailable, newSrcCoord, newDestCoord);
                     IList<Coordinate> tempCapList = new List<Coordinate>();
-                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, board.GetOpponent(player), !maxplayer, ref newSrcCoord, ref newDestCoord, ref updateBoard, ref tempCapList);                             
+                    int res = AlphaBeta(newState.Key, depth - 1, alpha, beta, board.GetOpponent(player), !maxplayer,
+                                        ref newSrcCoord, ref newDestCoord, ref updateBoard, ref tempCapList);
                     if (res < beta)
 
                     {
@@ -123,4 +126,4 @@ namespace checkersengine
             }
         }
     }
-    }
+}
