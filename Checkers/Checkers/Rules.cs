@@ -578,6 +578,29 @@ namespace CheckersEngine
             return false;
         }
 
+        public Coordinate FindDestByCap(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate)
+        {
+            int srcX = srcCoordinate.X;
+            int srcY = srcCoordinate.Y;
+            int oponentX = oponentCoordinate.X;
+            int oponentY = oponentCoordinate.Y;
+            var dest= new Coordinate();           
+            int destX, destY;
+
+            //find the direction of the optional capture and set destination accordingly
+            if (srcX < oponentX) destX = oponentX + 1;
+            else destX = oponentX - 1;
+
+            if (srcY < oponentY) destY = oponentY + 1;
+            else destY = oponentY - 1;
+            if (InBounds(board, destX, destY))
+            {
+                dest = new Coordinate(board[destX, destY]);
+            }
+            return dest;
+
+        }
+
         /// <summary>
         /// Compate 2 IList
         /// </summary>
