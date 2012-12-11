@@ -12,9 +12,9 @@ using checkersengine;
 
 namespace CheckersView
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             bool input = true;
             var print = new PrintBoardState();
@@ -34,41 +34,47 @@ namespace CheckersView
                 else if (type == "2")
                 {
                     input = false;
-                    p.StartGameWithPC(board);
-                    }
+                    p.StartGameWithPc(board);
+                }
                 else
                 {
                     Console.WriteLine("Incorrect Input");
                 }
-            }        
+            }
         }
 
+        /// <summary>
+        /// Shows Current Player Color
+        /// </summary>
+        /// <param name="turn"></param>
         public void ShowPlayerChange(Player turn)
         {
             Console.WriteLine("{0}'s turn", turn.ToString());
-            
         }
 
-        public  void StartGameWithHuman(Board board)
+        /// <summary>
+        /// Human VS PC
+        /// </summary>
+        /// <param name="board"></param>
+        public void StartGameWithHuman(Board board)
         {
             var humanColor = Player.None;
             var pcColor = Player.None;
             bool firstTurn = true;
             var rule = new Rules();
             var print = new PrintBoardState();
-            int depth =2;            
             while (true)
             {
                 //first turn is always the human's
                 Console.WriteLine("Your turn, please enter a move in format 'from cell number' 'to cell number'");
-            HumanTurn:
+                HumanTurn:
                 bool capMove = false;
-                var input=Console.ReadLine();      
+                var input = Console.ReadLine();
                 IList<Coordinate> coords = ParseStrToCoords(input, board);
                 if (coords == null)
                 {
                     Console.WriteLine("Wrong Input");
-                    goto HumanTurn; 
+                    goto HumanTurn;
                 }
 
                 var srcCoord = coords.First();
@@ -81,10 +87,12 @@ namespace CheckersView
                 }
                 else if (humanColor != board.GetPlayer(srcCoord))
                 {
-                   Console.WriteLine("This is not your piece , please enter cell number which allocated with your piece color");
-                   goto HumanTurn;
+                    Console.WriteLine(
+                        "This is not your piece , please enter cell number which allocated with your piece color");
+                    goto HumanTurn;
                 }
-                IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board, humanColor);
+                IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board,
+                                                                                                        humanColor);
                 if (capturesAvailable.Count > 0)
                 {
                     IList<Coordinate> captures = rule.MapContainsCoords(capturesAvailable, srcCoord, destCoord);
@@ -97,15 +105,15 @@ namespace CheckersView
                     {
                         foreach (var coordinate in captures)
                         {
-                            board[coordinate.X,coordinate.Y].Status=Piece.None;
-                            board.UpdateCapturedSoldiers(coordinate,pcColor);
+                            board[coordinate.X, coordinate.Y].Status = Piece.None;
+                            board.UpdateCapturedSoldiers(coordinate, pcColor);
                             capMove = true;
                         }
                     }
-                }                
-                if (capMove || rule.IsValidMove(board,srcCoord,destCoord, humanColor))
+                }
+                if (capMove || rule.IsValidMove(board, srcCoord, destCoord, humanColor))
                 {
-                    board.UpdateBoard(srcCoord,destCoord);
+                    board.UpdateBoard(srcCoord, destCoord);
                     rule.IsBecameAKing(board, board[destCoord.X, destCoord.Y]);
                     print.DrawBoard(board);
                 }
@@ -114,6 +122,7 @@ namespace CheckersView
                     Console.WriteLine("This is not a valid move, please enter again");
                     goto HumanTurn;
                 }
+
 
                 GameState game = GetGameState(humanColor, board);
                 if (game == GameState.Lost)
@@ -131,25 +140,27 @@ namespace CheckersView
                 ShowPlayerChange(pcColor);
                 //var miniMax =new MiniMax();
                 var alphaBeta = new Alphabeta();
-                Board temp = new Board();  
-                IList<Coordinate> tempCaptures= new List<Coordinate>();
-                //depth = rule.DefineDepth(board);
-                alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord, ref destCoord, ref temp, ref tempCaptures);
+                Board temp = new Board();
+                IList<Coordinate> tempCaptures = new List<Coordinate>();
+                int depth = rule.DefineDepth(board);
+                alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,
+                                    ref destCoord, ref temp, ref tempCaptures);
                 //miniMax.MinMax(board, depth, pcColor, true, ref srcCoord, ref destCoord, ref temp);
                 if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board, destCoord.X, destCoord.Y)))
                 {
                     board = temp.Copy();
                     print.DrawBoard(board);
                 }
+
                 game = GetGameState(humanColor, board);
                 if (game == GameState.Lost)
                 {
-                    Console.WriteLine("{0} Lost the game and {1} won",humanColor.ToString(),pcColor.ToString());
+                    Console.WriteLine("{0} Lost the game and {1} won", humanColor.ToString(), pcColor.ToString());
                     break;
                 }
                 if (game == GameState.Won)
                 {
-                    Console.WriteLine("{0} Won",humanColor.ToString());
+                    Console.WriteLine("{0} Won", humanColor.ToString());
                     break;
                 }
             }
@@ -163,17 +174,20 @@ namespace CheckersView
         /// <returns></returns>
         public IList<Coordinate> ParseStrToCoords(string input, Board board)
         {
-            IList<Coordinate> moves= new List<Coordinate>();
+            IList<Coordinate> moves = new List<Coordinate>();
             const char delimiterChar = ' ';
             string[] word = input.Split(delimiterChar);
             try
             {
-            Coordinate srcCoord = new Coordinate(board[Int32.Parse(word[0])]);
-            moves.Add(srcCoord);
-            Coordinate destCoord = new Coordinate(board[Int32.Parse(word[1])]);
-            moves.Add(destCoord);
+                Coordinate srcCoord = new Coordinate(board[Int32.Parse(word[0])]);
+                moves.Add(srcCoord);
+                Coordinate destCoord = new Coordinate(board[Int32.Parse(word[1])]);
+                moves.Add(destCoord);
             }
-            catch (Exception) { return null; }            
+            catch (Exception)
+            {
+                return null;
+            }
             return moves;
         }
 
@@ -209,40 +223,22 @@ namespace CheckersView
         /// <summary>
         /// Checks if the move (source, dest) is contained in the map
         /// </summary>
-        /// <param name="capturesAvailable"></param>
-        /// <param name="srcCoord"></param>
-        /// <param name="destCoord"></param>
         /// <returns> if move contained in map returns the captured coordinates, else return empty (move isn't in map)</returns>
-        
-
-
-        public void StartGameWithPC(Board board)
+        public void StartGameWithPc(Board board)
         {
             var oppColor = Player.None;
             var pcColor = Player.None;
-            //bool firstTurn = true;
             var rule = new Rules();
             var print = new PrintBoardState();
-            int depth = 5;
+            int depth;
             Coordinate srcCoord = new Coordinate();
             Coordinate destCoord = new Coordinate();
 
             FileEngine file = new FileEngine();
 
-            path:
-            //define path to share file.
-            Console.WriteLine("Please Enter Path Line:");
-            string path = Console.ReadLine();
-            try
-            {
-                Path.IsPathRooted(path);
-            }
-            catch (Exception)
-            {
 
-                goto path;
-            }
-            
+            string path = "sync.txt";
+
 
             //define colors.
             Console.WriteLine("Opponent color is white? [Yes/No]");
@@ -259,7 +255,7 @@ namespace CheckersView
                 goto MyTurn;
 
 
-        OppTurn:
+            OppTurn:
             try
             {
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
@@ -270,23 +266,23 @@ namespace CheckersView
                     IList<Coordinate> oppMove = new List<Coordinate>();
                     while (oppMove.Count == 0)
                     {
-                        oppMove = file.ReadFromFile(stream,board, path,out color);
-                    }                    
-                    srcCoord = oppMove.First(); 
+                        oppMove = file.ReadFromFile(stream, board, path, out color);
+                    }
+                    srcCoord = oppMove.First();
                     oppMove.RemoveAt(0);
-                    destCoord = oppMove[0]; 
+                    destCoord = oppMove[0];
                     oppMove.RemoveAt(0);
                     var capturesOppdid = oppMove; //is there a more elegant way to get all the rest of the list?
-                    if ((color!=oppColor) || (board.GetPlayer(srcCoord) != oppColor))
+                    if ((color != oppColor) || (board.GetPlayer(srcCoord) != oppColor))
                     {
-                        //Console.WriteLine("This is Not your piece");
                         goto OppTurn;
                     }
                     IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = rule.FindCaptures(board,
                                                                                                             oppColor);
                     if (capturesAvailable.Count > 0)
                     {
-                        var boolean =rule.MapContainsCoordsOfCaptures(capturesAvailable, srcCoord, destCoord, capturesOppdid);
+                        var boolean = rule.MapContainsCoordsOfCaptures(capturesAvailable, srcCoord, destCoord,
+                                                                       capturesOppdid);
                         if (!boolean)
                         {
                             Console.WriteLine("You must capture maximum opponent soldiers on board");
@@ -330,7 +326,6 @@ namespace CheckersView
             }
             catch (Exception)
             {
-
                 goto OppTurn;
             }
 
@@ -344,16 +339,17 @@ namespace CheckersView
                     var alphaBeta = new Alphabeta();
                     Board temp = new Board();
                     IList<Coordinate> tempCaptures = new List<Coordinate>();
+                    depth = rule.DefineDepth(board);
                     alphaBeta.AlphaBeta(board, depth, Int32.MinValue, Int32.MaxValue, pcColor, true, ref srcCoord,
                                         ref destCoord,
-                                        ref temp,ref tempCaptures);
+                                        ref temp, ref tempCaptures);
                     if ((rule.InBounds(board, srcCoord.X, srcCoord.Y)) &&
                         (rule.InBounds(board, destCoord.X, destCoord.Y)))
                     {
                         board = temp.Copy();
                         print.DrawBoard(board);
                     }
-                    file.WriteToFile(stream, srcCoord, destCoord,tempCaptures, path, pcColor);
+                    file.WriteToFile(stream, srcCoord, destCoord, tempCaptures, path, pcColor);
                     GameState game = GetGameState(oppColor, board);
                     if (game == GameState.Lost)
                     {
