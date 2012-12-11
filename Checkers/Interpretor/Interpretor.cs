@@ -40,8 +40,9 @@ namespace Interpretor
             Board temp = new Board();
             var srcCoord = new Coordinate();
             var destCoord = new Coordinate();
-            int depth = 5;
-            alphaBeta.AlphaBeta(ourBoard, depth, Int32.MinValue, Int32.MaxValue, player, true, ref srcCoord, ref destCoord, ref temp);
+            int depth = rule.DefineDepth(board.Board);
+            IList<Coordinate> tempCaptures = new List<Coordinate>();
+            alphaBeta.AlphaBeta(ourBoard, depth, Int32.MinValue, Int32.MaxValue, player, true, ref srcCoord, ref destCoord, ref temp, ref tempCaptures);
             if ((rule.InBounds(ourBoard, srcCoord.X, srcCoord.Y)) && (rule.InBounds(ourBoard, destCoord.X, destCoord.Y)))
             {
                 ourBoard = temp.Copy();
@@ -222,16 +223,80 @@ namespace Interpretor
         /// <returns></returns>
         public IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating)
         {
+            Rules rule= new Rules();
+            needToContinueEating = false; //not correct
             this.Board = ConvertBoardStateToBoard(this);
-            var point = ConvertMoveTypeToCoordinate(position, moveType);
-            position = ConvertPointToCoordinate(position.X, position.Y);
-            board.UpdateBoard(board[position.X, position.Y], board[point.X, point.Y]);
-            //check if dest coord is empty in not check for capture.
-            //check if human choose his piece
-            this.BoardCells = ConvertBoardToBoardState(board);
-            needToContinueEating = false; //No correct
-            return this;
+            var destPoint = ConvertMoveTypeToCoordinate(position, moveType); //returns type point
+            var srcPoint = ConvertPointToCoordinate(position.X, position.Y);          // returns type point
+            var srcCoord = new Coordinate { X = srcPoint.X, Y = srcPoint.Y, Status = board.PieceColor(board[srcPoint.X, srcPoint.Y]) };
+            var oppCoord = new Coordinate { X = destPoint.X, Y = destPoint.Y, Status = board.PieceColor(board[destPoint.X, destPoint.Y]) };
+
+
+            if (!CheckValidPieceColor(this.board, srcPoint.X, srcPoint.Y, player))
+            {
+                needToContinueEating = false;
+                return null;
+            }   
+            if (!IsEmptyCoord(board, destPoint.X, destPoint.Y) && CheckValidPieceColor(board,destPoint.X,destPoint.Y,player))
+            {
+                needToContinueEating = false;
+                return null;
+            }
+            if (!IsEmptyCoord(board, destPoint.X, destPoint.Y) &&
+                !CheckValidPieceColor(board, destPoint.X, destPoint.Y, player))
+            {
+                //calculate capture.....problem....
+                //calculate new dest;
+                Coordinate newDestCoord;
+                bool done = false;                
+                var captures = rule.CoordsToCaptureAndDest(board, srcCoord, oppCoord, player);
+                if (captures.Count > 0)
+                {
+                    foreach (var listOfCap in captures.Keys)
+                    {
+                        if (listOfCap.First()==oppCoord)
+                        {
+                            int length = listOfCap.Count;                           
+                            newDestCoord = rule.FindDestByCap(board, srcCoord, oppCoord);
+                            this.board.UpdateBoard(srcCoord, newDestCoord);                                                     
+                            this.board.UpdateCapturedSoldiers(oppCoord, board.GetOpponent(player));
+                            board[oppCoord.X, oppCoord.Y].Status = Piece.None;
+                            this.BoardCells = ConvertBoardToBoardState(board);  
+                            if (length > 1)
+                                needToContinueEating =true;                           
+                            return this;
+                        }
+                    }                    
+                }                
+                    return null;
+            }     
+            //check if player doesnt have any availble captures- if he does then this move isn't valid
+            var capturesAvaileble = rule.FindCaptures(board, player);
+            if (capturesAvaileble.Count == 0)
+            {
+                board.UpdateBoard(board[srcPoint.X, srcPoint.Y], board[destPoint.X, destPoint.Y]);
+                this.BoardCells = ConvertBoardToBoardState(board);
+                return this;
+            }
+            return null;
         }
+
+        public bool IsEmptyCoord(Board board, int x, int y)
+        {
+            var destCoord = board[x, y];
+            if (destCoord != null && destCoord.Status == Piece.None)
+                return true;
+            return false;
+        }
+
+        public bool CheckValidPieceColor(Board board, int x, int y, Player player)
+        {
+            var srcCoord = board[x, y];
+            if (srcCoord != null && board.GetPlayer(srcCoord) == player)
+                return true;
+            return false;
+        }
+
 
         public GameState GetGameState(Player player)
         {
