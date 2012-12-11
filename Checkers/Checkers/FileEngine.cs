@@ -47,18 +47,18 @@ namespace CheckersEngine
                 //Captures list if there are captures
                 if (captureList.Count > 0)
                 {
-                    result += " ";
+                    
                     foreach (var capture in captureList)
                     {
-                        result += "[" + capture.X.ToString(CultureInfo.InvariantCulture) + "," +
-                                          capture.Y.ToString(CultureInfo.InvariantCulture) + "]"+" ";
+                        result += " "+"[" + capture.X.ToString(CultureInfo.InvariantCulture) + "," +
+                                          capture.Y.ToString(CultureInfo.InvariantCulture) + "]";
                     }
                     
                 }
 
-                string playerColor;
+                string playerColor=string.Empty;
                 //Convert our coordinate to Smhul and Limor moves
-               result = CoordinateToShmul(result, out playerColor);
+               result = CoordinateToShmul(result);
                 
                 if (player == Player.Black)
                 {
@@ -150,9 +150,8 @@ namespace CheckersEngine
         /// Convert our coordinates to Shmul and Limor moves
         /// </summary>
         /// <param name="coordinates"></param>
-        /// <param name="playerColor"></param>
         /// <returns></returns>
-        private string CoordinateToShmul(string coordinates, out string playerColor)
+        private string CoordinateToShmul(string coordinates)
         {
             IList<Coordinate> coords = new List<Coordinate>();
             const char delimiterChar = ' ';
@@ -181,8 +180,6 @@ namespace CheckersEngine
                             coordinate.Y.ToString(CultureInfo.InvariantCulture) + "]"+" ";
                 coordinates += temp;
             }
-
-            playerColor = word[word.Length - 1];
             return coordinates;
         }
 
