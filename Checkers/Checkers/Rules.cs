@@ -578,6 +578,13 @@ namespace CheckersEngine
             return false;
         }
 
+        /// <summary>
+        /// Finds destination by captured coordinate
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="srcCoordinate"></param>
+        /// <param name="oponentCoordinate"></param>
+        /// <returns></returns>
         public Coordinate FindDestByCap(Board board, Coordinate srcCoordinate, Coordinate oponentCoordinate)
         {
             int srcX = srcCoordinate.X;
