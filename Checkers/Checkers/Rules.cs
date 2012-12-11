@@ -570,11 +570,33 @@ namespace CheckersEngine
             foreach (var item in capturesAvailable)
             {
                 if (item.Value.First().X == srcCoord.X && item.Value.First().Y == srcCoord.Y &&
-                    item.Value.Last().X == destCoord.X && item.Value.Last().Y == destCoord.Y && item.Key==capturesOppdid)
+                    item.Value.Last().X == destCoord.X && item.Value.Last().Y == destCoord.Y && Compare(item.Key,capturesOppdid))
                 {
                     return true;
                 }
             }            
+            return false;
+        }
+
+        /// <summary>
+        /// Compate 2 IList
+        /// </summary>
+        /// <param name="firstList"></param>
+        /// <param name="secondList"></param>
+        /// <returns></returns>
+        private bool Compare(IList<Coordinate> firstList, IList<Coordinate> secondList)
+        {
+            if (firstList.Count == secondList.Count)
+            {
+                for (int i = 0; i < firstList.Count; i++)
+                {
+                    if (!secondList.Contains(firstList[i]))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
             return false;
         }
     }
