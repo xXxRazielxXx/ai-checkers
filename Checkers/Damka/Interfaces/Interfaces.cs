@@ -16,21 +16,6 @@ namespace Interfaces
         BottomLeft
     }
 
-    //public enum CellType
-    //{
-    //    Empty,
-    //    Black,
-    //    White,
-    //    BlackQueen,
-    //    WhiteQueen
-    //}
-
-    //public enum Player
-    //{
-    //    Black,
-    //    White
-    //}
-
     public interface IMove
     {
         IBoardState Board { get; }
@@ -40,7 +25,8 @@ namespace Interfaces
     {
         Won,
         Lost,
-        Undetermined
+        Undetermined,
+        Draw
     }
 
     public interface IBoardState
