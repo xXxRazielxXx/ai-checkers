@@ -81,7 +81,6 @@ namespace Interpretor
 
     public class BoardState : IBoardState
     {
-        private Board board;
 
 
         /// <summary>
@@ -90,12 +89,12 @@ namespace Interpretor
         /// <param name="size"></param>
         public BoardState(int size)
         {
-            this.board = new Board(size);
+            this.Board = new Board(size);
             this.BoardCells = new Piece[8,8];
-            BoardCells = ConvertBoardToBoardState(board);
+            BoardCells = ConvertBoardToBoardState(Board);
         }
 
-        public Board Board { get; set; }
+        public Board Board { get;  set;}
 
         /// <summary>
         /// Convert Board to BoardState (piece[,])
@@ -126,38 +125,22 @@ namespace Interpretor
         {
             
             int k = 32;
-            for (int i = 0; i < board.Rows; i++)
+            for (int i = 0; i < Board.Rows; i++)
             {
                 int j = i%2 == 0 ? 7 : 6;
 
                 for (int shift=0; j >=0; k--, j -= 2, shift++)
                 {
                     k = (8-i)*4 - shift;
-                    board[k].Status = boardState.BoardCells[i, j];
-                    board[k].X = 8-i;
-                    board[k].Y = j+1;
-                    if (boardState.BoardCells[i, j] == Piece.BlackPiece)
-                    {
-                        board.NumberOfBlackPieces++;
-                    }
-                    if (boardState.BoardCells[i, j] == Piece.BlackKing)
-                    {
-                        board.NumberOfBlackKings++;
-                    }
-                    if (boardState.BoardCells[i, j] == Piece.WhitePiece)
-                    {
-                        board.NumberOfWhitePieces++;
-                    }
-                    if (boardState.BoardCells[i, j] == Piece.WhiteKing)
-                    {
-                        board.NumberOfWhiteKings++;
-                    }
+                    Board[k].Status = boardState.BoardCells[i, j];
+                    Board[k].X = 8 - i;
+                    Board[k].Y = j + 1;
+
                 }
             }
-            //temp.Columns = board.Rows = 8;
-            //temp.Size = 32;
 
-            return board;
+
+            return Board;
         }
 
         public Piece[,] BoardCells { get; set; }
@@ -170,7 +153,7 @@ namespace Interpretor
         /// <returns></returns>
         public Point ConvertPointToCoordinate(int x, int y)
         {
-            var p = new Point { X = board.rows - y, Y = x+1 };
+            var p = new Point { X = Board.rows - y, Y = x + 1 };
             return p;
         }
 
@@ -228,40 +211,40 @@ namespace Interpretor
             this.Board = ConvertBoardStateToBoard(this);
             var destPoint = ConvertMoveTypeToCoordinate(position, moveType); //returns type point
             var srcPoint = ConvertPointToCoordinate(position.X, position.Y);          // returns type point
-            var srcCoord = new Coordinate { X = srcPoint.X, Y = srcPoint.Y, Status = board.PieceColor(board[srcPoint.X, srcPoint.Y]) };
-            var oppCoord = new Coordinate { X = destPoint.X, Y = destPoint.Y, Status = board.PieceColor(board[destPoint.X, destPoint.Y]) };
+            var srcCoord = new Coordinate { X = srcPoint.X, Y = srcPoint.Y, Status = Board.PieceColor(Board[srcPoint.X, srcPoint.Y]) };
+            var oppCoord = new Coordinate { X = destPoint.X, Y = destPoint.Y, Status = Board.PieceColor(Board[destPoint.X, destPoint.Y]) };
 
 
-            if (!CheckValidPieceColor(this.board, srcPoint.X, srcPoint.Y, player))
-            {
-                needToContinueEating = false;
-                return null;
-            }   
-            if (!IsEmptyCoord(board, destPoint.X, destPoint.Y) && CheckValidPieceColor(board,destPoint.X,destPoint.Y,player))
+            if (!CheckValidPieceColor(this.Board, srcPoint.X, srcPoint.Y, player))
             {
                 needToContinueEating = false;
                 return null;
             }
-            if (!IsEmptyCoord(board, destPoint.X, destPoint.Y) &&
-                !CheckValidPieceColor(board, destPoint.X, destPoint.Y, player))
+            if (!IsEmptyCoord(Board, destPoint.X, destPoint.Y) && CheckValidPieceColor(Board, destPoint.X, destPoint.Y, player))
+            {
+                needToContinueEating = false;
+                return null;
+            }
+            if (!IsEmptyCoord(Board, destPoint.X, destPoint.Y) &&
+                !CheckValidPieceColor(Board, destPoint.X, destPoint.Y, player))
             {
                 //calculate capture.....problem....
                 //calculate new dest;
                 Coordinate newDestCoord;
-                bool done = false;                
-                var captures = rule.CoordsToCaptureAndDest(board, srcCoord, oppCoord, player);
+                bool done = false;
+                var captures = rule.CoordsToCaptureAndDest(Board, srcCoord, oppCoord, player);
                 if (captures.Count > 0)
                 {
                     foreach (var listOfCap in captures.Keys)
                     {
                         if (listOfCap.First()==oppCoord)
                         {
-                            int length = listOfCap.Count;                           
-                            newDestCoord = rule.FindDestByCap(board, srcCoord, oppCoord);
-                            this.board.UpdateBoard(srcCoord, newDestCoord);                                                     
-                            this.board.UpdateCapturedSoldiers(oppCoord, board.GetOpponent(player));
-                            board[oppCoord.X, oppCoord.Y].Status = Piece.None;
-                            this.BoardCells = ConvertBoardToBoardState(board);  
+                            int length = listOfCap.Count;
+                            newDestCoord = rule.FindDestByCap(Board, srcCoord, oppCoord);
+                            this.Board.UpdateBoard(srcCoord, newDestCoord);
+                            this.Board.UpdateCapturedSoldiers(oppCoord, Board.GetOpponent(player));
+                            Board[oppCoord.X, oppCoord.Y].Status = Piece.None;
+                            this.BoardCells = ConvertBoardToBoardState(Board);  
                             if (length > 1)
                                 needToContinueEating =true;                           
                             return this;
@@ -271,11 +254,11 @@ namespace Interpretor
                     return null;
             }     
             //check if player doesnt have any availble captures- if he does then this move isn't valid
-            var capturesAvaileble = rule.FindCaptures(board, player);
+            var capturesAvaileble = rule.FindCaptures(Board, player);
             if (capturesAvaileble.Count == 0)
             {
-                board.UpdateBoard(board[srcPoint.X, srcPoint.Y], board[destPoint.X, destPoint.Y]);
-                this.BoardCells = ConvertBoardToBoardState(board);
+                Board.UpdateBoard(Board[srcPoint.X, srcPoint.Y], Board[destPoint.X, destPoint.Y]);
+                this.BoardCells = ConvertBoardToBoardState(Board);
                 return this;
             }
             return null;
@@ -301,9 +284,9 @@ namespace Interpretor
         public GameState GetGameState(Player player)
         {
             Rules rule = new Rules();
-            if (rule.DidPlayerLost(player, board))
+            if (rule.DidPlayerLost(player, Board))
                 return GameState.Lost;
-            else if (rule.DidPlayerLost(board.GetOpponent(player), board))
+            else if (rule.DidPlayerLost(Board.GetOpponent(player), Board))
                 return GameState.Won;
             else
                 return GameState.Undetermined;        
