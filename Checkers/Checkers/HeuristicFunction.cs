@@ -45,7 +45,7 @@ namespace CheckersEngine
 
         }
 
-        public int Evaluate_old (Board board, Player player)
+        public int EvaluateOld (Board board, Player player)
         {
             int score = 0;
             int safeBlack = 0;
@@ -243,6 +243,11 @@ namespace CheckersEngine
             return max;
         }
 
+        /// <summary>
+        /// if piece is close to became a king 
+        /// </summary>
+        /// <param name="coord"></param>
+        /// <returns></returns>
         private int CloseToBecomeAKing(Coordinate coord)
         {
             if (coord.Status == Piece.BlackKing || coord.Status == Piece.WhiteKing)
