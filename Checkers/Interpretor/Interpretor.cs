@@ -260,8 +260,13 @@ namespace Interpretor
             }     
             //check if player doesnt have any availble captures- if he does then this move isn't valid
             var capturesAvaileble = rule.FindCaptures(Board, player);
-            if (capturesAvaileble.Count == 0)
+            if (capturesAvaileble.Count == 0 )
             {
+                if(!rule.IsValidMove(Board, srcCoord, Board[destPoint.X,destPoint.Y],player))
+                {
+                     mustCapture = false;
+                     return null;
+                }            
                 Board.UpdateBoard(Board[srcPoint.X, srcPoint.Y], Board[destPoint.X, destPoint.Y]);
                 this.BoardCells = ConvertBoardToBoardState(Board);
                 mustCapture = false;
