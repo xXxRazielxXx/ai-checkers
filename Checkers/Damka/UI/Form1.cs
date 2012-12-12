@@ -215,7 +215,7 @@ namespace UI
         {
             if (!(squaresData.ContainsKey(src)) || !(squaresData.ContainsKey(dst)))
             {
-                MessageBox.Show("Invalid move");
+                MessageBox.Show(Resources.Invalid_Move);
                 return;
             }
 
@@ -230,7 +230,7 @@ namespace UI
                 ((Math.Abs(deltaX) != 2) ||
                  (Math.Abs(deltaY) != 2)))
             {
-                MessageBox.Show("Invalid move");
+                MessageBox.Show(Resources.Invalid_Move);
                 return;
             }
 
@@ -251,11 +251,11 @@ namespace UI
             }
             else if (newBoard == null && mustCapture)
             {
-                MessageBox.Show("You must capture maximum opponent pieces");
+                MessageBox.Show(Resources.Max_capture);
             }
             else
             {
-                MessageBox.Show("Invalid move");
+                MessageBox.Show(Resources.Invalid_Move);
             }
         }
         private void PlayMove(IBoardState newBoard,bool needToContinueEating)
