@@ -353,19 +353,6 @@ namespace UI
             }
         }
 
-
-        private void remotePCVsPCToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.ChooseStartPlayer();
-            DialogResult res = MessageBox.Show("Local PC player is black?", "Choose local PC color", MessageBoxButtons.YesNo);
-            if (res == DialogResult.Yes)
-            {
-            }
-            else
-            {
-            }
-        }
-
         private void pCVsPCToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.ChooseStartPlayer();
@@ -425,10 +412,6 @@ namespace UI
             }
         }
 
-        private void twoPlayersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.ChooseStartPlayer();
-        }
 
         private void ChooseStartPlayer()
         {
