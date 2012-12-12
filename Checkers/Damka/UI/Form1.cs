@@ -242,10 +242,15 @@ namespace UI
 
             MoveType moveType = this.ConvertToMove(deltaX,deltaY);
             bool needToContinueEating;
-            IBoardState newBoard = currBoard.GetBoardState(player, moveType, srcSquare.Position,out needToContinueEating);
+            bool mustCapture;
+            IBoardState newBoard = currBoard.GetBoardState(player, moveType, srcSquare.Position,out needToContinueEating,out mustCapture);
             if (newBoard != null)
             {
                 this.PlayMove(newBoard, needToContinueEating);
+            }
+            else if (newBoard == null && mustCapture)
+            {
+                MessageBox.Show("You must capture maximum opponent pieces");
             }
             else
             {

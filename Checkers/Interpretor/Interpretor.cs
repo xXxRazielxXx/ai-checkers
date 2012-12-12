@@ -203,7 +203,7 @@ namespace Interpretor
         /// <param name="position"></param>
         /// <param name="needToContinueEating"></param>
         /// <returns></returns>
-        public IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating)
+        public IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating,out bool mustCapture)
         {
             Rules rule= new Rules();
             needToContinueEating = false; //not correct
@@ -217,11 +217,13 @@ namespace Interpretor
             if (!CheckValidPieceColor(this.Board, srcPoint.X, srcPoint.Y, player))
             {
                 needToContinueEating = false;
+                mustCapture = false;
                 return null;
             }
             if (!IsEmptyCoord(Board, destPoint.X, destPoint.Y) && CheckValidPieceColor(Board, destPoint.X, destPoint.Y, player))
             {
                 needToContinueEating = false;
+                mustCapture = false;
                 return null;
             }
             if (!IsEmptyCoord(Board, destPoint.X, destPoint.Y) &&
@@ -234,7 +236,7 @@ namespace Interpretor
                 var captures = rule.CoordsToCaptureAndDest(Board, srcCoord, oppCoord, player);
                 if (captures.Count > 0)
                 {
-                    foreach (var listOfCap in captures.Keys)
+                    foreach (var listOfCap in captures.Keys.Reverse())
                     {
                         if (listOfCap.First()==oppCoord)
                         {
@@ -245,12 +247,16 @@ namespace Interpretor
                             Board[oppCoord.X, oppCoord.Y].Status = Piece.None;
                             this.BoardCells = ConvertBoardToBoardState(Board);  
                             if (length > 1)
-                                needToContinueEating =true;                           
+                                needToContinueEating =true;
+                            mustCapture = false;
                             return this;
                         }
-                    }                    
-                }                
+                    }
+                    mustCapture = true;
                     return null;
+                }
+                    
+                   
             }     
             //check if player doesnt have any availble captures- if he does then this move isn't valid
             var capturesAvaileble = rule.FindCaptures(Board, player);
@@ -258,8 +264,10 @@ namespace Interpretor
             {
                 Board.UpdateBoard(Board[srcPoint.X, srcPoint.Y], Board[destPoint.X, destPoint.Y]);
                 this.BoardCells = ConvertBoardToBoardState(Board);
+                mustCapture = false;
                 return this;
             }
+            mustCapture = true;
             return null;
         }
 
