@@ -28,21 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playerVsPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pCVsPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.remotePCVsPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.remotePCVsPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.depthCombo = new System.Windows.Forms.ComboBox();
+            this.playersTurn = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.boardPanel = new System.Windows.Forms.Panel();
-            this.depthCombo = new System.Windows.Forms.ComboBox();
-            this.playersTurn = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -53,7 +55,6 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.playerVsPCToolStripMenuItem,
             this.pCVsPCToolStripMenuItem,
-            this.remotePCVsPCToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -62,30 +63,28 @@
             // playerVsPCToolStripMenuItem
             // 
             this.playerVsPCToolStripMenuItem.Name = "playerVsPCToolStripMenuItem";
-            this.playerVsPCToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.playerVsPCToolStripMenuItem.Text = "player vs PC";
+            this.playerVsPCToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.playerVsPCToolStripMenuItem.Text = "Player vs PC";
             this.playerVsPCToolStripMenuItem.Click += new System.EventHandler(this.playerVsPCToolStripMenuItem_Click);
             // 
             // pCVsPCToolStripMenuItem
             // 
             this.pCVsPCToolStripMenuItem.Name = "pCVsPCToolStripMenuItem";
-            this.pCVsPCToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.pCVsPCToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.pCVsPCToolStripMenuItem.Text = "PC vs PC";
             this.pCVsPCToolStripMenuItem.Click += new System.EventHandler(this.pCVsPCToolStripMenuItem_Click);
-            // 
-            // remotePCVsPCToolStripMenuItem
-            // 
-            this.remotePCVsPCToolStripMenuItem.Name = "remotePCVsPCToolStripMenuItem";
-            this.remotePCVsPCToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.remotePCVsPCToolStripMenuItem.Text = "Remote PC vs PC...";
-            this.remotePCVsPCToolStripMenuItem.Click += new System.EventHandler(this.remotePCVsPCToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // remotePCVsPCToolStripMenuItem
+            // 
+            this.remotePCVsPCToolStripMenuItem.Name = "remotePCVsPCToolStripMenuItem";
+            this.remotePCVsPCToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // menuStrip1
             // 
@@ -99,6 +98,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.depthCombo);
             this.panel2.Controls.Add(this.playersTurn);
             this.panel2.Controls.Add(this.label1);
@@ -108,45 +108,14 @@
             this.panel2.Size = new System.Drawing.Size(666, 40);
             this.panel2.TabIndex = 2;
             // 
-            // panel4
+            // label2
             // 
-            this.panel4.Controls.Add(this.panel5);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 650);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(666, 80);
-            this.panel4.TabIndex = 5;
-            // 
-            // panel5
-            // 
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel5.Location = new System.Drawing.Point(0, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(666, 40);
-            this.panel5.TabIndex = 3;
-            // 
-            // panel1
-            // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(626, 64);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(40, 586);
-            this.panel1.TabIndex = 6;
-            // 
-            // panel3
-            // 
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel3.Location = new System.Drawing.Point(0, 64);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(40, 586);
-            this.panel3.TabIndex = 7;
-            // 
-            // boardPanel
-            // 
-            this.boardPanel.Location = new System.Drawing.Point(39, 64);
-            this.boardPanel.Name = "boardPanel";
-            this.boardPanel.Size = new System.Drawing.Size(586, 586);
-            this.boardPanel.TabIndex = 8;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(62, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(36, 13);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Depth";
             // 
             // depthCombo
             // 
@@ -188,6 +157,46 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "Players Turn :";
             // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.panel5);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel4.Location = new System.Drawing.Point(0, 650);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(666, 80);
+            this.panel4.TabIndex = 5;
+            // 
+            // panel5
+            // 
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(666, 40);
+            this.panel5.TabIndex = 3;
+            // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(626, 64);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(40, 586);
+            this.panel1.TabIndex = 6;
+            // 
+            // panel3
+            // 
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel3.Location = new System.Drawing.Point(0, 64);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(40, 586);
+            this.panel3.TabIndex = 7;
+            // 
+            // boardPanel
+            // 
+            this.boardPanel.Location = new System.Drawing.Point(39, 64);
+            this.boardPanel.Name = "boardPanel";
+            this.boardPanel.Size = new System.Drawing.Size(586, 586);
+            this.boardPanel.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -199,6 +208,7 @@
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
@@ -231,6 +241,7 @@
         private System.Windows.Forms.ComboBox depthCombo;
         private System.Windows.Forms.Label playersTurn;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
 
     }
 }

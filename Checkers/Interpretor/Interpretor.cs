@@ -32,7 +32,7 @@ namespace Interpretor
     {
         public IBoardState Board { get;  set; }
 
-        public Move(IBoardState board,Player player)
+        public Move(IBoardState board, Player player, int depth)
         {
             Rules rule = new Rules();
             var ourBoard = board.ConvertBoardStateToBoard(board);
@@ -40,7 +40,6 @@ namespace Interpretor
             Board temp = new Board();
             var srcCoord = new Coordinate();
             var destCoord = new Coordinate();
-            int depth = rule.DefineDepth(board.Board);
             IList<Coordinate> tempCaptures = new List<Coordinate>();
             alphaBeta.AlphaBeta(ourBoard, depth, Int32.MinValue, Int32.MaxValue, player, true, ref srcCoord, ref destCoord, ref temp, ref tempCaptures);
             if ((rule.InBounds(ourBoard, srcCoord.X, srcCoord.Y)) && (rule.InBounds(ourBoard, destCoord.X, destCoord.Y)))
@@ -74,7 +73,7 @@ namespace Interpretor
         /// <returns></returns>
         public IMove GetBoardMove(IBoardState boardState,int depth)
         {
-            IMove move = new Move(boardState,playerColor);
+            IMove move = new Move(boardState, playerColor, depth);
             return move;
         }
     }
