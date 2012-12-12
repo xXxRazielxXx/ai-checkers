@@ -215,7 +215,7 @@ namespace UI
         {
             if (!(squaresData.ContainsKey(src)) || !(squaresData.ContainsKey(dst)))
             {
-                MessageBox.Show(Resources.Invalid_Move);
+                MessageBox.Show(Resources.InvalidMove);
                 return;
             }
 
@@ -230,7 +230,7 @@ namespace UI
                 ((Math.Abs(deltaX) != 2) ||
                  (Math.Abs(deltaY) != 2)))
             {
-                MessageBox.Show(Resources.Invalid_Move);
+                MessageBox.Show(Resources.InvalidMove);
                 return;
             }
 
@@ -255,7 +255,7 @@ namespace UI
             }
             else
             {
-                MessageBox.Show(Resources.Invalid_Move);
+                MessageBox.Show(Resources.InvalidMove);
             }
         }
         private void PlayMove(IBoardState newBoard,bool needToContinueEating)
