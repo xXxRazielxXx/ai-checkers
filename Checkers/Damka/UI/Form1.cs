@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Forms;
 using CheckersModel;
 using Interfaces;
+using UI.Properties;
 
 namespace UI
 {
@@ -265,7 +266,19 @@ namespace UI
             this.PaintBoard();
             if (stateAfterMove == GameState.Won)
             {
-                MessageBox.Show("Won!!!!");
+                MessageBox.Show(player.ToString()+" "+Resources.Won);
+                players = null;
+                return;
+            }
+            if (stateAfterMove == GameState.Lost)
+            {
+                MessageBox.Show(player.ToString() + " " + Resources.Lost);
+                players = null;
+                return;
+            }
+            if (stateAfterMove == GameState.Draw)
+            {
+                MessageBox.Show(Resources.Draw);
                 players = null;
                 return;
             }

@@ -30,22 +30,22 @@ namespace Interpretor
     /// </summary>
     public class Move : IMove
     {
-        public IBoardState Board { get;  set; }
+        public IBoardState Board { get; set; }
 
         public Move(IBoardState board, Player player, int depth)
         {
             Rules rule = new Rules();
-            var ourBoard = board.ConvertBoardStateToBoard(board);
+            board.Board = board.ConvertBoardStateToBoard(board);
             var alphaBeta = new Alphabeta();
             Board temp = new Board();
             var srcCoord = new Coordinate();
             var destCoord = new Coordinate();
             IList<Coordinate> tempCaptures = new List<Coordinate>();
-            alphaBeta.AlphaBeta(ourBoard, depth, Int32.MinValue, Int32.MaxValue, player, true, ref srcCoord, ref destCoord, ref temp, ref tempCaptures);
-            if ((rule.InBounds(ourBoard, srcCoord.X, srcCoord.Y)) && (rule.InBounds(ourBoard, destCoord.X, destCoord.Y)))
+            alphaBeta.AlphaBeta(board.Board, depth, Int32.MinValue, Int32.MaxValue, player, true, ref srcCoord, ref destCoord, ref temp, ref tempCaptures);
+            if ((rule.InBounds(board.Board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board.Board, destCoord.X, destCoord.Y)))
             {
-                ourBoard = temp.Copy();
-                board.BoardCells= board.ConvertBoardToBoardState(ourBoard);
+                board.Board = temp.Copy();
+                board.BoardCells = board.ConvertBoardToBoardState(board.Board);
                 Board = board;
             }
         }
@@ -80,7 +80,7 @@ namespace Interpretor
 
     public class BoardState : IBoardState
     {
-
+        private int countMove = 0;
 
         /// <summary>
         /// Constructor which get size and initialize "our" board and build a new BoardCell and convert "our" board to BoardCell
@@ -231,17 +231,16 @@ namespace Interpretor
             {
                 //calculate capture.....problem....
                 //calculate new dest;
-                Coordinate newDestCoord;
                 bool done = false;
                 var captures = rule.CoordsToCaptureAndDest(Board, srcCoord, oppCoord, player);
                 if (captures.Count > 0)
                 {
-                    foreach (IList<Coordinate> listOfCap in captures.Keys)
-                    {                       
+                    foreach (var listOfCap in captures.Keys)
+                    {
                         if (listOfCap.Last() == oppCoord)
-                            {
+                        {
                             int length = listOfCap.Count;
-                            newDestCoord = rule.FindDestByCap(Board, srcCoord, oppCoord);
+                            Coordinate newDestCoord = rule.FindDestByCap(Board, srcCoord, oppCoord);
                             this.Board.UpdateBoard(srcCoord, newDestCoord);
                             this.Board.UpdateCapturedSoldiers(oppCoord, Board.GetOpponent(player));
                             rule.IsBecameAKing(Board, newDestCoord);
@@ -270,7 +269,7 @@ namespace Interpretor
                 }            
                 Board.UpdateBoard(Board[srcPoint.X, srcPoint.Y], Board[destPoint.X, destPoint.Y]);
                 rule.IsBecameAKing(Board, Board[destPoint.X, destPoint.Y]);
-                this.BoardCells = ConvertBoardToBoardState(Board);                
+                this.BoardCells = ConvertBoardToBoardState(Board);
                 mustCapture = false;
                 return this;
             }
@@ -297,12 +296,47 @@ namespace Interpretor
 
         public GameState GetGameState(Player player)
         {
-            Rules rule = new Rules();
-            if (rule.DidPlayerLost(player, Board))
+            var rule = new Rules();
+
+            var numberplayerPieces = rule.NumberOfPlayerPieces(Board, player);
+            var isplayerBlocked = rule.IsPlayerBlocked(Board, player);
+            if (numberplayerPieces == 0 || isplayerBlocked)
+            {
                 return GameState.Lost;
-            else if (rule.DidPlayerLost(Board.GetOpponent(player), Board))
+            }
+            var numberopponentPieces = rule.NumberOfPlayerPieces(Board, Board.GetOpponent(player));
+            var isopponentBlocked = rule.IsPlayerBlocked(Board, Board.GetOpponent(player));
+            if (numberopponentPieces == 0 || isopponentBlocked)
+            {
                 return GameState.Won;
+            }
             else
+            {
+                return GameState.Undetermined;
+            }       
+        }
+
+        /// <summary>
+        /// Checks if drow and return number of moves
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="coordinate"></param>
+        /// <param name="canCapture"></param>
+        /// <param name="count"></param>
+        public GameState CheckDraw(Board board, Coordinate coordinate, bool canCapture, ref int count)
+        {
+            if (board.IsKing(coordinate) && !canCapture)
+            {
+                count++;
+                if (count == 15)
+                {
+                    return GameState.Draw;
+                }
+            }
+            else
+            {
+                count = 0;
+            }
                 return GameState.Undetermined;        
         }
 
