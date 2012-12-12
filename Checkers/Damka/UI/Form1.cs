@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using CheckersModel;
@@ -63,11 +65,14 @@ namespace UI
                     squares[i, j].Size = new Size(squreSize,squreSize);
 
                     bool isDark = true;
-                    Image img = Bitmap.FromFile(@"..\..\..\Pictures\darkTile.png");
+                    Assembly myAssembly = Assembly.GetExecutingAssembly();
+                    Stream myStream = myAssembly.GetManifestResourceStream("UI.Resources.darkTile.jpg");
+                    Image img = new Bitmap(myStream);
                     if ((j+delta) % 2 == 0)
                     {
                         isDark = false;
-                        img = Bitmap.FromFile(@"..\..\..\Pictures\lightTile.png");
+                        myStream = myAssembly.GetManifestResourceStream("UI.Resources.lightTile.jpg");
+                        img = new Bitmap(myStream);
                     }
                     squares[i, j].Tag = new SquareData(isDark,new Point(j,i));
                     squares[i, j].Image = Form1.Resize1(new Bitmap(img), squreSize, squreSize);
@@ -114,50 +119,59 @@ namespace UI
                     SquareData squareData = (SquareData)this.squares[i,j].Tag;
                     if (currBoard.BoardCells[i, j] == Piece.None)
                         continue;
-
-                    Image img = Bitmap.FromFile(@"..\..\..\Pictures\blackOnDarkTile.png");
+                    Assembly myAssembly = Assembly.GetExecutingAssembly();
+                    Stream myStream = myAssembly.GetManifestResourceStream("UI.Resources.blackOnDarkTile.jpg");
+                    Image img = new Bitmap(myStream);
                     if (currBoard.BoardCells[i, j] == Piece.BlackPiece)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackOnDarkTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.blackOnDarkTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackOnLightTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.blackOnLightTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                     }
                     else if (currBoard.BoardCells[i, j] == Piece.BlackKing)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackQueenOnDarkTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.blackQueenOnDarkTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\blackQueenOnLightTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.blackQueenOnLightTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                     }
                     else if (currBoard.BoardCells[i, j] == Piece.WhitePiece)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteOnDarkTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.whiteOnDarkTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteOnLightTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.whiteOnLightTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                     }
                     else if (currBoard.BoardCells[i, j] == Piece.WhiteKing)
                     {
                         if (squareData.IsDark)
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteQueenOnDarkTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.whiteQueenOnDarkTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                         else
                         {
-                            img = Bitmap.FromFile(@"..\..\..\Pictures\whiteQueenOnLightTile.png");
+                            myStream = myAssembly.GetManifestResourceStream("UI.Resources.whiteQueenOnLightTile.jpg");
+                            img = new Bitmap(myStream);
                         }
                     }
 
