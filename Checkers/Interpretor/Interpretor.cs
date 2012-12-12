@@ -236,14 +236,15 @@ namespace Interpretor
                 var captures = rule.CoordsToCaptureAndDest(Board, srcCoord, oppCoord, player);
                 if (captures.Count > 0)
                 {
-                    foreach (var listOfCap in captures.Keys.Reverse())
-                    {
-                        if (listOfCap.First()==oppCoord)
-                        {
+                    foreach (IList<Coordinate> listOfCap in captures.Keys)
+                    {                       
+                        if (listOfCap.Last() == oppCoord)
+                            {
                             int length = listOfCap.Count;
                             newDestCoord = rule.FindDestByCap(Board, srcCoord, oppCoord);
                             this.Board.UpdateBoard(srcCoord, newDestCoord);
                             this.Board.UpdateCapturedSoldiers(oppCoord, Board.GetOpponent(player));
+                            rule.IsBecameAKing(Board, newDestCoord);
                             Board[oppCoord.X, oppCoord.Y].Status = Piece.None;
                             this.BoardCells = ConvertBoardToBoardState(Board);  
                             if (length > 1)
@@ -268,7 +269,8 @@ namespace Interpretor
                      return null;
                 }            
                 Board.UpdateBoard(Board[srcPoint.X, srcPoint.Y], Board[destPoint.X, destPoint.Y]);
-                this.BoardCells = ConvertBoardToBoardState(Board);
+                rule.IsBecameAKing(Board, Board[destPoint.X, destPoint.Y]);
+                this.BoardCells = ConvertBoardToBoardState(Board);                
                 mustCapture = false;
                 return this;
             }
