@@ -37,7 +37,7 @@ namespace Interfaces
         Board ConvertBoardStateToBoard(IBoardState boardState);
         Point ConvertPointToCoordinate(int x, int y);
         Point ConvertMoveTypeToCoordinate(Point position, MoveType move);
-        IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating);
+        IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating,out bool mustCapture);
         GameState GetGameState(Player player);
     }
 
