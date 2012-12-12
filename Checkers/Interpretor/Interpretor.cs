@@ -48,6 +48,8 @@ namespace Interpretor
                 board.BoardCells = board.ConvertBoardToBoardState(board.Board);
                 Board = board;
             }
+            bool pcCaptured = tempCaptures.Count > 0;
+            board.DrawGame = board.CheckDraw(board.Board, board.Board[destCoord.X, destCoord.Y], pcCaptured);
         }
     }
 
@@ -80,7 +82,10 @@ namespace Interpretor
 
     public class BoardState : IBoardState
     {
-        private int countMove = 0;
+        static int countMove = 0;
+        static GameState drawGame = GameState.Undetermined;
+
+        public GameState DrawGame { get { return drawGame; } set { drawGame = value; } }
 
         /// <summary>
         /// Constructor which get size and initialize "our" board and build a new BoardCell and convert "our" board to BoardCell
@@ -206,6 +211,7 @@ namespace Interpretor
         public IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating,out bool mustCapture)
         {
             Rules rule= new Rules();
+            bool lastmovewasACaptured = false;
             needToContinueEating = false; //not correct
             this.Board = ConvertBoardStateToBoard(this);
             var destPoint = ConvertMoveTypeToCoordinate(position, moveType); //returns type point
@@ -245,7 +251,9 @@ namespace Interpretor
                             this.Board.UpdateCapturedSoldiers(oppCoord, Board.GetOpponent(player));
                             rule.IsBecameAKing(Board, newDestCoord);
                             Board[oppCoord.X, oppCoord.Y].Status = Piece.None;
-                            this.BoardCells = ConvertBoardToBoardState(Board);  
+                            this.BoardCells = ConvertBoardToBoardState(Board);
+                            lastmovewasACaptured = true;
+                            drawGame = CheckDraw(Board, Board[newDestCoord.X,newDestCoord.Y], lastmovewasACaptured);
                             if (length > 1)
                                 needToContinueEating =true;
                             mustCapture = false;
@@ -271,6 +279,7 @@ namespace Interpretor
                 rule.IsBecameAKing(Board, Board[destPoint.X, destPoint.Y]);
                 this.BoardCells = ConvertBoardToBoardState(Board);
                 mustCapture = false;
+                drawGame = CheckDraw(Board, Board[destPoint.X, destPoint.Y], lastmovewasACaptured);
                 return this;
             }
             mustCapture = true;
@@ -310,6 +319,10 @@ namespace Interpretor
             {
                 return GameState.Won;
             }
+            if (drawGame == GameState.Draw)
+            {
+                return GameState.Draw;
+            }
             else
             {
                 return GameState.Undetermined;
@@ -317,25 +330,25 @@ namespace Interpretor
         }
 
         /// <summary>
-        /// Checks if drow and return number of moves
+        /// Checks if draw and return number of moves
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
-        /// <param name="canCapture"></param>
-        /// <param name="count"></param>
-        public GameState CheckDraw(Board board, Coordinate coordinate, bool canCapture, ref int count)
+        /// <param name="captured"></param>
+        public GameState CheckDraw(Board board, Coordinate coordinate, bool captured)
         {
-            if (board.IsKing(coordinate) && !canCapture)
+
+            if (board.IsKing(coordinate) && !captured)
             {
-                count++;
-                if (count == 15)
+                countMove++;
+                if (countMove == 15)
                 {
                     return GameState.Draw;
                 }
             }
             else
             {
-                count = 0;
+                countMove = 0;
             }
                 return GameState.Undetermined;        
         }
