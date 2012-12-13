@@ -38,7 +38,7 @@ namespace CheckersView
                 }
                 else
                 {
-                    Console.WriteLine("Incorrect Input");
+                    Console.WriteLine("Incorrect Input, please try again");
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace CheckersView
                 IList<Coordinate> coords = ParseStrToCoords(input, board);
                 if (coords == null)
                 {
-                    Console.WriteLine("Wrong Input");
+                    Console.WriteLine("Wrong Input, please try again");
                     goto HumanTurn;
                 }
 
@@ -278,14 +278,26 @@ namespace CheckersView
 
             //define colors.
             Console.WriteLine("Opponent color is white? [Yes/No]");
+            Opponet:
             string opponentColor = Console.ReadLine();
-            oppColor = opponentColor == "Yes" ? Player.White : Player.Black;
+            if (!(opponentColor == "Yes" || opponentColor == "yes"))
+            {
+                Console.WriteLine("Invalid input,please try again");
+                goto Opponet;
+            }
+            oppColor = (opponentColor == "Yes"||opponentColor == "yes") ? Player.White : Player.Black;
             pcColor = oppColor == Player.White ? Player.Black : Player.White;
 
             //define who starts.
             Console.WriteLine("Opponent Starts? [Yes/No]");
+            Start:
             string opponentStarts = Console.ReadLine();
-            if (opponentStarts == "Yes")
+            if (!(opponentStarts == "Yes" || opponentStarts == "yes"))
+            {
+                Console.WriteLine("Invalid input,please try again");
+                goto Start;
+            }
+            if (opponentStarts == "Yes" || opponentStarts == "yes")
                 goto OppTurn;
             else
                 goto MyTurn;
