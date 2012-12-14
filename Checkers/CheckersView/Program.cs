@@ -280,7 +280,7 @@ namespace CheckersView
             Console.WriteLine("Opponent color is white? [Yes/No]");
             Opponet:
             string opponentColor = Console.ReadLine();
-            if (!(opponentColor == "Yes" || opponentColor == "yes"))
+            if (!(opponentColor == "Yes" || opponentColor == "yes"||opponentColor=="No"||opponentColor=="no"))
             {
                 Console.WriteLine("Invalid input,please try again");
                 goto Opponet;
@@ -292,7 +292,7 @@ namespace CheckersView
             Console.WriteLine("Opponent Starts? [Yes/No]");
             Start:
             string opponentStarts = Console.ReadLine();
-            if (!(opponentStarts == "Yes" || opponentStarts == "yes"))
+            if (!(opponentStarts == "Yes" || opponentStarts == "yes" || opponentStarts == "No" || opponentStarts == "no"))
             {
                 Console.WriteLine("Invalid input,please try again");
                 goto Start;
