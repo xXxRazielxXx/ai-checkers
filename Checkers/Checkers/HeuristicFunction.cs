@@ -12,10 +12,7 @@ namespace CheckersEngine
         private readonly Random random = new Random();
 
         public int Evaluate(Board board, Player player)
-        {
-            PrintBoardState print = new PrintBoardState();
-            print.DrawBoard(board);
-            //Console.ReadKey();
+        {         
             const int kingConstant = 120;
             const int soldierConstant = 100;
             int score = 0;
@@ -325,7 +322,9 @@ namespace CheckersEngine
             int blackScore = (numOfBlackSold) + (numBlackKings);
             int whiteScore = (numOfWhiteSold) + (numWhiteKings);
 
-            score += blackScore - whiteScore;
+            score += ((blackScore - whiteScore) * 200) / (blackScore + whiteScore);
+            score += blackScore - whiteScore;         
+            
             return (player == Player.Black) ? score : -score;
         }
     }
