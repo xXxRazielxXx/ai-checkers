@@ -41,6 +41,8 @@ namespace Interpretor
             var srcCoord = new Coordinate();
             var destCoord = new Coordinate();
             IList<Coordinate> tempCaptures = new List<Coordinate>();
+            if (depth%2 != 0)
+                depth++;
             alphaBeta.AlphaBeta(board.Board, depth, Int32.MinValue, Int32.MaxValue, player, true, ref srcCoord, ref destCoord, ref temp, ref tempCaptures);
             if ((rule.InBounds(board.Board, srcCoord.X, srcCoord.Y)) && (rule.InBounds(board.Board, destCoord.X, destCoord.Y)))
             {
