@@ -9,63 +9,32 @@ namespace CheckersEngine
 {
     public class HeuristicFunction
     {
-        private readonly Random random=new Random();
+        private readonly Random random = new Random();
 
-        public int Evaluate(Board board,Player player)
+        public int Evaluate(Board board, Player player)
         {
-            const int kingConstant = 130;
+            PrintBoardState print = new PrintBoardState();
+            print.DrawBoard(board);
+            //Console.ReadKey();
+            const int kingConstant = 120;
             const int soldierConstant = 100;
             int score = 0;
             int blackCaptures = 0;
             int whiteCaptures = 0;
+            int blackCanBeCaptured = 0;
+            int whiteCanBeCaptured = 0;
 
             int numWhiteKings = board.NumberOfWhiteKings;
             int numBlackKings = board.NumberOfBlackKings;
-            int numOfWhiteSold = board.NumberOfWhitePieces; 
+            int numOfWhiteSold = board.NumberOfWhitePieces;
             int numOfBlackSold = board.NumberOfBlackPieces;
 
-            int blackScore = (numOfBlackSold * soldierConstant) + (numBlackKings * kingConstant);
-            int whiteScore = (numOfWhiteSold * soldierConstant) + (numWhiteKings * kingConstant);
-            score += ((blackScore - whiteScore) * 200) / (blackScore + whiteScore);
-            score += blackScore - whiteScore;
+            int numOfSoldOnBoard = numWhiteKings + numBlackKings + numOfWhiteSold + numOfBlackSold;
+            if (numOfSoldOnBoard <= 7)
+                return Evaluate2(board, player);
 
-            for (int i = 1; i <= 32; i++)
-            {
-                if (board.GetPlayer(board[i]) == Player.Black)
-                {                   
-                    blackCaptures += (CanCapture(board, board[i], Player.Black)/(numOfBlackSold+numBlackKings)) * 30;
-                }
-                else if (board.GetPlayer(board[i]) == Player.White)
-                {                    
-                    whiteCaptures += (CanCapture(board, board[i], Player.White)/(numOfWhiteSold+numWhiteKings)) * 30;
-                }
-            }
-            score += (blackScore - whiteCaptures);
-            return (player == Player.Black) ? score : -score;
-
-        }
-
-        public int EvaluateOld (Board board, Player player)
-        {
-            int score = 0;
-            int safeBlack = 0;
-            int safeWhite = 0;
-            int BlackscloseToKing = 0;
-            int whitescloseToKing=0;
-            int whiteCanBeCaptured = 0;
-            int blackCanBeCaptured = 0;
-            int blackCaptures = 0;
-            int whiteCaptures = 0;
-                 
-            const int kingConstant = 130;
-            const int soldierConstant = 100;
-            int numWhiteKings = board.NumberOfWhiteKings;
-            int numBlackKings = board.NumberOfBlackKings;
-            int numOfWhiteSold = board.NumberOfWhitePieces; ;
-            int numOfBlackSold = board.NumberOfBlackPieces; ;
-
-             int blackScore =(numOfBlackSold*soldierConstant) + (numBlackKings*kingConstant);
-             int whiteScore =(numOfWhiteSold * soldierConstant) + (numWhiteKings * kingConstant);
+            int blackScore = (numOfBlackSold*soldierConstant) + (numBlackKings*kingConstant);
+            int whiteScore = (numOfWhiteSold*soldierConstant) + (numWhiteKings*kingConstant);
             score += ((blackScore - whiteScore)*200)/(blackScore + whiteScore);
             score += blackScore - whiteScore;
 
@@ -73,7 +42,51 @@ namespace CheckersEngine
             {
                 if (board.GetPlayer(board[i]) == Player.Black)
                 {
-                   // safeBlack += Safeness(board, board[i], Player.Black) * 10;
+                    blackCaptures += (CanCapture(board, board[i], Player.Black)/(numOfBlackSold + numBlackKings))*30;
+                   // blackCanBeCaptured += (CanBeCaptured(board, board[i], Player.Black))*50;
+
+                }
+                else if (board.GetPlayer(board[i]) == Player.White)
+                {
+                    whiteCaptures += (CanCapture(board, board[i], Player.White)/(numOfWhiteSold + numWhiteKings))*30;
+                     //whiteCanBeCaptured += (CanBeCaptured(board, board[i], Player.White)) * 50;
+                }
+            }
+            score += (blackCaptures - whiteCaptures);
+           // score += (blackCanBeCaptured - whiteCanBeCaptured);
+            return (player == Player.Black) ? score : -score;
+
+        }
+
+        public int EvaluateOld(Board board, Player player)
+        {
+            int score = 0;
+            int safeBlack = 0;
+            int safeWhite = 0;
+            int BlackscloseToKing = 0;
+            int whitescloseToKing = 0;
+            int whiteCanBeCaptured = 0;
+            int blackCanBeCaptured = 0;
+            int blackCaptures = 0;
+            int whiteCaptures = 0;
+
+            const int kingConstant = 130;
+            const int soldierConstant = 100;
+            int numWhiteKings = board.NumberOfWhiteKings;
+            int numBlackKings = board.NumberOfBlackKings;
+            int numOfWhiteSold = board.NumberOfWhitePieces;
+            int numOfBlackSold = board.NumberOfBlackPieces;
+
+            int blackScore = (numOfBlackSold*soldierConstant) + (numBlackKings*kingConstant);
+            int whiteScore = (numOfWhiteSold*soldierConstant) + (numWhiteKings*kingConstant);
+            score += ((blackScore - whiteScore)*200)/(blackScore + whiteScore);
+            score += blackScore - whiteScore;
+
+            for (int i = 1; i <= 32; i++)
+            {
+                if (board.GetPlayer(board[i]) == Player.Black)
+                {
+                    // safeBlack += Safeness(board, board[i], Player.Black) * 10;
                     BlackscloseToKing += CloseToBecomeAKing(board[i])*5;
                     blackCanBeCaptured += CanBeCaptured(board, board[i], Player.Black)*60;
                     blackCaptures += CanCapture(board, board[i], Player.Black)*30;
@@ -81,7 +94,7 @@ namespace CheckersEngine
                 else if (board.GetPlayer(board[i]) == Player.White)
                 {
                     //safeWhite += Safeness(board,board[i], Player.White)*10;
-                    whitescloseToKing += CloseToBecomeAKing(board[i]) * 5;
+                    whitescloseToKing += CloseToBecomeAKing(board[i])*5;
                     whiteCanBeCaptured += CanBeCaptured(board, board[i], Player.White)*60;
                     whiteCaptures += CanCapture(board, board[i], Player.White)*30;
 
@@ -90,7 +103,7 @@ namespace CheckersEngine
             //int safe = safeBlack - safeWhite;
             int closeToking = BlackscloseToKing - whitescloseToKing;
             int canBeCapture = blackCanBeCaptured - whiteCanBeCaptured;
-            int captures = blackCaptures -whiteCaptures;
+            int captures = blackCaptures - whiteCaptures;
             //score += safe;
             score += closeToking;
             score += canBeCapture;
@@ -299,6 +312,21 @@ namespace CheckersEngine
                     num++;
             }
             return num;
+        }
+
+        public int Evaluate2(Board board, Player player)
+        {
+            int score = 0;
+            int numWhiteKings = board.NumberOfWhiteKings;
+            int numBlackKings = board.NumberOfBlackKings;
+            int numOfWhiteSold = board.NumberOfWhitePieces;
+            int numOfBlackSold = board.NumberOfBlackPieces;
+
+            int blackScore = (numOfBlackSold) + (numBlackKings);
+            int whiteScore = (numOfWhiteSold) + (numWhiteKings);
+
+            score += blackScore - whiteScore;
+            return (player == Player.Black) ? score : -score;
         }
     }
 }
