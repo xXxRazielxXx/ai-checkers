@@ -1,10 +1,11 @@
-﻿using System.Collections;
-
-namespace CheckersModel
+﻿namespace CheckersModel
 {
     public class Coordinate
     {
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="srcCoordinate"></param>
         public Coordinate(Coordinate srcCoordinate)
         {
             this.X = srcCoordinate.X;
@@ -12,15 +13,28 @@ namespace CheckersModel
             this.Status = srcCoordinate.Status;
         }
 
+        /// <summary>
+        /// default constructor
+        /// </summary>
         public Coordinate()
         {
         }
 
+        /// <summary>
+        /// Check if 2 coordinates are equal
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         protected bool Equals(Coordinate other)
         {
             return Status == other.Status && X == other.X && Y == other.Y;
         }
 
+        /// <summary>
+        /// Overide equals function to check equality of ccordinates
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -29,6 +43,10 @@ namespace CheckersModel
             return Equals((Coordinate) obj);
         }
 
+        /// <summary>
+        /// Coordinate hashcode
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             unchecked
@@ -55,11 +73,16 @@ namespace CheckersModel
         /// </summary>
         public int Y { get; set; }
 
-
+        /// <summary>
+        /// implement operator ==
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static bool operator ==(Coordinate a, Coordinate b)
         {
             // If both are null, or both are same instance, return true.
-            if (System.Object.ReferenceEquals(a, b))
+            if (ReferenceEquals(a, b))
             {
                 return true;
             }
@@ -74,10 +97,15 @@ namespace CheckersModel
             return a.X == b.X && a.Y == b.Y && a.Status == b.Status;
         }
 
+        /// <summary>
+        /// Implement operator !=
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
         public static bool operator !=(Coordinate a, Coordinate b)
         {
             return !(a == b);
         }
-
     }
 }

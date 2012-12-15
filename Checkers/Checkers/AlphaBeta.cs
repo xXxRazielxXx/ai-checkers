@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CheckersEngine;
 using CheckersModel;
 
@@ -24,6 +22,7 @@ namespace checkersengine
         /// <param name="srcCoord"></param>
         /// <param name="destCoord"></param>
         /// <param name="updateBoard"></param>
+        /// <param name="captures"></param>
         /// <returns></returns>
         public int AlphaBeta(Board board, int depth, int alpha, int beta, Player player, bool maxplayer,
                              ref Coordinate srcCoord, ref Coordinate destCoord, ref Board updateBoard,
@@ -33,11 +32,14 @@ namespace checkersengine
             if (depth == 0 || rule.IsBoardLeaf(player, board)) // is node a terminal node
             {
                 var obj = new HeuristicFunction();
-                return obj.Evaluate(board, player);
+                return obj.Evaluate(board, player); //return Heurisitic value of node
             }
+
+            //Finds if there are any captures
             IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable = robj.FindCaptures(board, player);
             IDictionary<Board, IList<Coordinate>> boardCoordsList;
-            // IDictionary<IDictionary<Board,IList<Coordinate>>,IList<Coordinate>> mapBoardSrcDestCap;
+
+            //Calculating board according to current state (with or without captures)
             if (capturesAvailable.Count > 0)
             {
                 boardCoordsList = robj.CreateNewBoards(board, capturesAvailable);
@@ -47,8 +49,7 @@ namespace checkersengine
                 boardCoordsList = robj.CalculateNewBoardsFromCoordinates(board, player);
             }
 
-            //mapBoardSrcDestCap = robj.ConvertToMapWithCaptures(boardCoordsList, capturesAvailable);
-
+            //values which save capture list , source, detination on the chosen move
             var minsrcCoord = new Coordinate();
             var mindestCoord = new Coordinate();
             var maxsrcCoord = new Coordinate();
@@ -57,6 +58,8 @@ namespace checkersengine
             var minCapturesList = new List<Coordinate>();
             var minBoard = new Board();
             var maxBoard = new Board();
+
+            //player 
             if (maxplayer)
             {
                 foreach (var newState in boardCoordsList)
@@ -90,6 +93,8 @@ namespace checkersengine
                 captures = maxCapturesList;
                 return alpha;
             }
+
+                //opponent
             else
             {
                 foreach (var newState in boardCoordsList)

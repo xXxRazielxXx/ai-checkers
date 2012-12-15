@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using CheckersModel;
 
 namespace CheckersEngine
@@ -13,7 +10,7 @@ namespace CheckersEngine
     public class FileEngine
     {
         /// <summary>
-        /// Safe write to a file, one access (write first line source and dest and player) (write second line which cooordinate were captured)
+        /// Safe write to a file, one access (write source and dest in format: [x1,y1] [x2,y2]) (write which cooordinate were captured in format [x3,y3] and then player (B\W))
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="srcCoordinate"></param>
@@ -21,11 +18,13 @@ namespace CheckersEngine
         /// <param name="captureList"></param>
         /// <param name="path"></param>
         /// <param name="player"></param>
-        public void WriteToFile(FileStream stream, Coordinate srcCoordinate, Coordinate destCoordinate,IList<Coordinate> captureList, string path,
+        public void WriteToFile(FileStream stream, Coordinate srcCoordinate, Coordinate destCoordinate,
+                                IList<Coordinate> captureList, string path,
                                 Player player)
         {
             while (true)
             {
+                //Checks if file exists and then check if file is read-only- maybe access by rival team
                 if (File.Exists(path))
                 {
                     FileInfo fileInfo = new FileInfo(path);
@@ -35,31 +34,29 @@ namespace CheckersEngine
                     }
                 }
 
-                //Enter Source ,destanation coordinates and who's the player
-                byte[] byteData = null;
+                //Enter Source ,destanation coordinates 
                 string source = "[" + srcCoordinate.X.ToString(CultureInfo.InvariantCulture) + "," +
                                 srcCoordinate.Y.ToString(CultureInfo.InvariantCulture) + "]";
                 string destanation = "[" + destCoordinate.X.ToString(CultureInfo.InvariantCulture) + "," +
                                      destCoordinate.Y.ToString(CultureInfo.InvariantCulture) + "]";
 
                 string result = source + " " + destanation;
-               
+
                 //Captures list if there are captures
                 if (captureList.Count > 0)
                 {
-                    
                     foreach (var capture in captureList)
                     {
-                        result += " "+"[" + capture.X.ToString(CultureInfo.InvariantCulture) + "," +
-                                          capture.Y.ToString(CultureInfo.InvariantCulture) + "]";
+                        result += " " + "[" + capture.X.ToString(CultureInfo.InvariantCulture) + "," +
+                                  capture.Y.ToString(CultureInfo.InvariantCulture) + "]";
                     }
-                    
                 }
 
-                string playerColor=string.Empty;
-                //Convert our coordinate to Smhul and Limor moves
-               result = CoordinateToShmul(result);
-                
+                string playerColor = string.Empty;
+                //Convert our coordinate to Smhul and Limor moves (rival team)
+                result = CoordinateToShmul(result);
+
+                //Enter who's the player
                 if (player == Player.Black)
                 {
                     playerColor = "B";
@@ -69,9 +66,11 @@ namespace CheckersEngine
                     playerColor = "W";
                 }
                 result += playerColor;
-                byteData = Encoding.ASCII.GetBytes(result);
+
+                //Convert the stream to ASCIII and write the data to file
+                byte[] byteData = Encoding.ASCII.GetBytes(result);
                 stream.Write(byteData, 0, byteData.Length);
-                
+
                 break;
             }
         }
@@ -79,24 +78,26 @@ namespace CheckersEngine
 
         /// <summary>
         /// Safely read from a file and convert to our coordinate data and 
-        /// First list is source and destanation coordinates and second list (if there are) capture list
+        /// First list is source, destanation coordinates and (if there are) capture list
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="board"></param>
         /// <param name="path"></param>
-        /// <param name="playerColor"></param>
+        /// <param name="playerColor">return the last played player</param>
+        /// <returns>returns a coordinate list which repesnt the move and captures</returns>
         public IList<Coordinate> ReadFromFile(FileStream stream, Board board, string path, out Player playerColor)
         {
             IList<Coordinate> cor = new List<Coordinate>();
-            string temp=string.Empty;
+            string temp = string.Empty;
             if (File.Exists(@path))
             {
-               byte[] byteData = new byte[stream.Length];
+                byte[] byteData = new byte[stream.Length];
                 stream.Read(byteData, 0, (int) stream.Length);
                 string content = Encoding.ASCII.GetString(byteData);
-                cor = ShmulToCoordinate(board, content,out temp);
-                //cor = debugging(board, content, out temp);
+                cor = ShmulToCoordinate(board, content, out temp);
             }
+
+            //Who made the last move
             if (temp == "B")
             {
                 playerColor = Player.Black;
@@ -117,6 +118,7 @@ namespace CheckersEngine
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinates"></param>
+        /// <param name="playerColor"></param>
         /// <returns>A list of coordinates</returns>
         private IList<Coordinate> ShmulToCoordinate(Board board, string coordinates, out string playerColor)
         {
@@ -124,11 +126,11 @@ namespace CheckersEngine
             const char delimiterChar = ' ';
             string[] word = coordinates.Split(delimiterChar);
 
-            for (int i = 0; i < word.Length-1; i++)
+            for (int i = 0; i < word.Length - 1; i++)
             {
                 int x = Int32.Parse(word[i].Substring(1, 1));
                 int y = Int32.Parse(word[i].Substring(3, 1));
-                coords.Add(new Coordinate { X = x, Y = y });
+                coords.Add(new Coordinate {X = x, Y = y});
             }
 
             //If list is not empty
@@ -160,7 +162,7 @@ namespace CheckersEngine
             {
                 int x = Int32.Parse(word[i].Substring(1, 1));
                 int y = Int32.Parse(word[i].Substring(3, 1));
-                coords.Add(new Coordinate { X = x, Y = y });
+                coords.Add(new Coordinate {X = x, Y = y});
             }
 
             //If list is not empty
@@ -169,7 +171,7 @@ namespace CheckersEngine
                 //Convert our coordinates to Shmul and Limor moves
                 foreach (var item in coords)
                 {
-                    item.X=8-item.X;
+                    item.X = 8 - item.X;
                     item.Y--;
                 }
             }
@@ -177,7 +179,7 @@ namespace CheckersEngine
             foreach (var coordinate in coords)
             {
                 string temp = "[" + coordinate.X.ToString(CultureInfo.InvariantCulture) + "," +
-                            coordinate.Y.ToString(CultureInfo.InvariantCulture) + "]"+" ";
+                              coordinate.Y.ToString(CultureInfo.InvariantCulture) + "]" + " ";
                 coordinates += temp;
             }
             return coordinates;
@@ -190,14 +192,14 @@ namespace CheckersEngine
         /// <param name="coordinates"></param>
         /// <param name="playerColor"></param>
         /// <returns></returns>
-        private IList<Coordinate> debugging(Board board, string coordinates, out string playerColor)
+        private IList<Coordinate> Debugging(Board board, string coordinates, out string playerColor)
         {
             IList<Coordinate> coords = new List<Coordinate>();
             const char delimiterChar = ' ';
             string[] word = coordinates.Split(delimiterChar);
-            for (int i = 0; i < word.Length-1; i++)
+            for (int i = 0; i < word.Length - 1; i++)
             {
-                 int x = Int32.Parse(word[i].Substring(1, 1));
+                int x = Int32.Parse(word[i].Substring(1, 1));
                 int y = Int32.Parse(word[i].Substring(3, 1));
                 coords.Add(new Coordinate {X = x, Y = y});
             }

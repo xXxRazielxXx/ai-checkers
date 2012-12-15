@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CheckersModel;
@@ -9,7 +8,7 @@ namespace CheckersEngine
     public class Rules
     {
         /// <summary>
-        /// in case this move isnt a capture- check if valid
+        /// in case this move isn't a capture- check if valid
         /// </summary>
         /// <param name="board"></param>
         /// <param name="srcCoord"></param>
@@ -18,11 +17,15 @@ namespace CheckersEngine
         /// <returns></returns>
         public bool IsValidMove(Board board, Coordinate srcCoord, Coordinate destCoord, Player player)
         {
+            //Check if the move is in bounds
             if (!(InBounds(board, srcCoord.X, srcCoord.Y)) || !(InBounds(board, destCoord.X, destCoord.Y)))
                 return false;
+            //Check if is in direction and not more than 1 step
             if ((Math.Abs(srcCoord.X - destCoord.X) > 1) || (Math.Abs(srcCoord.Y - destCoord.Y) > 1))
                 return false;
+            //Find all availables move for the piece
             IList<Coordinate> coordsInDir = GetMovesInDirection(board, srcCoord, player);
+            //crossing data with available moves and free location
             return coordsInDir.Contains(destCoord) && !board.IsAloacted(destCoord);
         }
 
@@ -92,13 +95,16 @@ namespace CheckersEngine
         /// <returns></returns>
         public IList<Coordinate> GetMovesInDirection(Board board, Coordinate coordinate, Player player)
         {
+            //Finds all optional move for player
             IList<Coordinate> coordinateList = OptionalMoves(board, coordinate, player);
             if (coordinateList.Count != 0)
             {
+                //checks if player is the owner of the piece
                 if (board.IsOwner(player, coordinate))
                 {
                     foreach (Coordinate item in coordinateList.Reverse())
                     {
+                        //Removing coordinates which are not in the piece direction white - forward and black backword (according to board orientation)
                         if (board.IsBlack(coordinate) && (board.IsSoldier(coordinate)))
                         {
                             if (item.X > coordinate.X)
@@ -133,7 +139,7 @@ namespace CheckersEngine
                 if (board.IsOwner(player, board[i]))
                 {
                     IList<Coordinate> coordinateList = GetMovesInDirection(board, board[i], player);
-                    foreach (Coordinate coordinate in coordinateList.Reverse()) //reverser list correction
+                    foreach (Coordinate coordinate in coordinateList.Reverse())
                     {
                         //if a soldier of mine exists in this coord then this coord is not optional;
                         if (board.IsOwner(player, coordinate))
@@ -143,7 +149,6 @@ namespace CheckersEngine
                             //if an oppenent soldier exsist in this coord try capturing him!
                         else if (board.IsOpponentPiece(player, coordinate))
                         {
-
                             IList<Coordinate> destList =
                                 CoordsToCaptureAndDest(board, board[i], coordinate, player).Values.ToList();
 
@@ -347,14 +352,12 @@ namespace CheckersEngine
                         if (board.IsOpponentPiece(player, coordindir))
                         {
                             var coordsToJumpTo = CoordsToCaptureAndDest(board, board[i], coordindir, player);
-                                //coordsToCapAndDest returns 2 lists- first captures list, second src-dest list
                             if (coordsToJumpTo.Count != 0)
                             {
                                 foreach (var item in coordsToJumpTo)
                                 {
                                     res.Add(item.Key, new List<Coordinate> {board[i], item.Value});
                                 }
-                                //res = res.Concat(coordsToJumpTo).ToDictionary(pair => pair.Key, pair => pair.Value);
                             }
                         }
                     }
@@ -429,8 +432,6 @@ namespace CheckersEngine
                             var item = map.FirstOrDefault((x => x.Value.X == dest.X && x.Value.Y == dest.Y));
                             map.Remove(item.Key);
                         }
-
-
                     }
                     else if (temp.Keys.Count() == map.Keys.Count())
                     {
@@ -472,7 +473,6 @@ namespace CheckersEngine
             {
                 Board nBoard = srcBoard.Copy();
                 nBoard.UpdateBoard(nBoard[nBoard.Search(item.Value.First())], item.Value.Last());
-                    // update board from(board[i]) to where(item.key.lasdt()) 
                 IsBecameAKing(nBoard, item.Value.Last());
                 Player player = nBoard.GetPlayer(item.Value.First());
                 Player oPlayer = nBoard.GetOpponent(player);
@@ -554,7 +554,6 @@ namespace CheckersEngine
                 }
             }
             return captures;
-
         }
 
         /// <summary>
@@ -565,16 +564,19 @@ namespace CheckersEngine
         /// <param name="destCoord"></param>
         /// <param name="capturesOppdid"></param>
         /// <returns></returns>
-        public bool MapContainsCoordsOfCaptures(  IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable , Coordinate srcCoord ,  Coordinate destCoord , IList<Coordinate> capturesOppdid )
+        public bool MapContainsCoordsOfCaptures(IDictionary<IList<Coordinate>, IList<Coordinate>> capturesAvailable,
+                                                Coordinate srcCoord, Coordinate destCoord,
+                                                IList<Coordinate> capturesOppdid)
         {
             foreach (var item in capturesAvailable)
             {
                 if (item.Value.First().X == srcCoord.X && item.Value.First().Y == srcCoord.Y &&
-                    item.Value.Last().X == destCoord.X && item.Value.Last().Y == destCoord.Y && Compare(item.Key,capturesOppdid))
+                    item.Value.Last().X == destCoord.X && item.Value.Last().Y == destCoord.Y &&
+                    Compare(item.Key, capturesOppdid))
                 {
                     return true;
                 }
-            }            
+            }
             return false;
         }
 
@@ -591,7 +593,7 @@ namespace CheckersEngine
             int srcY = srcCoordinate.Y;
             int oponentX = oponentCoordinate.X;
             int oponentY = oponentCoordinate.Y;
-            var dest= new Coordinate();           
+            var dest = new Coordinate();
             int destX, destY;
 
             //find the direction of the optional capture and set destination accordingly
@@ -605,11 +607,10 @@ namespace CheckersEngine
                 dest = new Coordinate(board[destX, destY]);
             }
             return dest;
-
         }
 
         /// <summary>
-        /// Compate 2 IList
+        /// Compare 2 IList
         /// </summary>
         /// <param name="firstList"></param>
         /// <param name="secondList"></param>

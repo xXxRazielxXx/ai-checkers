@@ -308,7 +308,7 @@ namespace UI
             }
             else
             {
-                InteractivePause(new TimeSpan(0,0,0,0,300));
+                InteractivePause(new TimeSpan(0,0,0,0,1000));
             }
 
             int depth;

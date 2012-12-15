@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -26,23 +25,22 @@ namespace CheckersModel
             var buf1 = new StringBuilder();
             var buf2 = new StringBuilder();
             writer.WriteLine("+--------------------------------+       +--------------------------------+");
-            int cellNum = 0;
-            int shift = 0;
             for (int k = 1; k <= 32; k++)
             {
                 for (int i = 8; i > 0; i--)
                 {
-                    var soldierColor = "";
                     int j = 1;
                     if (i%2 == 0)
                     {
                         j = 2;
                         buf1.AppendFormat("    ");
                     }
+                    int shift;
                     for (shift = 3; (j <= 8 && shift >= 0); j += 2, shift--)
                     {
-                        cellNum = i*4 - shift;
+                        int cellNum = i*4 - shift;
                         var coord = board[i, j];
+                        string soldierColor;
                         if (board.IsBlack(coord))
                         {
                             soldierColor = "b";
