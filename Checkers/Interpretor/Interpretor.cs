@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using CheckersEngine;
 using CheckersModel;
 using Interfaces;
 using checkersengine;
 
-
+//Interpret Assaf Cohen GUI to our logic
 namespace Interpretor
 {
     /// <summary>
@@ -30,8 +28,19 @@ namespace Interpretor
     /// </summary>
     public class Move : IMove
     {
+
+        /// <summary>
+        /// IBoardstate property , set and get Board
+        /// </summary>
         public IBoardState Board { get; set; }
 
+
+        /// <summary>
+        /// Constructor which perform alphabeta algorithm and set soruce ,destinationn coordinate and return captures list if exists
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="player"></param>
+        /// <param name="depth"></param>
         public Move(IBoardState board, Player player, int depth)
         {
             Rules rule = new Rules();
@@ -56,10 +65,12 @@ namespace Interpretor
     }
 
 
-    
+    /// <summary>
+    /// Play which has playercolor and build a new move (alpha-beta) upon call
+    /// </summary>
     public class Play : IPlayer
     {
-        private Player playerColor;
+        private readonly Player playerColor;
 
         /// <summary>
         /// Get player color and set the player field with it
@@ -84,7 +95,7 @@ namespace Interpretor
 
     public class BoardState : IBoardState
     {
-        static int countMove = 0;
+        static int countMove;
         static GameState drawGame = GameState.Undetermined;
 
         public GameState DrawGame { get { return drawGame; } set { drawGame = value; } }
@@ -129,12 +140,11 @@ namespace Interpretor
         /// <returns></returns>
         public Board ConvertBoardStateToBoard(IBoardState boardState)
         {
-            
-            int k = 32;
             for (int i = 0; i < Board.Rows; i++)
             {
                 int j = i%2 == 0 ? 7 : 6;
 
+                int k=32;
                 for (int shift=0; j >=0; k--, j -= 2, shift++)
                 {
                     k = (8-i)*4 - shift;
@@ -209,12 +219,13 @@ namespace Interpretor
         /// <param name="moveType"></param>
         /// <param name="position"></param>
         /// <param name="needToContinueEating"></param>
+        /// <param name="mustCapture"></param>
         /// <returns></returns>
         public IBoardState GetBoardState(Player player, MoveType moveType, Point position, out bool needToContinueEating,out bool mustCapture)
         {
             Rules rule= new Rules();
             bool lastmovewasACaptured = false;
-            needToContinueEating = false; //not correct
+            needToContinueEating = false;
             this.Board = ConvertBoardStateToBoard(this);
             var destPoint = ConvertMoveTypeToCoordinate(position, moveType); //returns type point
             var srcPoint = ConvertPointToCoordinate(position.X, position.Y);          // returns type point
@@ -237,9 +248,6 @@ namespace Interpretor
             if (!IsEmptyCoord(Board, destPoint.X, destPoint.Y) &&
                 !CheckValidPieceColor(Board, destPoint.X, destPoint.Y, player))
             {
-                //calculate capture.....problem....
-                //calculate new dest;
-                bool done = false;
                 var captures = rule.CoordsToCaptureAndDest(Board, srcCoord, oppCoord, player);
                 if (captures.Count > 0)
                 {
@@ -287,16 +295,29 @@ namespace Interpretor
             mustCapture = true;
             return null;
         }
-
-        public bool IsEmptyCoord(Board board, int x, int y)
+        /// <summary>
+        /// Check if coordinate is empty
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private bool IsEmptyCoord(Board board, int x, int y)
         {
             var destCoord = board[x, y];
             if (destCoord != null && destCoord.Status == Piece.None)
                 return true;
             return false;
         }
-
-        public bool CheckValidPieceColor(Board board, int x, int y, Player player)
+        /// <summary>
+        /// check if piece is in player color and valid
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        private bool CheckValidPieceColor(Board board, int x, int y, Player player)
         {
             var srcCoord = board[x, y];
             if (srcCoord != null && board.GetPlayer(srcCoord) == player)
@@ -304,7 +325,11 @@ namespace Interpretor
             return false;
         }
 
-
+        /// <summary>
+        /// Get the game state (lost, won, draw)
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public GameState GetGameState(Player player)
         {
             var rule = new Rules();
@@ -332,7 +357,7 @@ namespace Interpretor
         }
 
         /// <summary>
-        /// Checks if draw and return number of moves
+        /// Checks if draw and return number of moves (draw - if there are 15 king's moves with no captures of both opponent and player)
         /// </summary>
         /// <param name="board"></param>
         /// <param name="coordinate"></param>
