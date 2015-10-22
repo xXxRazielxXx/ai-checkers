@@ -1,0 +1,1 @@
+checkers using AI (min-max and alpha-beta algorithm)
